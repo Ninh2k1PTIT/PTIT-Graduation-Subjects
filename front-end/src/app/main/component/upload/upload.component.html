@@ -1,0 +1,51 @@
+<div class="card">
+    <div class="card-body">
+        <div class="row">
+            <div class="col-1">
+                <div class="avatar">
+                    <img src="assets/images/portrait/small/avatar-s-11.jpg" height="38" width="38" />
+                </div>
+            </div>
+            <div class="col-11">
+                <div class="form-group">
+                    <input type="text" class="form-control" placeholder="Bài viết mới" (click)="modalOpen()" readonly />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<ng-template #modalBasic let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="myModalLabel1">Tạo bài viết</h4>
+        <button type="button" class="close" (click)="modal.dismiss('Cross click')" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body" tabindex="0" ngbAutofocus>
+        <fieldset class="form-group">
+            <textarea class="form-control" rows="3" placeholder="Nội dung"></textarea>
+        </fieldset>
+
+        <!-- ngb-carousel component -->
+        <ngb-carousel [interval]="5000">
+            <ng-template *ngFor="let i of f.photos.value" ngbSlide>
+                <div class="carousel-img-wrapper">
+                    <img [src]="i.b64" class="img-fluid" />
+                </div>
+                <div class="carousel-caption"></div>
+            </ng-template>
+        </ngb-carousel>
+        <!-- ngb-carousel component -->
+
+        <input #fileInput type="file" hidden multiple (change)="onFileInput($event)" accept=".jpeg, .jpg, .png" />
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-outline-primary w-100" (click)="fileInput.click()" rippleEffect>
+            Thêm ảnh
+        </button>
+        <button type="button" class="btn btn-primary w-100" (click)="onSubmit(); modal.close()" rippleEffect>
+            Đăng
+        </button>
+    </div>
+</ng-template>

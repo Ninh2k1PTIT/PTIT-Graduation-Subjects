@@ -1,0 +1,46 @@
+<a href="javascript:void(0)" class="text-nowrap" (click)="modalOpen()">
+    <span class="text-muted mr-50">{{ comments.length }}</span>
+    <i data-feather="message-square" class="text-body font-medium-3"></i>
+</a>
+
+<ng-template #modal let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="myModalLabel1">Bình luận</h4>
+        <button type="button" class="close" (click)="modal.dismiss('Cross click')" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body" tabindex="0" ngbAutofocus>
+        <div class="d-flex align-items-start mb-1" *ngFor="let detailedCommentsRefRef of comments">
+            <div class="avatar mt-25 mr-75">
+                <img [src]="detailedCommentsRefRef.avatar" alt="Avatar" height="34" width="34" />
+            </div>
+            <div class="profile-user-info w-100">
+                <div class="d-flex align-items-center justify-content-between">
+                    <h6 class="mb-0">{{ detailedCommentsRefRef.username }}</h6>
+                    <a href="javascript:void(0)">
+                        <i data-feather="heart" class="text-body font-medium-3 profile-likes"></i>
+                        <span class="align-middle text-muted"> {{ detailedCommentsRefRef.commentsLikes }}</span>
+                    </a>
+                </div>
+                <small>{{ detailedCommentsRefRef.comment }}</small>
+            </div>
+        </div>
+
+    </div>
+    <div class="modal-footer">
+        <fieldset class="form-label-group mb-50 w-100">
+            <textarea class="form-control" id="label-textarea" rows="2" placeholder="Thêm bình luận"></textarea>
+        </fieldset>
+        <div class="d-flex justify-content-between w-100">
+            <div>
+                <button type="button" class="btn btn-icon btn-flat-primary" rippleEffect>
+                    <span [data-feather]="'smile'"></span></button>
+                <button type="button" class="btn btn-icon btn-flat-primary" rippleEffect>
+                    <span [data-feather]="'image'"></span></button>
+            </div>
+            <button type="button" class="btn btn-icon btn-flat-primary" rippleEffect>
+                <span [data-feather]="'send'"></span></button>
+        </div>
+    </div>
+</ng-template>

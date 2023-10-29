@@ -1,0 +1,26 @@
+<a href="javascript:void(0)" class="d-flex align-items-center text-muted text-nowrap" (click)="modalOpen()">
+    <i data-feather="heart" class="profile-likes font-medium-3 mr-50"></i>
+    <span>{{ reacts.length }}</span>
+</a>
+
+<ng-template #modal let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="myModalLabel1">Lượt thích</h4>
+        <button type="button" class="close" (click)="modal.dismiss('Cross click')" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body" tabindex="0" ngbAutofocus>
+        <div class="d-flex align-items-center mb-1" *ngFor="let react of reacts">
+            <div class="avatar mt-25 mr-75">
+                <img [src]="react.avatar" alt="Avatar" height="34" width="34" />
+            </div>
+            <div class="profile-user-info w-100">
+                <div class="d-flex align-items-center justify-content-between">
+                    <h6 class="mb-0">{{ react.username }}</h6>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</ng-template>
