@@ -1,17 +1,23 @@
-import { ChangeDetectorRef, Component, HostBinding, Input, OnDestroy, OnInit } from '@angular/core';
-import { NavigationEnd, Router } from '@angular/router';
+import {
+  ChangeDetectorRef,
+  Component,
+  HostBinding,
+  Input,
+  OnDestroy,
+  OnInit,
+} from "@angular/core";
+import { NavigationEnd, Router } from "@angular/router";
 
-import { Subject } from 'rxjs';
-import { filter, takeUntil } from 'rxjs/operators';
+import { Subject } from "rxjs";
+import { filter, takeUntil } from "rxjs/operators";
 
-import { CoreMenuItem } from '@core/types';
-import { CoreMenuService } from '@core/components/core-menu/core-menu.service';
-
-import { User } from 'app/auth/models';
+import { CoreMenuItem } from "@core/types";
+import { CoreMenuService } from "@core/components/core-menu/core-menu.service";
+import { User } from "app/model/User";
 
 @Component({
-  selector: '[core-menu-vertical-collapsible]',
-  templateUrl: './collapsible.component.html'
+  selector: "[core-menu-vertical-collapsible]",
+  templateUrl: "./collapsible.component.html",
 })
 export class CoreMenuVerticalCollapsibleComponent implements OnInit, OnDestroy {
   currentUser: User;
@@ -19,7 +25,7 @@ export class CoreMenuVerticalCollapsibleComponent implements OnInit, OnDestroy {
   @Input()
   item: CoreMenuItem;
 
-  @HostBinding('class.open')
+  @HostBinding("class.open")
   public isOpen = false;
 
   // Private
@@ -51,7 +57,7 @@ export class CoreMenuVerticalCollapsibleComponent implements OnInit, OnDestroy {
     // Listen for router events and expand
     this._router.events
       .pipe(
-        filter(event => event instanceof NavigationEnd),
+        filter((event) => event instanceof NavigationEnd),
         takeUntil(this._unsubscribeAll)
       )
       .subscribe((event: NavigationEnd) => {
@@ -64,29 +70,33 @@ export class CoreMenuVerticalCollapsibleComponent implements OnInit, OnDestroy {
       });
 
     // Subscribe to the current menu changes
-    this._coreMenuService.onMenuChanged.pipe(takeUntil(this._unsubscribeAll)).subscribe(() => {
-      this.currentUser = this._coreMenuService.currentUser;
-    });
+    this._coreMenuService.onMenuChanged
+      .pipe(takeUntil(this._unsubscribeAll))
+      .subscribe(() => {
+        this.currentUser = this._coreMenuService.currentUser;
+      });
 
     // Listen for collapsing of any menu item
-    this._coreMenuService.onItemCollapsed.pipe(takeUntil(this._unsubscribeAll)).subscribe(clickedItem => {
-      if (clickedItem && clickedItem.children) {
-        // Check if the clicked item is one of the children of this item
-        if (this.confirmItemInChildren(this.item, clickedItem)) {
-          return;
-        }
+    this._coreMenuService.onItemCollapsed
+      .pipe(takeUntil(this._unsubscribeAll))
+      .subscribe((clickedItem) => {
+        if (clickedItem && clickedItem.children) {
+          // Check if the clicked item is one of the children of this item
+          if (this.confirmItemInChildren(this.item, clickedItem)) {
+            return;
+          }
 
-        // Check if the url can be found in one of the children of this item
-        if (this.confirmUrlInChildren(this.item, this._router.url)) {
-          return;
-        }
+          // Check if the url can be found in one of the children of this item
+          if (this.confirmUrlInChildren(this.item, this._router.url)) {
+            return;
+          }
 
-        // If the clicked item is not this item, collapse...
-        if (this.item !== clickedItem) {
-          this.collapse();
+          // If the clicked item is not this item, collapse...
+          if (this.item !== clickedItem) {
+            this.collapse();
+          }
         }
-      }
-    });
+      });
 
     // Check if the url can be found in one of the children of this item
     // Required for onInit case (i.e switching theme customizer menu layout)

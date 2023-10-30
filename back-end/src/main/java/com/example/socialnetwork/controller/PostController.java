@@ -1,17 +1,22 @@
 package com.example.socialnetwork.controller;
 
 import com.example.socialnetwork.dto.PostDto;
+import com.example.socialnetwork.dto.response.BaseResponse;
 import com.example.socialnetwork.dto.response.PaginationResponse;
 import com.example.socialnetwork.model.EPostSort;
 import com.example.socialnetwork.service.PostService;
 import com.example.socialnetwork.service.impl.UserDetailsImpl;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @CrossOrigin(origins = "*")
@@ -22,10 +27,18 @@ public class PostController {
         this.postService = postService;
     }
 
+//    @PostMapping("post")
+//    @PreAuthorize("hasRole('USER')")
+//    public PostDto create(@RequestBody PostDto postDto) {
+//        return postService.create(postDto);
+//    }
+
     @PostMapping("post")
     @PreAuthorize("hasRole('USER')")
-    public PostDto create(@RequestBody PostDto postDto) {
-        return postService.create(postDto);
+    public ResponseEntity<?> create(@RequestParam String post, @RequestParam MultipartFile[] files) throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        PostDto postDto = mapper.readValue(post, PostDto.class);
+        return ResponseEntity.ok(new BaseResponse<>(postService.create(postDto, files), true, null, null));
     }
 
     @PutMapping("post/{id}")
@@ -42,9 +55,9 @@ public class PostController {
 
     @GetMapping("posts")
     @PreAuthorize("hasRole('USER')")
-    public PaginationResponse<PostDto> getAll(@RequestParam Integer page, @RequestParam Integer size, @RequestParam(required = false) String content, @RequestParam(required = false) EPostSort sort) {
+    public ResponseEntity<?> search(@RequestParam Integer page, @RequestParam Integer size, @RequestParam(required = false) String content, @RequestParam(required = false) EPostSort sort) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
-        return postService.getAll(content, sort, pageable);
+        return ResponseEntity.ok(new BaseResponse<>(postService.getAll(content, sort, pageable), true, null, null)) ;
     }
 
     @GetMapping("post/{id}")

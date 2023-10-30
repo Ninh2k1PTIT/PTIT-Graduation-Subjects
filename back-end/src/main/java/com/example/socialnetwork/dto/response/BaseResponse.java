@@ -11,6 +11,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class BaseResponse<T> {
     private T data;
-    private int code;
-    private String message;
+    private Boolean success;
+    private String userMessage;
+    private String debugMessage;
 }

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 public class UserConverter {
     public UserDto toDto(User user) {
         UserDto userDto = new UserDto();
+        userDto.setId(user.getId());
         userDto.setUsername(user.getUsername());
         userDto.setAvatar(user.getAvatar());
         userDto.setPhoneNumber(user.getPhoneNumber());

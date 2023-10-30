@@ -11,6 +11,7 @@ import com.example.socialnetwork.model.Photo;
 import com.example.socialnetwork.model.Post;
 import com.example.socialnetwork.repository.PhotoRepository;
 import com.example.socialnetwork.repository.PostRepository;
+import com.example.socialnetwork.service.FirebaseImageService;
 import com.example.socialnetwork.service.PostService;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -20,6 +21,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,15 +30,37 @@ import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
+@Transactional
 public class PostServiceImpl implements PostService {
     private PostRepository postRepository;
     private PhotoRepository photoRepository;
     private PostConverter postConverter;
     private PhotoConverter photoConverter;
+    private FirebaseImageService imageService;
 
+
+//    @Override
+//    public PostDto create(PostDto postDto) {
+//        //Save post
+//        Post post = postConverter.toEntity(postDto);
+//        Post newPost = postRepository.save(post);
+//        PostDto result = postConverter.toDto(newPost);
+//
+//        //Save photo
+//        List<PhotoDto> photoDtos = new ArrayList<>();
+//        for (PhotoDto photoDto : postDto.getPhotos()) {
+//            photoDto.setPost(result);
+//            Photo photo = photoConverter.toEntity(photoDto);
+//            Photo newPhoto = photoRepository.save(photo);
+//            photoDtos.add(photoConverter.toDto(newPhoto));
+//        }
+//        result.setPhotos(photoDtos);
+//
+//        return result;
+//    }
 
     @Override
-    public PostDto create(PostDto postDto) {
+    public PostDto create(PostDto postDto, MultipartFile[] files) {
         //Save post
         Post post = postConverter.toEntity(postDto);
         Post newPost = postRepository.save(post);
@@ -43,11 +68,16 @@ public class PostServiceImpl implements PostService {
 
         //Save photo
         List<PhotoDto> photoDtos = new ArrayList<>();
-        for (PhotoDto photoDto : postDto.getPhotos()) {
-            photoDto.setPost(result);
-            Photo photo = photoConverter.toEntity(photoDto);
-            Photo newPhoto = photoRepository.save(photo);
-            photoDtos.add(photoConverter.toDto(newPhoto));
+        for(MultipartFile file: files) {
+            try {
+                String fileName = imageService.save(file);
+                String imageUrl = imageService.getImageUrl(fileName);
+                Photo photo = new Photo();
+                photo.setContent(imageUrl);
+                photo.setPost(newPost);
+                Photo newPhoto = photoRepository.save(photo);
+                photoDtos.add(photoConverter.toDto(newPhoto));
+            } catch (Exception e) {}
         }
         result.setPhotos(photoDtos);
 

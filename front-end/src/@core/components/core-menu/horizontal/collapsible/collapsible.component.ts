@@ -1,27 +1,36 @@
-import { Component, HostListener, HostBinding, ElementRef, Input, OnDestroy, OnInit } from '@angular/core';
-import { NavigationEnd, Router } from '@angular/router';
+import {
+  Component,
+  HostListener,
+  HostBinding,
+  ElementRef,
+  Input,
+  OnDestroy,
+  OnInit,
+} from "@angular/core";
+import { NavigationEnd, Router } from "@angular/router";
 
-import { Subject } from 'rxjs';
-import { filter, takeUntil } from 'rxjs/operators';
+import { Subject } from "rxjs";
+import { filter, takeUntil } from "rxjs/operators";
 
-import { CoreConfigService } from '@core/services/config.service';
-import { CoreMenuService } from '@core/components/core-menu/core-menu.service';
-
-import { User } from 'app/auth/models';
+import { CoreConfigService } from "@core/services/config.service";
+import { CoreMenuService } from "@core/components/core-menu/core-menu.service";
+import { User } from "app/model/User";
 
 @Component({
-  selector: '[core-menu-horizontal-collapsible]',
-  templateUrl: './collapsible.component.html'
+  selector: "[core-menu-horizontal-collapsible]",
+  templateUrl: "./collapsible.component.html",
 })
-export class CoreMenuHorizontalCollapsibleComponent implements OnInit, OnDestroy {
+export class CoreMenuHorizontalCollapsibleComponent
+  implements OnInit, OnDestroy
+{
   coreConfig: any;
   currentUser: User;
   isShow = false;
 
   // Conditionally add the active classes if UrlInChildren
-  @HostBinding('class.active')
-  @HostBinding('class.open')
-  @HostBinding('class.sidebar-group-active')
+  @HostBinding("class.active")
+  @HostBinding("class.open")
+  @HostBinding("class.sidebar-group-active")
   public isActive = false;
 
   @Input()
@@ -55,19 +64,23 @@ export class CoreMenuHorizontalCollapsibleComponent implements OnInit, OnDestroy
    */
   ngOnInit(): void {
     // Subscribe to config changes
-    this._coreConfigService.config.pipe(takeUntil(this._unsubscribeAll)).subscribe(config => {
-      this.coreConfig = config;
-    });
+    this._coreConfigService.config
+      .pipe(takeUntil(this._unsubscribeAll))
+      .subscribe((config) => {
+        this.coreConfig = config;
+      });
 
     // Subscribe to the current menu changes
-    this._coreMenuService.onMenuChanged.pipe(takeUntil(this._unsubscribeAll)).subscribe(() => {
-      this.currentUser = this._coreMenuService.currentUser;
-    });
+    this._coreMenuService.onMenuChanged
+      .pipe(takeUntil(this._unsubscribeAll))
+      .subscribe(() => {
+        this.currentUser = this._coreMenuService.currentUser;
+      });
 
     // Listen for router events and expand
     this._router.events
       .pipe(
-        filter(event => event instanceof NavigationEnd),
+        filter((event) => event instanceof NavigationEnd),
         takeUntil(this._unsubscribeAll)
       )
       .subscribe((event: NavigationEnd) => {
@@ -103,7 +116,7 @@ export class CoreMenuHorizontalCollapsibleComponent implements OnInit, OnDestroy
   /**
    * Open
    */
-  @HostListener('mouseenter')
+  @HostListener("mouseenter")
   show(): void {
     this.isShow = true;
     this.setSubMenuProp();
@@ -112,7 +125,7 @@ export class CoreMenuHorizontalCollapsibleComponent implements OnInit, OnDestroy
   /**
    * Close
    */
-  @HostListener('mouseleave')
+  @HostListener("mouseleave")
   hide(): void {
     this.isShow = false;
   }
@@ -126,7 +139,7 @@ export class CoreMenuHorizontalCollapsibleComponent implements OnInit, OnDestroy
       let nativeElement = this.el.nativeElement,
         nativeElementChildren = this.el.nativeElement.children[1];
       // If element has sub menu
-      if (nativeElement.classList.contains('dropdown-submenu')) {
+      if (nativeElement.classList.contains("dropdown-submenu")) {
         const innerHeight = window.innerHeight,
           dropdownTop = nativeElementChildren.getBoundingClientRect().top,
           dropdownLeft = nativeElementChildren.getBoundingClientRect().left,
@@ -137,14 +150,16 @@ export class CoreMenuHorizontalCollapsibleComponent implements OnInit, OnDestroy
         if (innerHeight - dropdownTop - dropdownHeight - 28 < 1) {
           let maxHeight = innerHeight - dropdownTop - 25;
           nativeElementChildren.setAttribute(
-            'style',
-            'overflow-y: auto; overflow-x: hidden; max-height : ' + maxHeight + 'px'
+            "style",
+            "overflow-y: auto; overflow-x: hidden; max-height : " +
+              maxHeight +
+              "px"
           );
         }
 
         // Open sub-menu on left based on screen size (To avoid opn sub-menu outside of the screen)
         if (dropdownLeft + dropdownWidth - (window.innerWidth - 16) >= 0) {
-          nativeElementChildren.parentElement.classList.add('openLeft');
+          nativeElementChildren.parentElement.classList.add("openLeft");
         }
       }
     });

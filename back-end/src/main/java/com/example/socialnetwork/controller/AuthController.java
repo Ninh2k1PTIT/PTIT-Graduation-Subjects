@@ -17,6 +17,7 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.gson.GsonFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -32,6 +33,7 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Properties;
 import java.util.Set;
 import java.util.regex.Pattern;
 
@@ -67,20 +69,20 @@ public class AuthController {
             jwtDto.setAccessToken(jwt);
 //            UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
 //            return ResponseEntity.ok(new LoginResponse(jwt, userDetails.getId(), userDetails.getUsername(), userDetails.getEmail(), userDetails.getPhoneNumber(), userDetails.getAvatar(), userDetails.getGender()));
-            return ResponseEntity.ok(new BaseResponse<JwtDto>(jwtDto, 200, ""));
+            return ResponseEntity.ok(new BaseResponse<JwtDto>(jwtDto, true, null, null));
         } catch (BadCredentialsException e) {
-            return ResponseEntity.ok(new BaseResponse<String>(null, 200, "Email hoặc mật khẩu không chính xác!"));
+            return ResponseEntity.ok(new BaseResponse<String>(null, false, "Email hoặc mật khẩu chưa chính xác!", e.getMessage()));
         }
     }
 
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
         if (!Pattern.compile(EMAIL_PATTERN).matcher(signUpRequest.getEmail()).matches()) {
-            return ResponseEntity.badRequest().body(new MessageResponse("Email không hợp lệ"));
+            return ResponseEntity.ok(new BaseResponse<>(null, false, "Email không hợp lệ", null));
         }
 
         if (userRepository.existsByEmail(signUpRequest.getEmail())) {
-            return ResponseEntity.badRequest().body(new MessageResponse("Email đã tồn tại"));
+            return ResponseEntity.ok(new BaseResponse<>(null, false, "Email đã tồn tại", null));
         }
 
         User user = new User(signUpRequest.getEmail(), encoder.encode(signUpRequest.getPassword()), signUpRequest.getUsername(), signUpRequest.getPhoneNumber(), signUpRequest.getGender(), EProvider.LOCAL);
@@ -107,8 +109,7 @@ public class AuthController {
         user.setRoles(roles);
         user.setAvatar("https://www.facebook.com/images/fb_icon_325x325.png");
         userRepository.save(user);
-
-        return ResponseEntity.ok(new MessageResponse("Đăng kí thành công!"));
+        return ResponseEntity.ok(new BaseResponse<>(null, true, "Đăng kí thành công!", null));
     }
 
     @PostMapping("/googleSignIn")

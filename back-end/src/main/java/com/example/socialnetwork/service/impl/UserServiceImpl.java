@@ -40,4 +40,11 @@ public class UserServiceImpl implements UserService {
     public UserDto getById(Integer id) {
         return userConverter.toDto(userRepository.findById(id).get());
     }
+
+    @Override
+    public UserDto getCurrent() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        UserDetailsImpl userDetails = (UserDetailsImpl) auth.getPrincipal();
+        return userConverter.toDto(userRepository.findById(userDetails.getId()).get());
+    }
 }

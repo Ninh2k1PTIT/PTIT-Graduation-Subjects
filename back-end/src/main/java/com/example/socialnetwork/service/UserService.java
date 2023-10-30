@@ -8,4 +8,5 @@ public interface UserService {
     UserDto updateBasicInfo(UserDto userDto);
 
     UserDto getById(Integer id);
+    UserDto getCurrent();
 }
