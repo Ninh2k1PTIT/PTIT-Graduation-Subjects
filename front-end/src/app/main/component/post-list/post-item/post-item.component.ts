@@ -1,4 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { Post } from 'app/model/Post';
 
 @Component({
   selector: 'app-post-item',
@@ -6,7 +7,7 @@ import { Component, Input, OnInit } from '@angular/core';
   styleUrls: ['./post-item.component.scss']
 })
 export class PostItemComponent implements OnInit {
-  @Input('post') postRef
+  @Input('post') post: Post
 
   constructor() { }
 

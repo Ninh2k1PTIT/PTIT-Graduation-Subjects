@@ -7,7 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class PhotoDto {
+public class PostPhotoDto {
     private Integer id;
     private String content;
     private PostDto post;

@@ -37,6 +37,9 @@ public class Comment {
     @OneToMany(mappedBy = "comment", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CommentReact> commentReacts = new ArrayList<>();
 
+    @OneToMany(mappedBy = "comment", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CommentPhoto> commentPhotos = new ArrayList<>();
+
     @ManyToOne(fetch = FetchType.LAZY)
     private Post post;
 

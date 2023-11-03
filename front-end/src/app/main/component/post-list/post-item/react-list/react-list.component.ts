@@ -1,5 +1,6 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { Post } from 'app/model/Post';
 
 @Component({
   selector: 'app-react-list',
@@ -7,7 +8,7 @@ import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
   styleUrls: ['./react-list.component.scss']
 })
 export class ReactListComponent implements OnInit {
-  @Input('reacts') public reacts
+  @Input('post') public post: Post
   @ViewChild('modal') public modal: NgbActiveModal
 
   constructor(private _modalService: NgbModal) { }

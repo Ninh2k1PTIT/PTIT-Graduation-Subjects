@@ -84,6 +84,7 @@ export class AuthenticationService {
               "accessToken",
               JSON.stringify(res.data.accessToken)
             );
+            this.currentJwtSubject.next(res.data.accessToken);
             return this.getCurrentUser().pipe(
               map((res) => {
                 this._toastrService.success(
@@ -91,7 +92,10 @@ export class AuthenticationService {
                   "Thành công",
                   { toastClass: "toast ngx-toastr", closeButton: true }
                 );
-
+                localStorage.setItem(
+                  "currentUser",
+                  JSON.stringify(res.data)
+                );
                 this.currentUserSubject.next(res.data);
                 return res.data;
               })

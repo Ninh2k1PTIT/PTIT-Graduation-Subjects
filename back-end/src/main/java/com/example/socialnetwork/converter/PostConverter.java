@@ -1,12 +1,10 @@
 package com.example.socialnetwork.converter;
 
-import com.example.socialnetwork.dto.PhotoDto;
+import com.example.socialnetwork.dto.PostPhotoDto;
 import com.example.socialnetwork.dto.PostDto;
-import com.example.socialnetwork.dto.PostReactDto;
 import com.example.socialnetwork.dto.UserDto;
-import com.example.socialnetwork.model.Photo;
+import com.example.socialnetwork.model.PostPhoto;
 import com.example.socialnetwork.model.Post;
-import com.example.socialnetwork.model.User;
 import com.example.socialnetwork.service.impl.UserDetailsImpl;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -14,7 +12,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Component
 public class PostConverter {
@@ -40,16 +37,16 @@ public class PostConverter {
         userDto.setId(post.getUser().getId());
         userDto.setUsername(post.getUser().getUsername());
         userDto.setAvatar(post.getUser().getAvatar());
-        postDto.setUser(userDto);
+        postDto.setCreatedBy(userDto);
 
-        List<PhotoDto> photoDtos = new ArrayList<>();
-        for (Photo photo : post.getPhotos()) {
-            PhotoDto photoDto = new PhotoDto();
-            photoDto.setId(photo.getId());
-            photoDto.setContent(photo.getContent());
-            photoDtos.add(photoDto);
+        List<PostPhotoDto> postPhotoDtos = new ArrayList<>();
+        for (PostPhoto postPhoto : post.getPostPhotos()) {
+            PostPhotoDto postPhotoDto = new PostPhotoDto();
+            postPhotoDto.setId(postPhoto.getId());
+            postPhotoDto.setContent(postPhoto.getContent());
+            postPhotoDtos.add(postPhotoDto);
         }
-        postDto.setPhotos(photoDtos);
+        postDto.setPhotos(postPhotoDtos);
 
         postDto.setIsReact(false);
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();

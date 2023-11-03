@@ -1,41 +1,62 @@
 <div class="card">
-    <div class="card-body">
-        <div class="d-flex justify-content-start align-items-center mb-1">
-            <!-- avatar -->
-            <div class="avatar mr-1">
-                <img [src]="postRef.avatar" alt="avatar img" height="50" width="50" />
-            </div>
-            <!--/ avatar -->
-            <div class="profile-user-info">
-                <h6 class="mb-0">{{ postRef.username }}</h6>
-                <small class="text-muted">{{ postRef.postTime }}</small>
-            </div>
-        </div>
-        <p class="card-text">
-            {{ postRef.postText }}
-        </p>
-        <!-- post img -->
-        <div *ngIf="postRef.postImg">
-            <img class="img-fluid rounded mb-75" src="{{ postRef.postImg }}" alt="avatar img" />
-        </div>
-
-        <div *ngIf="postRef.postVid">
-            <iframe [src]="postRef.postVid | safe: 'resourceUrl'"
-                class="w-100 rounded border-0 height-250 mb-50"></iframe>
-        </div>
-
-        <!-- like share -->
-        <div class="row d-flex justify-content-start align-items-center flex-wrap pb-50">
-            <div class="col-sm-6 d-flex justify-content-between justify-content-sm-start mb-2">
-                <app-react-list [reacts]="postRef.likedUsers"></app-react-list>
-            </div>
-
-            <!-- share and like count and icons -->
-            <div class="col-sm-6 d-flex justify-content-between justify-content-sm-end align-items-center mb-2">
-                <app-comment [comments]="postRef.detailedComments"></app-comment>
-            </div>
-            <!-- share and like count and icons -->
-        </div>
-        <!-- like share -->
+  <div class="card-body">
+    <div class="d-flex justify-content-start align-items-center mb-1">
+      <!-- avatar -->
+      <div class="avatar mr-1">
+        <img [src]="post.user.avatar" alt="avatar img" height="50" width="50" />
+      </div>
+      <!--/ avatar -->
+      <div class="profile-user-info">
+        <h6 class="mb-0">{{ post.user.username }}</h6>
+        <small class="text-muted">{{ post.createdAt }}</small>
+      </div>
     </div>
+    <p class="card-text">
+      {{ post.content }}
+    </p>
+    <!-- post img -->
+    <div *ngIf="post.photos.length > 0">
+      <!-- ngb-carousel component -->
+      <ngb-carousel [interval]="3000">
+        <ng-template *ngFor="let photo of post.photos" ngbSlide>
+          <div class="img-fluid rounded mb-75 text-center">
+            <img
+              [src]="photo.content"
+              class="img-fluid"
+              style="height: 500px"
+            />
+          </div>
+          <div class="carousel-caption"></div>
+        </ng-template>
+      </ngb-carousel>
+      <!-- ngb-carousel component -->
+    </div>
+
+    <!-- <div *ngIf="postRef.postVid">
+      <iframe
+        [src]="postRef.postVid | safe : 'resourceUrl'"
+        class="w-100 rounded border-0 height-250 mb-50"
+      ></iframe>
+    </div> -->
+
+    <!-- like share -->
+    <div
+      class="row d-flex justify-content-start align-items-center flex-wrap pb-50"
+    >
+      <div
+        class="col-sm-6 d-flex justify-content-between justify-content-sm-start mb-2"
+      >
+        <app-react-list [post]="post"></app-react-list>
+      </div>
+
+      <!-- share and like count and icons -->
+      <div
+        class="col-sm-6 d-flex justify-content-between justify-content-sm-end align-items-center mb-2"
+      >
+        <app-comment [post]="post"></app-comment>
+      </div>
+      <!-- share and like count and icons -->
+    </div>
+    <!-- like share -->
+  </div>
 </div>

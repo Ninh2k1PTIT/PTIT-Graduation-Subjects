@@ -36,4 +36,24 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
     Page<Post> findAllByTopReact(@Param("audience") EAudience audience,
                                  @Param("userId") Integer userId,
                                  @Param("content") String content, Pageable pageable);
+
+    @Query("SELECT post FROM Post post " +
+            "WHERE (post.audience IN (:audiences) OR post.user.id = :currentUserId) " +
+            "AND (:userId IS NULL OR post.user.id = :userId) " +
+            "AND (post.content LIKE %:content% OR :content IS NULL OR :content = '') ")
+    Page<Post> filter(@Param("content") String content, @Param("audiences") EAudience[] audiences, @Param("userId") Integer userId, @Param("currentUserId") Integer currentUserId, Pageable pageable);
+
+    @Query("SELECT post FROM Post post LEFT JOIN post.comments comments " +
+            "WHERE (post.audience IN (:audiences) OR post.user.id = :currentUserId) " +
+            "AND (:userId IS NULL OR post.user.id = :userId) " +
+            "AND (post.content LIKE %:content% OR :content IS NULL OR :content = '') " +
+            "GROUP BY post.id ORDER BY COUNT(comments) DESC")
+    Page<Post> filterByComments(@Param("content") String content, @Param("audiences") EAudience[] audiences, @Param("userId") Integer userId, @Param("currentUserId") Integer currentUserId, Pageable pageable);
+
+    @Query("SELECT post FROM Post post LEFT JOIN post.postReacts reacts " +
+            "WHERE (post.audience IN (:audiences) OR post.user.id = :currentUserId) " +
+            "AND (:userId IS NULL OR post.user.id = :userId) " +
+            "AND (post.content LIKE %:content% OR :content IS NULL OR :content = '') " +
+            "GROUP BY post.id ORDER BY COUNT(reacts) DESC")
+    Page<Post> filterByReacts(@Param("content") String content, @Param("audiences") EAudience[] audiences, @Param("userId") Integer userId, @Param("currentUserId") Integer currentUserId, Pageable pageable);
 }

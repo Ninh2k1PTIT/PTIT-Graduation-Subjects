@@ -8,9 +8,16 @@ import org.springframework.web.multipart.MultipartFile;
 
 public interface PostService {
     PostDto create(PostDto postDto, MultipartFile[] files);
+
     PostDto update(Integer id, PostDto postDto);
+
     PaginationResponse<PostDto> getAll(String content, EPostSort sort, Pageable pageable);
+
     PaginationResponse<PostDto> getAllByUserId(Integer userId, Pageable pageable);
+
     PostDto getById(Integer userId);
+
     Boolean delete(Integer id);
+
+    PaginationResponse<PostDto> search(String content, EPostSort sort, Integer userId, Pageable pageable);
 }

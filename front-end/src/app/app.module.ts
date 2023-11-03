@@ -12,12 +12,12 @@ import { ToastrModule } from "ngx-toastr"; // For auth after login toast
 import { CoreCommonModule } from "@core/common.module";
 import { CoreSidebarModule, CoreThemeCustomizerModule } from "@core/components";
 import { CoreModule } from "@core/core.module";
+import { FakeDbService } from "@fake-db/fake-db.service";
+import { HttpClientInMemoryWebApiModule } from "angular-in-memory-web-api";
 import { coreConfig } from "app/app-config";
 import { AppComponent } from "app/app.component";
 import { LayoutModule } from "app/layout/layout.module";
-import { FakeDbService } from "@fake-db/fake-db.service";
-import { HttpClientInMemoryWebApiModule } from "angular-in-memory-web-api";
-import { JwtInterceptor, ErrorInterceptor } from "./auth/helpers";
+import { AuthGuard, ErrorInterceptor, JwtInterceptor } from "./auth/helpers";
 
 const appRoutes: Routes = [
   {
@@ -29,6 +29,7 @@ const appRoutes: Routes = [
     path: "home",
     loadChildren: () =>
       import("./main/home/home.module").then((m) => m.HomeModule),
+    canActivate: [AuthGuard],
   },
   {
     path: "friend",
@@ -39,6 +40,11 @@ const appRoutes: Routes = [
     path: "chat",
     loadChildren: () =>
       import("./main/chat/chat.module").then((m) => m.ChatModule),
+  },
+  {
+    path: "profile",
+    loadChildren: () =>
+      import("./main/profile/profile.module").then((m) => m.ProfileModule),
   },
   {
     path: "",

@@ -18,7 +18,7 @@ public interface FirebaseImageService {
         return StringUtils.getFilenameExtension(originalFileName);
     }
     default String generateFileName(String originalFileName) {
-        return UUID.randomUUID() + getExtension(originalFileName);
+        return UUID.randomUUID() + "." + getExtension(originalFileName);
     }
     default byte[] getByteArrays(BufferedImage bufferedImage, String format) throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();

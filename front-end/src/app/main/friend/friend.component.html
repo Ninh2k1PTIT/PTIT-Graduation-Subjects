@@ -1,103 +1,190 @@
-<section id="faq">
-    <div class="row nav-vertical d-flex">
-        <div class="col-md-3 mb-2 mb-md-0">
-            <ul ngbNav #navVertical="ngbNav" class="nav nav-pills flex-column nav-left">
-                <li class="nav-item" ngbNavItem>
-                    <a ngbNavLink class="nav-link d-flex py-75" id="payment" data-toggle="pill" href="#faq-payment"
-                        aria-expanded="true" role="tab">
-                        <i [data-feather]="'users'" class="font-medium-3 mr-1"></i>
-                        <span class="font-weight-bold">Gợi ý kết bạn</span>
-                    </a>
-                    <ng-template ngbNavContent>
-                        <div class="card">
-                            <div class="card-body">
-                                <input type="text" class="form-control" placeholder="Tìm kiếm" />
-                                <div class="d-flex justify-content-start align-items-center mt-1"
-                                    *ngFor="let suggestionsRef of suggestions">
-                                    <div class="avatar mr-75">
-                                        <img [src]="suggestionsRef.avatar" alt="avatar" height="40" width="40" />
-                                    </div>
-                                    <div class="profile-user-info">
-                                        <h6 class="mb-0">{{ suggestionsRef.name }}</h6>
-                                        <small class="text-muted">{{ suggestionsRef.mutualFriend }}</small>
-                                    </div>
-                                    <button type="button" class="btn btn-primary btn-icon btn-sm ml-auto" rippleEffect>
-                                        <i data-feather="user-plus"></i>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </ng-template>
-                </li>
-                <li class="nav-item" ngbNavItem>
-                    <a ngbNavLink class="nav-link d-flex py-75" id="payment" data-toggle="pill" href="#faq-payment"
-                        aria-expanded="true" role="tab">
-                        <i [data-feather]="'file-text'" class="font-medium-3 mr-1"></i>
-                        <span class="font-weight-bold">Lời mời</span>
-                    </a>
-                    <ng-template ngbNavContent>
-                        <div class="card">
-                            <div class="card-body">
-                                <input type="text" class="form-control" placeholder="Tìm kiếm" />
-                                <div class="d-flex justify-content-start align-items-center mt-1"
-                                    *ngFor="let suggestionsRef of suggestions">
-                                    <div class="avatar mr-75">
-                                        <img [src]="suggestionsRef.avatar" alt="avatar" height="40" width="40" />
-                                    </div>
-                                    <div class="profile-user-info">
-                                        <h6 class="mb-0">{{ suggestionsRef.name }}</h6>
-                                        <small class="text-muted">{{ suggestionsRef.mutualFriend }}</small>
-                                    </div>
-                                    <div class="ml-auto">
-                                        <button type="button" class="btn btn-primary btn-icon btn-sm mr-1" rippleEffect>
-                                            <i data-feather="check"></i>
-                                        </button>
-                                        <button type="button" class="btn btn-danger btn-icon btn-sm" rippleEffect>
-                                            <i data-feather="x"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </ng-template>
-                </li>
-                <li class="nav-item" ngbNavItem>
-                    <a ngbNavLink class="nav-link d-flex py-75" id="payment" data-toggle="pill" href="#faq-payment"
-                        aria-expanded="true" role="tab">
-                        <i [data-feather]="'smartphone'" class="font-medium-3 mr-1"></i>
-                        <span class="font-weight-bold">Bạn bè</span>
-                    </a>
-                    <ng-template ngbNavContent>
-                        <div class="card">
-                            <div class="card-body">
-                                <input type="text" class="form-control" placeholder="Tìm kiếm" />
-                                <div class="d-flex justify-content-start align-items-center mt-1"
-                                    *ngFor="let suggestionsRef of suggestions">
-                                    <div class="avatar mr-75">
-                                        <img [src]="suggestionsRef.avatar" alt="avatar" height="40" width="40" />
-                                    </div>
-                                    <div class="profile-user-info">
-                                        <h6 class="mb-0">{{ suggestionsRef.name }}</h6>
-                                        <small class="text-muted">{{ suggestionsRef.mutualFriend }}</small>
-                                    </div>
-                                    <div class="ml-auto">
-                                        <button type="button" class="btn btn-primary btn-icon btn-sm mr-1" rippleEffect>
-                                            <i data-feather="eye"></i>
-                                        </button>
-                                        <button type="button" class="btn btn-danger btn-icon btn-sm" rippleEffect>
-                                            <i data-feather="trash"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </ng-template>
-                </li>
-                <!-- FAQ image -->
-                <img src="assets/images/illustration/faq-illustrations.svg" class="img-fluid d-none d-md-block pt-5"
-                    alt="demand img" />
-            </ul>
-        </div>
-        <div [ngbNavOutlet]="navVertical" class="col-12 col-md-9"></div>
+<div class="container-xxl p-0">
+  <div class="row nav-vertical d-flex">
+    <div class="col-md-3 mb-2 mb-md-0">
+      <ul
+        ngbNav
+        #navVertical="ngbNav"
+        class="nav nav-pills flex-column nav-left"
+      >
+        <li class="nav-item" ngbNavItem>
+          <a
+            ngbNavLink
+            class="nav-link d-flex py-75"
+            id="payment"
+            data-toggle="pill"
+            href="#faq-payment"
+            aria-expanded="true"
+            role="tab"
+          >
+            <i [data-feather]="'users'" class="font-medium-3 mr-1"></i>
+            <span class="font-weight-bold">Gợi ý kết bạn</span>
+          </a>
+          <ng-template ngbNavContent>
+            <div class="card">
+              <div class="card-body">
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="Tìm kiếm"
+                />
+                <div
+                  class="d-flex justify-content-start align-items-center mt-1"
+                  *ngFor="let suggestionsRef of suggestions"
+                >
+                  <div class="avatar mr-75">
+                    <img
+                      [src]="suggestionsRef.avatar"
+                      alt="avatar"
+                      height="40"
+                      width="40"
+                    />
+                  </div>
+                  <div class="profile-user-info">
+                    <h6 class="mb-0">{{ suggestionsRef.name }}</h6>
+                    <small class="text-muted">{{
+                      suggestionsRef.mutualFriend
+                    }}</small>
+                  </div>
+                  <button
+                    type="button"
+                    class="btn btn-primary btn-icon btn-sm ml-auto"
+                    rippleEffect
+                  >
+                    <i data-feather="user-plus"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </ng-template>
+        </li>
+        <li class="nav-item" ngbNavItem>
+          <a
+            ngbNavLink
+            class="nav-link d-flex py-75"
+            id="payment"
+            data-toggle="pill"
+            href="#faq-payment"
+            aria-expanded="true"
+            role="tab"
+          >
+            <i [data-feather]="'file-text'" class="font-medium-3 mr-1"></i>
+            <span class="font-weight-bold">Lời mời</span>
+          </a>
+          <ng-template ngbNavContent>
+            <div class="card">
+              <div class="card-body">
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="Tìm kiếm"
+                />
+                <div
+                  class="d-flex justify-content-start align-items-center mt-1"
+                  *ngFor="let suggestionsRef of suggestions"
+                >
+                  <div class="avatar mr-75">
+                    <img
+                      [src]="suggestionsRef.avatar"
+                      alt="avatar"
+                      height="40"
+                      width="40"
+                    />
+                  </div>
+                  <div class="profile-user-info">
+                    <h6 class="mb-0">{{ suggestionsRef.name }}</h6>
+                    <small class="text-muted">{{
+                      suggestionsRef.mutualFriend
+                    }}</small>
+                  </div>
+                  <div class="ml-auto">
+                    <button
+                      type="button"
+                      class="btn btn-primary btn-icon btn-sm mr-1"
+                      rippleEffect
+                    >
+                      <i data-feather="check"></i>
+                    </button>
+                    <button
+                      type="button"
+                      class="btn btn-danger btn-icon btn-sm"
+                      rippleEffect
+                    >
+                      <i data-feather="x"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </ng-template>
+        </li>
+        <li class="nav-item" ngbNavItem>
+          <a
+            ngbNavLink
+            class="nav-link d-flex py-75"
+            id="payment"
+            data-toggle="pill"
+            href="#faq-payment"
+            aria-expanded="true"
+            role="tab"
+          >
+            <i [data-feather]="'smartphone'" class="font-medium-3 mr-1"></i>
+            <span class="font-weight-bold">Bạn bè</span>
+          </a>
+          <ng-template ngbNavContent>
+            <div class="card">
+              <div class="card-body">
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="Tìm kiếm"
+                />
+                <div
+                  class="d-flex justify-content-start align-items-center mt-1"
+                  *ngFor="let suggestionsRef of suggestions"
+                >
+                  <div class="avatar mr-75">
+                    <img
+                      [src]="suggestionsRef.avatar"
+                      alt="avatar"
+                      height="40"
+                      width="40"
+                    />
+                  </div>
+                  <div class="profile-user-info">
+                    <h6 class="mb-0">{{ suggestionsRef.name }}</h6>
+                    <small class="text-muted">{{
+                      suggestionsRef.mutualFriend
+                    }}</small>
+                  </div>
+                  <div class="ml-auto">
+                    <button
+                      type="button"
+                      class="btn btn-primary btn-icon btn-sm mr-1"
+                      rippleEffect
+                    >
+                      <i data-feather="eye"></i>
+                    </button>
+                    <button
+                      type="button"
+                      class="btn btn-danger btn-icon btn-sm"
+                      rippleEffect
+                    >
+                      <i data-feather="trash"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </ng-template>
+        </li>
+        <!-- FAQ image -->
+        <img
+          src="assets/images/illustration/faq-illustrations.svg"
+          class="img-fluid d-none d-md-block pt-5"
+          alt="demand img"
+        />
+      </ul>
     </div>
-</section>
+    <div [ngbNavOutlet]="navVertical" class="col-12 col-md-9"></div>
+  </div>
+</div>

@@ -1,27 +1,25 @@
 import { Component, OnInit } from "@angular/core";
-import { Post } from "app/model/Post";
-import { PostService } from "app/services/post.service";
 
 @Component({
-  selector: "app-home",
-  templateUrl: "./home.component.html",
-  styleUrls: ["./home.component.scss"],
+  selector: "app-profile",
+  templateUrl: "./profile.component.html",
+  styleUrls: ["./profile.component.scss"],
 })
-export class HomeComponent implements OnInit {
+export class ProfileComponent implements OnInit {
   public data = {
     profileData: {
       header: {
-        avatar: "assets/images/portrait/small/avatar-s-2.jpg",
-        username: "Kitty Allanson",
-        designation: "UI/UX Designer",
+        avatar: "assets/images/portrait/small/avatar-s-11.jpg",
+        username: "Ninh Nguyễn",
+        designation: "Lập trình viên",
         coverImg: "assets/images/profile/user-uploads/timeline.jpg",
       },
       userAbout: {
         about:
-          "Tart I love sugar plum I love oat cake. Sweet ⭐️ roll caramels I love jujubes. Topping cake wafer.",
-        joined: "November 15, 2015",
-        lives: "New York, USA",
-        email: "bucketful@fiendhead.org",
+          "Tôi hiện đang học tại Học viện Công nghệ Bưu chính Viễn thông",
+        joined: "15/11/2015",
+        lives: "Hà Nội, Việt Nam",
+        email: "ninh@gmail.com",
         website: "www.pixinvent.com",
       },
       suggestedPages: [
@@ -372,14 +370,18 @@ export class HomeComponent implements OnInit {
       ],
     },
   };
+  public toggleMenu = true;
+  public loadMoreRef = false;
 
-  public posts: Post[] = []
 
-  constructor(private _postService: PostService) {}
+  constructor() {}
 
-  ngOnInit(): void {
-    this._postService.search({ page: 0, size: 10 }).subscribe(res => {
-      this.posts = res.data.data
-    });
+  ngOnInit(): void {}
+
+  loadMore() {
+    this.loadMoreRef = !this.loadMoreRef;
+    setTimeout(() => {
+      this.loadMoreRef = !this.loadMoreRef;
+    }, 2000);
   }
 }

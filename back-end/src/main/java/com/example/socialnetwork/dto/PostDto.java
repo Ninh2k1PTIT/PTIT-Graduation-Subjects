@@ -1,7 +1,6 @@
 package com.example.socialnetwork.dto;
 
 import com.example.socialnetwork.model.EAudience;
-import com.example.socialnetwork.model.Photo;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -18,8 +17,8 @@ public class PostDto {
     private Date createdAt;
     private Date updatedAt;
     private EAudience audience;
-    private UserDto user;
-    private List<PhotoDto> photos;
+    private UserDto createdBy;
+    private List<PostPhotoDto> photos;
     private Integer totalReact;
     private Integer totalComment;
     private Boolean isReact;

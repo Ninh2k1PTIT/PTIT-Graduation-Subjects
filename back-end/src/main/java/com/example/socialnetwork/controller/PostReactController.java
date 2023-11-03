@@ -33,7 +33,7 @@ public class PostReactController {
 
         UserDto userDto = new UserDto();
         userDto.setId(userDetails.getId());
-        postDto.setUser(userDto);
+        postDto.setCreatedBy(userDto);
 
         return postReactService.updateByPost(postDto);
     }

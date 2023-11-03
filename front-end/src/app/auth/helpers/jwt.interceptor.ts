@@ -21,6 +21,7 @@ export class JwtInterceptor implements HttpInterceptor {
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     const currentJwt = this._authenticationService.currentJwtValue;
     const isApiUrl = request.url.startsWith(environment.apiUrl);
+    
     if (currentJwt && isApiUrl) {
       request = request.clone({
         setHeaders: {

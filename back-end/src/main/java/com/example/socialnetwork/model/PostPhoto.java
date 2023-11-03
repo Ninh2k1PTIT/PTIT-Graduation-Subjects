@@ -10,7 +10,7 @@ import javax.persistence.*;
 @Getter
 @Setter
 @NoArgsConstructor
-public class Photo {
+public class PostPhoto {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;

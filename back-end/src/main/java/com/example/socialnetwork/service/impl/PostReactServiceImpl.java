@@ -23,7 +23,7 @@ public class PostReactServiceImpl implements PostReactService {
 
     @Override
     public boolean updateByPost(PostDto postDto) {
-        PostReact postReact = postReactRepository.findByPostIdAndUserId(postDto.getId(), postDto.getUser().getId());
+        PostReact postReact = postReactRepository.findByPostIdAndUserId(postDto.getId(), postDto.getCreatedBy().getId());
         if (postReact != null)
             postReactRepository.delete(postReact);
         else {

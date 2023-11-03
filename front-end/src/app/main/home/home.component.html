@@ -1,33 +1,48 @@
-<div class="row">
-  <!-- center profile info section -->
-  <div class="col-lg-9 col-12 order-1 order-lg-2">
-    <app-upload></app-upload>
-    <app-post-list [posts]="data.profileData.post"></app-post-list>
-  </div>
-  <!--/ center profile info section -->
+<div class="container-xxl p-0">
+  <div class="row">
+    <!-- center profile info section -->
+    <div class="col-lg-9 col-12 order-1 order-lg-2">
+      <app-upload></app-upload>
+      <app-post-list [posts]="posts"></app-post-list>
+    </div>
+    <!--/ center profile info section -->
 
-  <!-- right profile info section -->
-  <div class="col-lg-3 col-12 order-3">
-    <!-- suggestion -->
-    <div class="card">
-      <div class="card-body">
-        <h5 class="mb-2">Gợi ý</h5>
-        <div class="d-flex justify-content-start align-items-center mt-1"
-          *ngFor="let suggestionsRef of data.profileData.suggestions">
-          <div class="avatar mr-75">
-            <img [src]="suggestionsRef.avatar" alt="avatar" height="40" width="40" />
+    <!-- right profile info section -->
+    <div class="col-lg-3 col-12 order-3">
+      <!-- suggestion -->
+      <div class="card">
+        <div class="card-body">
+          <h5 class="mb-2">Gợi ý</h5>
+          <div
+            class="d-flex justify-content-start align-items-center mt-1"
+            *ngFor="let suggestionsRef of data.profileData.suggestions"
+          >
+            <div class="avatar mr-75">
+              <img
+                [src]="suggestionsRef.avatar"
+                alt="avatar"
+                height="40"
+                width="40"
+              />
+            </div>
+            <div class="profile-user-info">
+              <h6 class="mb-0">{{ suggestionsRef.name }}</h6>
+              <small class="text-muted">{{
+                suggestionsRef.mutualFriend
+              }}</small>
+            </div>
+            <button
+              type="button"
+              class="btn btn-primary btn-icon btn-sm ml-auto"
+              rippleEffect
+            >
+              <i data-feather="user-plus"></i>
+            </button>
           </div>
-          <div class="profile-user-info">
-            <h6 class="mb-0">{{ suggestionsRef.name }}</h6>
-            <small class="text-muted">{{ suggestionsRef.mutualFriend }}</small>
-          </div>
-          <button type="button" class="btn btn-primary btn-icon btn-sm ml-auto" rippleEffect>
-            <i data-feather="user-plus"></i>
-          </button>
         </div>
       </div>
+      <!--/ suggestion -->
     </div>
-    <!--/ suggestion -->
+    <!--/ right profile info section -->
   </div>
-  <!--/ right profile info section -->
 </div>
