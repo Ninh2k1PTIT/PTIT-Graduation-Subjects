@@ -3,6 +3,7 @@ package com.example.socialnetwork.service.impl;
 import com.example.socialnetwork.converter.PostReactConverter;
 import com.example.socialnetwork.dto.PostDto;
 import com.example.socialnetwork.dto.PostReactDto;
+import com.example.socialnetwork.dto.UserDto;
 import com.example.socialnetwork.dto.response.PaginationResponse;
 import com.example.socialnetwork.model.Post;
 import com.example.socialnetwork.model.PostReact;
@@ -11,6 +12,8 @@ import com.example.socialnetwork.service.PostReactService;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.stream.Collectors;
@@ -22,18 +25,28 @@ public class PostReactServiceImpl implements PostReactService {
     private PostReactConverter postReactConverter;
 
     @Override
-    public boolean updateByPost(PostDto postDto) {
+    public Boolean updateByPostId(Integer id) {
+        PostDto postDto = new PostDto();
+        postDto.setId(id);
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        UserDetailsImpl userDetails = (UserDetailsImpl) auth.getPrincipal();
+        UserDto userDto = new UserDto();
+        userDto.setId(userDetails.getId());
+        postDto.setCreatedBy(userDto);
+
         PostReact postReact = postReactRepository.findByPostIdAndUserId(postDto.getId(), postDto.getCreatedBy().getId());
-        if (postReact != null)
+        if (postReact != null) {
             postReactRepository.delete(postReact);
-        else {
+            return false;
+        } else {
             postReact = new PostReact();
             Post post = new Post();
             post.setId(postDto.getId());
             postReact.setPost(post);
             postReactRepository.save(postReact);
+            return true;
         }
-        return true;
     }
 
     @Override

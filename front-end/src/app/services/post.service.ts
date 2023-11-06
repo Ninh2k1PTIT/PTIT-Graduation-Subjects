@@ -10,7 +10,7 @@ import { environment } from "environments/environment";
   providedIn: "root",
 })
 export class PostService {
-  constructor(private _http: HttpClient) {}
+  constructor(private _http: HttpClient) { }
 
   create(post: Post, files: File[]) {
     const formData = new FormData();
@@ -33,5 +33,9 @@ export class PostService {
         params: new HttpParams({ fromObject: params }),
       }
     );
+  }
+
+  react(postId: number) {
+    return this._http.post<BaseResponse<boolean>>(`${environment.apiUrl}/post/${postId}/react`, null);
   }
 }

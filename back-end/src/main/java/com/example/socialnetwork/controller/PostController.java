@@ -43,36 +43,36 @@ public class PostController {
 
     @PutMapping("post/{id}")
     @PreAuthorize("hasRole('USER')")
-    public PostDto update(@RequestBody PostDto postDto, @PathVariable Integer id) {
-        return postService.update(id, postDto);
+    public ResponseEntity<?> update(@RequestBody PostDto postDto, @PathVariable Integer id) {
+        return ResponseEntity.ok(new BaseResponse<>(postService.update(id, postDto), true, null, null));
     }
 
     @DeleteMapping("post/{id}")
     @PreAuthorize("hasRole('USER')")
-    public Boolean delete(@PathVariable Integer id) {
-        return postService.delete(id);
+    public ResponseEntity<?> delete(@PathVariable Integer id) {
+        return ResponseEntity.ok(new BaseResponse<>(postService.delete(id), true, null, null));
     }
 
     @GetMapping("posts")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<?> search(@RequestParam Integer page, @RequestParam Integer size, @RequestParam(required = false) String content, @RequestParam(required = false) EPostSort sort, @RequestParam(required = false) Integer userId) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
-        return ResponseEntity.ok(new BaseResponse<>(postService.search(content, sort, userId, pageable), true, null, null)) ;
+        return ResponseEntity.ok(new BaseResponse<>(postService.search(content, sort, userId, pageable), true, null, null));
     }
 
     @GetMapping("post/{id}")
     @PreAuthorize("hasRole('USER')")
-    public PostDto getById(@PathVariable Integer id) {
-        return postService.getById(id);
+    public ResponseEntity<?> getById(@PathVariable Integer id) {
+        return ResponseEntity.ok(new BaseResponse<>(postService.getById(id), true, null, null));
     }
 
     @GetMapping("posts/self")
     @PreAuthorize("hasRole('USER')")
-    public  ResponseEntity<?> getByCurrentUser(@RequestParam Integer page, @RequestParam Integer size, @RequestParam(required = false) String content, @RequestParam(required = false) EPostSort sort) {
+    public ResponseEntity<?> getByCurrentUser(@RequestParam Integer page, @RequestParam Integer size, @RequestParam(required = false) String content, @RequestParam(required = false) EPostSort sort) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         UserDetailsImpl userDetails = (UserDetailsImpl) auth.getPrincipal();
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
-        return ResponseEntity.ok(new BaseResponse<>(postService.search(content, sort, userDetails.getId(), pageable), true, null, null)) ;
+        return ResponseEntity.ok(new BaseResponse<>(postService.search(content, sort, userDetails.getId(), pageable), true, null, null));
     }
 
     @GetMapping("friend/{id}/posts")

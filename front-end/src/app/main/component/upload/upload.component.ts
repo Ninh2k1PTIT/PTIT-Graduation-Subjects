@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from "@angular/core";
+import { Component, EventEmitter, OnInit, Output, ViewChild } from "@angular/core";
 import { FormBuilder, FormGroup } from "@angular/forms";
 import { NgbActiveModal, NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { UploadService } from "./upload.service";
@@ -11,13 +11,14 @@ import { Post } from "app/model/Post";
 })
 export class UploadComponent implements OnInit {
   @ViewChild("modalBasic") public modal: NgbActiveModal;
+  @Output() public onSucces = new EventEmitter<void>()
   public form: FormGroup;
 
   constructor(
     private _modalService: NgbModal,
     private _fb: FormBuilder,
     private _uploadService: UploadService
-  ) {}
+  ) { }
 
   get f() {
     return this.form.controls;
@@ -63,17 +64,18 @@ export class UploadComponent implements OnInit {
 
   onSubmit() {
     console.log(this.form.value);
-    // const post = new Post();
-    // post.content = this.f.content.value;
-    // post.audience = 0;
-    // const files = this.f.photos.value as any[];
-    // this._uploadService
-    //   .create(
-    //     post,
-    //     files.map((photo) => photo.file)
-    //   )
-    //   .subscribe((res) => {
-    //     console.log(res);
-    //   });
+    this.onSucces.emit()
+    const post = new Post();
+    post.content = this.f.content.value;
+    post.audience = 0;
+    const files = this.f.photos.value as any[];
+    this._uploadService
+      .create(
+        post,
+        files.map((photo) => photo.file)
+      )
+      .subscribe((res) => {
+        console.log(res);
+      });
   }
 }

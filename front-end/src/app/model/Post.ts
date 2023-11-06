@@ -7,7 +7,7 @@ export class Post {
     createdAt: Date;
     updatedAt: Date;
     audience: number;
-    user: User;
+    createdBy: User;
     photos: PostPhoto[];
     totalReact: number;
     totalComment: number;

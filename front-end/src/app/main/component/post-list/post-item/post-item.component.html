@@ -3,11 +3,11 @@
     <div class="d-flex justify-content-start align-items-center mb-1">
       <!-- avatar -->
       <div class="avatar mr-1">
-        <img [src]="post.user.avatar" alt="avatar img" height="50" width="50" />
+        <img [src]="post.createdBy.avatar" alt="avatar img" height="50" width="50" />
       </div>
       <!--/ avatar -->
       <div class="profile-user-info">
-        <h6 class="mb-0">{{ post.user.username }}</h6>
+        <h6 class="mb-0">{{ post.createdBy.username }}</h6>
         <small class="text-muted">{{ post.createdAt }}</small>
       </div>
     </div>

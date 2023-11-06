@@ -375,9 +375,13 @@ export class HomeComponent implements OnInit {
 
   public posts: Post[] = []
 
-  constructor(private _postService: PostService) {}
+  constructor(private _postService: PostService) { }
 
   ngOnInit(): void {
+    this.getData()
+  }
+
+  getData() {
     this._postService.search({ page: 0, size: 10 }).subscribe(res => {
       this.posts = res.data.data
     });

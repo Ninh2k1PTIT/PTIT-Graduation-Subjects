@@ -9,7 +9,7 @@ import com.example.socialnetwork.model.EAudience;
 import com.example.socialnetwork.model.EPostSort;
 import com.example.socialnetwork.model.PostPhoto;
 import com.example.socialnetwork.model.Post;
-import com.example.socialnetwork.repository.PhotoRepository;
+import com.example.socialnetwork.repository.PostPhotoRepository;
 import com.example.socialnetwork.repository.PostRepository;
 import com.example.socialnetwork.service.FirebaseImageService;
 import com.example.socialnetwork.service.PostService;
@@ -31,7 +31,7 @@ import java.util.stream.Collectors;
 @Transactional
 public class PostServiceImpl implements PostService {
     private PostRepository postRepository;
-    private PhotoRepository photoRepository;
+    private PostPhotoRepository postPhotoRepository;
     private PostConverter postConverter;
     private PostPhotoConverter postPhotoConverter;
     private FirebaseImageService imageService;
@@ -72,7 +72,7 @@ public class PostServiceImpl implements PostService {
                     PostPhoto postPhoto = new PostPhoto();
                     postPhoto.setContent(imageUrl);
                     postPhoto.setPost(newPost);
-                    PostPhoto newPostPhoto = photoRepository.save(postPhoto);
+                    PostPhoto newPostPhoto = postPhotoRepository.save(postPhoto);
                     postPhotoDtos.add(postPhotoConverter.toDto(newPostPhoto));
                 } catch (Exception e) {
                 }
