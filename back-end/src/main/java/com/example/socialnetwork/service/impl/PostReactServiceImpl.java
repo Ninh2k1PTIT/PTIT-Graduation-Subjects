@@ -3,7 +3,6 @@ package com.example.socialnetwork.service.impl;
 import com.example.socialnetwork.converter.PostReactConverter;
 import com.example.socialnetwork.dto.PostDto;
 import com.example.socialnetwork.dto.PostReactDto;
-import com.example.socialnetwork.dto.UserDto;
 import com.example.socialnetwork.dto.response.PaginationResponse;
 import com.example.socialnetwork.model.Post;
 import com.example.socialnetwork.model.PostReact;
@@ -26,27 +25,20 @@ public class PostReactServiceImpl implements PostReactService {
 
     @Override
     public Boolean updateByPostId(Integer id) {
-        PostDto postDto = new PostDto();
-        postDto.setId(id);
-
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         UserDetailsImpl userDetails = (UserDetailsImpl) auth.getPrincipal();
-        UserDto userDto = new UserDto();
-        userDto.setId(userDetails.getId());
-        postDto.setCreatedBy(userDto);
 
-        PostReact postReact = postReactRepository.findByPostIdAndUserId(postDto.getId(), postDto.getCreatedBy().getId());
-        if (postReact != null) {
+        PostReact postReact = postReactRepository.findByPostIdAndUserId(id, userDetails.getId());
+        if (postReact != null)
             postReactRepository.delete(postReact);
-            return false;
-        } else {
+        else {
             postReact = new PostReact();
             Post post = new Post();
-            post.setId(postDto.getId());
+            post.setId(id);
             postReact.setPost(post);
             postReactRepository.save(postReact);
-            return true;
         }
+        return true;
     }
 
     @Override

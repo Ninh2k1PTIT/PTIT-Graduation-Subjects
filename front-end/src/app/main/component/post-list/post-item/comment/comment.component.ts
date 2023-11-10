@@ -1,5 +1,5 @@
-import { Component, Input, OnInit, ViewChild } from "@angular/core";
-import { NgbActiveModal, NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { Component, Input, OnInit } from "@angular/core";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { Post } from "app/model/Post";
 
 @Component({
@@ -9,16 +9,15 @@ import { Post } from "app/model/Post";
 })
 export class CommentComponent implements OnInit {
   @Input("post") public post: Post;
-  @ViewChild("modal") public modal: NgbActiveModal;
 
   constructor(private _modalService: NgbModal) {}
 
   ngOnInit(): void {}
 
-  modalOpen() {
-    this._modalService.open(this.modal, {
-      scrollable: true,
+  modalOpen(modal) {
+    this._modalService.open(modal, {
       size: "lg",
+      scrollable: true,
       centered: true,
     });
   }

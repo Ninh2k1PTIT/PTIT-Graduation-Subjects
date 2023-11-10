@@ -8,7 +8,9 @@ import com.example.socialnetwork.model.Comment;
 import com.example.socialnetwork.model.CommentPhoto;
 import com.example.socialnetwork.model.Post;
 import com.example.socialnetwork.model.PostPhoto;
+import org.springframework.stereotype.Component;
 
+@Component
 public class CommentPhotoConverter {
     public CommentPhoto toEntity(CommentPhotoDto commentPhotoDto) {
         CommentPhoto commentPhoto = new CommentPhoto();

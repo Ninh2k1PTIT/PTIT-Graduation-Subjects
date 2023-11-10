@@ -9,5 +9,5 @@ import lombok.Setter;
 @NoArgsConstructor
 public class PostReactDto {
     private Integer id;
-    private UserDto user;
+    private UserDto createdBy;
 }

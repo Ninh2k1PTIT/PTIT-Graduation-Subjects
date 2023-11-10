@@ -1,1 +1,13 @@
-@import '@core/scss/angular/libs/file-uploader.component.scss';
+.photo-edit-btn {
+  position: absolute;
+  right: 0;
+  margin: 15px;
+  z-index: 2;
+}
+
+.photo-item-edit-btn {
+  display: none;
+  .photo-item:hover & {
+    display: block;
+  }
+}

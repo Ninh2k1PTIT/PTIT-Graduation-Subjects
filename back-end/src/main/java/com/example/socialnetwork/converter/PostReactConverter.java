@@ -12,7 +12,7 @@ public class PostReactConverter {
         PostReact postReact = new PostReact();
 
         User user = new User();
-        user.setId(postReactDto.getUser().getId());
+        user.setId(postReactDto.getCreatedBy().getId());
         postReact.setUser(user);
 
         return postReact;
@@ -26,7 +26,7 @@ public class PostReactConverter {
         userDto.setId(postReact.getUser().getId());
         userDto.setUsername(postReact.getUser().getUsername());
         userDto.setAvatar(postReact.getUser().getAvatar());
-        postReactDto.setUser(userDto);
+        postReactDto.setCreatedBy(userDto);
 
         return postReactDto;
     }

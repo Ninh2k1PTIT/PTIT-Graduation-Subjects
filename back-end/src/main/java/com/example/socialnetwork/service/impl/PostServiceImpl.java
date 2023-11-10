@@ -36,27 +36,6 @@ public class PostServiceImpl implements PostService {
     private PostPhotoConverter postPhotoConverter;
     private FirebaseImageService imageService;
 
-
-//    @Override
-//    public PostDto create(PostDto postDto) {
-//        //Save post
-//        Post post = postConverter.toEntity(postDto);
-//        Post newPost = postRepository.save(post);
-//        PostDto result = postConverter.toDto(newPost);
-//
-//        //Save photo
-//        List<PhotoDto> photoDtos = new ArrayList<>();
-//        for (PhotoDto photoDto : postDto.getPhotos()) {
-//            photoDto.setPost(result);
-//            Photo photo = photoConverter.toEntity(photoDto);
-//            Photo newPhoto = photoRepository.save(photo);
-//            photoDtos.add(photoConverter.toDto(newPhoto));
-//        }
-//        result.setPhotos(photoDtos);
-//
-//        return result;
-//    }
-
     @Override
     public PostDto create(PostDto postDto, MultipartFile[] files) {
         Post post = postConverter.toEntity(postDto);

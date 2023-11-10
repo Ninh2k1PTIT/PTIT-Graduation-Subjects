@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Date;
+import java.util.List;
 
 @Getter
 @Setter
@@ -16,6 +17,7 @@ public class CommentDto {
     private Boolean isReact;
     private Date createdAt;
     private Date updatedAt;
-    private UserDto user;
-    private PostDto post;
+    private UserDto createdBy;
+    private Integer postId;
+    private List<CommentPhotoDto> photos;
 }

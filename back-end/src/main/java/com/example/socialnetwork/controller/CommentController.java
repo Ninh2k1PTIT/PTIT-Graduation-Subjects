@@ -1,14 +1,14 @@
 package com.example.socialnetwork.controller;
 
 import com.example.socialnetwork.dto.CommentDto;
-import com.example.socialnetwork.dto.PostDto;
-import com.example.socialnetwork.dto.response.PaginationResponse;
+import com.example.socialnetwork.dto.response.BaseResponse;
 import com.example.socialnetwork.service.CommentService;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @CrossOrigin(origins = "*")
@@ -19,20 +19,18 @@ public class CommentController {
         this.commentService = commentService;
     }
 
-    @PostMapping("post/{id}/comment")
+    @PostMapping("comment")
     @PreAuthorize("hasRole('USER')")
-    public CommentDto create(@PathVariable Integer id, @RequestBody CommentDto commentDto) {
-        PostDto postDto = new PostDto();
-        postDto.setId(id);
-        commentDto.setPost(postDto);
-        return commentService.create(commentDto);
+    public ResponseEntity<?> create(@RequestParam(required = false) String comment, @RequestParam(required = false) MultipartFile[] files) throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        CommentDto commentDto = mapper.readValue(comment, CommentDto.class);
+        return ResponseEntity.ok(new BaseResponse<>(commentService.create(commentDto, files), true, null, null));
     }
 
     @GetMapping("post/{id}/comments")
     @PreAuthorize("hasRole('USER')")
-    public PaginationResponse<CommentDto> getByPost(@RequestParam Integer page, @RequestParam Integer size, @PathVariable Integer id) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
-        return commentService.getAllByPostId(id, pageable);
+    public ResponseEntity<?> getByPostId(@RequestParam(required = false) Integer lastCommentId, @RequestParam Integer size, @PathVariable Integer id) {
+        return ResponseEntity.ok(new BaseResponse<>(commentService.getByPostIdAndLastCommentId(id, lastCommentId, size), true, null, null));
     }
 
     @DeleteMapping("comment/{id}")
@@ -43,7 +41,7 @@ public class CommentController {
 
     @GetMapping("comment/{id}")
     @PreAuthorize("hasRole('USER')")
-    public CommentDto getById(@PathVariable Integer id) {
-        return commentService.getById(id);
+    public ResponseEntity<?> getById(@PathVariable Integer id) {
+        return ResponseEntity.ok(new BaseResponse<>(commentService.getById(id), true, null, null));
     }
 }

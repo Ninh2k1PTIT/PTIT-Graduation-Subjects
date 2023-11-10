@@ -6,7 +6,7 @@ import com.example.socialnetwork.dto.response.PaginationResponse;
 import org.springframework.data.domain.Pageable;
 
 public interface CommentReactService {
-    boolean updateByComment(CommentDto commentDto);
+    boolean updateByCommentId(Integer id);
 
     PaginationResponse<CommentReactDto> getByCommentId(Integer commentId, Pageable pageable);
 }

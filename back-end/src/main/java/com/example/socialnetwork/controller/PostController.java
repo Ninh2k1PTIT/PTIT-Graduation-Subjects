@@ -27,12 +27,6 @@ public class PostController {
         this.postService = postService;
     }
 
-//    @PostMapping("post")
-//    @PreAuthorize("hasRole('USER')")
-//    public PostDto create(@RequestBody PostDto postDto) {
-//        return postService.create(postDto);
-//    }
-
     @PostMapping("post")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<?> create(@RequestParam(required = false) String post, @RequestParam(required = false) MultipartFile[] files) throws JsonProcessingException {

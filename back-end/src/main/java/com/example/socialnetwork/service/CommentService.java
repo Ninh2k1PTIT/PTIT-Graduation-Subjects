@@ -4,11 +4,16 @@ import com.example.socialnetwork.dto.CommentDto;
 import com.example.socialnetwork.dto.PostDto;
 import com.example.socialnetwork.dto.response.PaginationResponse;
 import org.springframework.data.domain.Pageable;
+import org.springframework.web.multipart.MultipartFile;
 
 public interface CommentService {
-    PaginationResponse<CommentDto> getAllByPostId(Integer userId, Pageable pageable);
+    PaginationResponse<CommentDto> getAllByPostId(Integer postId, Pageable pageable);
+
+    PaginationResponse<CommentDto> getByPostIdAndLastCommentId(Integer postId, Integer lastCommentId, Integer size);
 
     CommentDto getById(Integer id);
-    CommentDto create(CommentDto commentDto);
+
+    CommentDto create(CommentDto commentDto, MultipartFile[] files);
+
     Boolean delete(Integer id);
 }

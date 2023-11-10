@@ -1,7 +1,6 @@
 package com.example.socialnetwork.service.impl;
 
 import com.example.socialnetwork.converter.CommentReactConverter;
-import com.example.socialnetwork.dto.CommentDto;
 import com.example.socialnetwork.dto.CommentReactDto;
 import com.example.socialnetwork.dto.response.PaginationResponse;
 import com.example.socialnetwork.model.Comment;
@@ -11,6 +10,8 @@ import com.example.socialnetwork.service.CommentReactService;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.stream.Collectors;
@@ -22,14 +23,17 @@ public class CommentReactServiceImpl implements CommentReactService {
     private CommentReactConverter commentReactConverter;
 
     @Override
-    public boolean updateByComment(CommentDto commentDto) {
-        CommentReact commentReact = commentReactRepository.findByCommentIdAndUserId(commentDto.getId(), commentDto.getUser().getId());
+    public boolean updateByCommentId(Integer id) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        UserDetailsImpl userDetails = (UserDetailsImpl) auth.getPrincipal();
+
+        CommentReact commentReact = commentReactRepository.findByCommentIdAndUserId(id, userDetails.getId());
         if (commentReact != null)
             commentReactRepository.delete(commentReact);
         else {
             commentReact = new CommentReact();
             Comment comment = new Comment();
-            comment.setId(commentDto.getId());
+            comment.setId(id);
             commentReact.setComment(comment);
             commentReactRepository.save(commentReact);
         }

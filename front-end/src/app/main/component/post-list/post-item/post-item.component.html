@@ -3,12 +3,19 @@
     <div class="d-flex justify-content-start align-items-center mb-1">
       <!-- avatar -->
       <div class="avatar mr-1">
-        <img [src]="post.createdBy.avatar" alt="avatar img" height="50" width="50" />
+        <img
+          [src]="post.createdBy.avatar"
+          alt="avatar img"
+          height="35"
+          width="35"
+        />
       </div>
       <!--/ avatar -->
       <div class="profile-user-info">
         <h6 class="mb-0">{{ post.createdBy.username }}</h6>
-        <small class="text-muted">{{ post.createdAt }}</small>
+        <small class="text-muted">{{
+          post.createdAt | date : "HH:mm dd/MM/yyyy"
+        }}</small>
       </div>
     </div>
     <p class="card-text">

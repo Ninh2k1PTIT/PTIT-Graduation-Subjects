@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, HostListener, OnInit } from "@angular/core";
 import { Post } from "app/model/Post";
 import { PostService } from "app/services/post.service";
 
@@ -373,17 +373,36 @@ export class HomeComponent implements OnInit {
     },
   };
 
-  public posts: Post[] = []
+  public currentPage = 0;
+  public totalPages = 0;
 
-  constructor(private _postService: PostService) { }
+  public posts: Post[] = [];
 
-  ngOnInit(): void {
-    this.getData()
+  constructor(private _postService: PostService) {}
+
+  @HostListener("window:scroll", ["$event"])
+  onWindowScroll() {
+    const pos =
+      (document.documentElement.scrollTop || document.body.scrollTop) +
+      document.documentElement.offsetHeight;
+    const max = document.documentElement.scrollHeight;
+
+    if (pos == max && this.currentPage < this.totalPages - 1) {
+      this.currentPage += 1;
+      this.getPosts();
+    }
   }
 
-  getData() {
-    this._postService.search({ page: 0, size: 10 }).subscribe(res => {
-      this.posts = res.data.data
-    });
+  ngOnInit(): void {
+    this.getPosts();
+  }
+
+  getPosts() {
+    this._postService
+      .search({ page: this.currentPage, size: 10 })
+      .subscribe((res) => {
+        this.posts = [...this.posts, ...res.data.data];
+        this.totalPages = res.data.totalPages;
+      });
   }
 }
