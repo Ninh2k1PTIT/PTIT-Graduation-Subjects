@@ -4,6 +4,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { FriendComponent } from './friend.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { CoreCommonModule } from '@core/common.module';
+import { SearchComponent } from './search/search.component';
 
 const routes: Routes = [
   {
@@ -13,7 +14,7 @@ const routes: Routes = [
 ]
 
 @NgModule({
-  declarations: [FriendComponent],
+  declarations: [FriendComponent, SearchComponent],
   imports: [
     CommonModule,
     RouterModule.forChild(routes),

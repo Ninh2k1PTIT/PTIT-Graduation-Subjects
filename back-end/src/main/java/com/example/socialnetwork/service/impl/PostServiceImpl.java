@@ -23,7 +23,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -88,30 +90,6 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public PaginationResponse<PostDto> getAll(String content, EPostSort sort, Pageable pageable) {
-        if (content == null)
-            content = "";
-
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        UserDetailsImpl userDetails = (UserDetailsImpl) auth.getPrincipal();
-        Page<Post> page;
-
-        if (sort == EPostSort.COMMENT)
-            page = postRepository.findAllByTopComment(EAudience.PUBLIC, userDetails.getId(), content, pageable);
-        else if (sort == EPostSort.REACT)
-            page = postRepository.findAllByTopReact(EAudience.PUBLIC, userDetails.getId(), content, pageable);
-        else
-            page = postRepository.findAllByContentContainsAndAudienceOrUserId(content, EAudience.PUBLIC, userDetails.getId(), pageable);
-        PaginationResponse<PostDto> result = new PaginationResponse<>();
-        result.setData(page.getContent().stream().map(item -> postConverter.toDto(item)).collect(Collectors.toList()));
-        result.setTotalItems((int) page.getTotalElements());
-        result.setCurrentPage(page.getNumber());
-        result.setTotalPages(page.getTotalPages());
-
-        return result;
-    }
-
-    @Override
     public PaginationResponse<PostDto> getAllByUserId(Integer userId, Pageable pageable) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         UserDetailsImpl userDetails = (UserDetailsImpl) auth.getPrincipal();
@@ -131,17 +109,23 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public PaginationResponse<PostDto> search(String content, EPostSort sort, Integer userId, Pageable pageable) {
+    public PaginationResponse<PostDto> search(String content, Long fromDateNumber, Long toDateNumber, EPostSort sort, Integer userId, Pageable pageable) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         UserDetailsImpl userDetails = (UserDetailsImpl) auth.getPrincipal();
         EAudience[] audiences = new EAudience[]{EAudience.PUBLIC};
         Page<Post> page;
+        Date fromDate = null, toDate = null;
+
+        if (Objects.nonNull(fromDateNumber))
+            fromDate = new Date(fromDateNumber);
+        if (Objects.nonNull(toDateNumber))
+            toDate = new Date(toDateNumber);
 
         if (sort == EPostSort.COMMENT)
-            page = postRepository.filterByComments(content, audiences, userId, userDetails.getId(), pageable);
+            page = postRepository.filterByTopComment(content, fromDate, toDate, audiences, userId, userDetails.getId(), pageable);
         else if (sort == EPostSort.REACT)
-            page = postRepository.filterByReacts(content, audiences, userId, userDetails.getId(), pageable);
-        else page = postRepository.filter(content, audiences, userId, userDetails.getId(), pageable);
+            page = postRepository.filterByTopReact(content, fromDate, toDate, audiences, userId, userDetails.getId(), pageable);
+        else page = postRepository.filter(content, fromDate, toDate, audiences, userId, userDetails.getId(), pageable);
 
         PaginationResponse<PostDto> result = new PaginationResponse<>();
         result.setData(page.getContent().stream().map(item -> postConverter.toDto(item)).collect(Collectors.toList()));

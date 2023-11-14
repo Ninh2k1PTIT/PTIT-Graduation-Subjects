@@ -3,6 +3,8 @@ package com.example.socialnetwork.controller;
 import com.example.socialnetwork.dto.UserDto;
 import com.example.socialnetwork.dto.response.BaseResponse;
 import com.example.socialnetwork.service.UserService;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -39,5 +41,12 @@ public class UserController {
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<BaseResponse<UserDto>> getCurrent() {
         return ResponseEntity.ok(new BaseResponse<>(userService.getCurrent(), true, null, null));
+    }
+
+    @GetMapping("users")
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<?> search(@RequestParam Integer page, @RequestParam Integer size, @RequestParam(required = false, defaultValue = "") String username) {
+        Pageable pageable = PageRequest.of(page, size);
+        return ResponseEntity.ok(new BaseResponse<>(userService.search(username, pageable), true, null, null));
     }
 }

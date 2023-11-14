@@ -11,7 +11,7 @@
 </div>
 <div
   class="modal-body"
-  style="max-height: 60vh"
+  style="max-height: 40vh"
   tabindex="0"
   ngbAutofocus
   #scrollMe
@@ -31,28 +31,25 @@
     <div class="profile-user-info w-100">
       <div class="d-flex align-items-center justify-content-between">
         <h6 class="mb-0">{{ comment.createdBy.username }}</h6>
-        <a *ngIf="comment.createdAt" href="javascript:void(0)" (click)="reactComment(comment)">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="14"
-            height="14"
-            viewBox="0 0 24 24"
-            stroke-width="2"
-            fill="none"
-            stroke="#6e6b7b"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            class="feather feather-heart profile-likes font-medium-3 mr-50"
-            [ngClass]="{ 'is-react': comment.isReact }"
-          >
-            <path
-              d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"
-            ></path>
-          </svg>
-          <span class="align-middle text-muted"> {{ comment.totalReact }}</span>
-        </a>
+        <app-comment-react [comment]="comment"></app-comment-react>
       </div>
       <div>{{ comment.content }}</div>
+      <div *ngIf="comment.photos.length > 0" style="width: fit-content">
+        <!-- ngb-carousel component -->
+        <ngb-carousel [interval]="3000">
+          <ng-template *ngFor="let photo of comment.photos" ngbSlide>
+            <div class="img-fluid rounded mb-75">
+              <img
+                [src]="photo.content"
+                class="img-fluid"
+                style="height: 30vh"
+              />
+            </div>
+            <div class="carousel-caption"></div>
+          </ng-template>
+        </ngb-carousel>
+        <!-- ngb-carousel component -->
+      </div>
       <small class="text-muted">{{
         comment.createdAt
           ? (comment.createdAt | date : "HH:mm dd/MM/yyyy")
@@ -72,7 +69,7 @@
         (keydown)="onKeydown($event)"
       ></textarea>
     </fieldset>
-    <div class="d-flex justify-content-between w-100">
+    <div class="d-flex justify-content-between w-100 mb-50">
       <input
         #fileInput
         type="file"
@@ -80,6 +77,7 @@
         (change)="onFileInput($event)"
         onclick="this.value=null"
         accept=".jpeg, .jpg, .png"
+        multiple
       />
       <div>
         <button
@@ -108,8 +106,17 @@
         <span [data-feather]="'send'"></span>
       </button>
     </div>
-    <div *ngFor="let item of photos">
-      <img [src]="item.b64" class="img-fluid w-50" />
+    <div *ngIf="photos.length > 0">
+      <!-- ngb-carousel component -->
+      <ngb-carousel [interval]="3000">
+        <ng-template *ngFor="let photo of photos" ngbSlide>
+          <div class="img-fluid rounded mb-75 text-center">
+            <img [src]="photo.b64" class="img-fluid" style="height: 30vh" />
+          </div>
+          <div class="carousel-caption"></div>
+        </ng-template>
+      </ngb-carousel>
+      <!-- ngb-carousel component -->
     </div>
   </form>
 </div>

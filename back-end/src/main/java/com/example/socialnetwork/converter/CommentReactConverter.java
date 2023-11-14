@@ -14,7 +14,7 @@ public class CommentReactConverter {
         CommentReact commentReact = new CommentReact();
 
         User user = new User();
-        user.setId(commentReactDto.getUser().getId());
+        user.setId(commentReactDto.getCreatedBy().getId());
         commentReact.setUser(user);
 
         return commentReact;
@@ -28,7 +28,7 @@ public class CommentReactConverter {
         userDto.setId(commentReact.getUser().getId());
         userDto.setUsername(commentReact.getUser().getUsername());
         userDto.setAvatar(commentReact.getUser().getAvatar());
-        commentReactDto.setUser(userDto);
+        commentReactDto.setCreatedBy(userDto);
 
         return commentReactDto;
     }

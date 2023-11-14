@@ -26,6 +26,8 @@ export class PostService {
     size: number;
     content?: string;
     sort?: EPostSort;
+    fromDate?: string;
+    toDate?: string;
   }) {
     return this._http.get<BaseResponse<PaginationResponse<Post>>>(
       `${environment.apiUrl}/posts`,

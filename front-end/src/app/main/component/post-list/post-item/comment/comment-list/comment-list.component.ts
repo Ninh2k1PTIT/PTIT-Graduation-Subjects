@@ -43,6 +43,7 @@ export class CommentListComponent implements OnInit {
         if (res.data.currentPage == res.data.totalPages - 1) this.stop = true;
       });
   }
+
   onSubmit() {
     if (this.form.valid || this.photos.length > 0) {
       let comment = new Comment();
@@ -52,6 +53,7 @@ export class CommentListComponent implements OnInit {
       comment.isReact = false;
       comment.totalReact = 0;
       comment.createdBy = this._authService.currentUserValue;
+      comment.photos = [];
       this.comments.push(comment);
       setTimeout(() => {
         this.scrollTop = this.scrollMe.nativeElement.scrollHeight;
@@ -62,10 +64,13 @@ export class CommentListComponent implements OnInit {
           this.photos.map((item) => item.file)
         )
         .subscribe((res) => {
-          this.form.reset();
-          this.photos = [];
           this.comments[this.comments.length - 1] = res.data;
+          setTimeout(() => {
+            this.scrollTop = this.scrollMe.nativeElement.scrollHeight;
+          }, 0);
         });
+      this.form.reset();
+      this.photos = [];
     }
   }
 

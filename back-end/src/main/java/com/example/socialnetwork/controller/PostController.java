@@ -18,6 +18,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Date;
+
 @RestController
 @CrossOrigin(origins = "*")
 public class PostController {
@@ -49,9 +51,9 @@ public class PostController {
 
     @GetMapping("posts")
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<?> search(@RequestParam Integer page, @RequestParam Integer size, @RequestParam(required = false) String content, @RequestParam(required = false) EPostSort sort, @RequestParam(required = false) Integer userId) {
+    public ResponseEntity<?> search(@RequestParam Integer page, @RequestParam Integer size, @RequestParam(required = false) String content, @RequestParam(required = false) Long fromDate, @RequestParam(required = false) Long toDate, @RequestParam(required = false) EPostSort sort, @RequestParam(required = false) Integer userId) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
-        return ResponseEntity.ok(new BaseResponse<>(postService.search(content, sort, userId, pageable), true, null, null));
+        return ResponseEntity.ok(new BaseResponse<>(postService.search(content, fromDate, toDate, sort, userId, pageable), true, null, null));
     }
 
     @GetMapping("post/{id}")
@@ -60,14 +62,14 @@ public class PostController {
         return ResponseEntity.ok(new BaseResponse<>(postService.getById(id), true, null, null));
     }
 
-    @GetMapping("posts/self")
-    @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<?> getByCurrentUser(@RequestParam Integer page, @RequestParam Integer size, @RequestParam(required = false) String content, @RequestParam(required = false) EPostSort sort) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        UserDetailsImpl userDetails = (UserDetailsImpl) auth.getPrincipal();
-        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
-        return ResponseEntity.ok(new BaseResponse<>(postService.search(content, sort, userDetails.getId(), pageable), true, null, null));
-    }
+//    @GetMapping("posts/self")
+//    @PreAuthorize("hasRole('USER')")
+//    public ResponseEntity<?> getByCurrentUser(@RequestParam Integer page, @RequestParam Integer size, @RequestParam(required = false) String content, @RequestParam(required = false) EPostSort sort) {
+//        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+//        UserDetailsImpl userDetails = (UserDetailsImpl) auth.getPrincipal();
+//        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
+//        return ResponseEntity.ok(new BaseResponse<>(postService.search(content, sort, userDetails.getId(), pageable), true, null, null));
+//    }
 
     @GetMapping("friend/{id}/posts")
     @PreAuthorize("hasRole('USER')")

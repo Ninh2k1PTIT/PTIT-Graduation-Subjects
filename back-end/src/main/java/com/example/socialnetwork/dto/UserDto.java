@@ -15,4 +15,5 @@ public class UserDto {
     private String phoneNumber;
     private EGender gender;
     private String email;
+    private Boolean isFriend;
 }

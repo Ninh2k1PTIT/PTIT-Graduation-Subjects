@@ -1,4 +1,4 @@
 export enum EPostSort {
-  COMMENT = 0,
-  REACT = 1,
+  COMMENT = 'COMMENT',
+  REACT = 'REACT',
 }

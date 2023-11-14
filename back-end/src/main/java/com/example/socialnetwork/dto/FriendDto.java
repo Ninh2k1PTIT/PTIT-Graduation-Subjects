@@ -7,7 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class CommentReactDto {
-    private Integer id;
-    private UserDto createdBy;
+public class FriendDto {
+    public Integer id;
+    public UserDto receiver;
 }

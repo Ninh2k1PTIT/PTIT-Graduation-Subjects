@@ -28,8 +28,8 @@ public class CommentReactController {
 
     @GetMapping("comment/{id}/reacts")
     @PreAuthorize("hasRole('USER')")
-    public PaginationResponse<CommentReactDto> getByCommentId(@RequestParam Integer page, @RequestParam Integer size, @PathVariable Integer id) {
+    public ResponseEntity<?> getByCommentId(@RequestParam Integer page, @RequestParam Integer size, @PathVariable Integer id) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
-        return commentReactService.getByCommentId(id, pageable);
+        return ResponseEntity.ok(new BaseResponse<>(commentReactService.getByCommentId(id, pageable), true, null, null));
     }
 }

@@ -59,7 +59,7 @@ export class ReactListComponent implements OnInit {
     this._postReactService
       .getByPostId(this.post.id, { page: this.currentPage, size: 15 })
       .subscribe((res) => {
-        this.reacts = [...this.reacts, ...res.data.data];
+        this.reacts = res.data.data;
         this.totalPages = res.data.totalPages;
       });
   }

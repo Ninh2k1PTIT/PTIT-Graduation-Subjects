@@ -1,297 +1,47 @@
-import { Component, HostListener, OnInit } from "@angular/core";
+import {
+  Component,
+  HostListener,
+  OnInit,
+  ViewEncapsulation,
+} from "@angular/core";
+import { FormBuilder, FormGroup } from "@angular/forms";
+import { EPostSort } from "app/model/EPostSort";
 import { Post } from "app/model/Post";
 import { PostService } from "app/services/post.service";
+import { FlatpickrOptions } from "ng2-flatpickr";
+import { combineLatest, forkJoin } from "rxjs";
+import {
+  debounceTime,
+  delay,
+  distinctUntilChanged,
+  mergeMap,
+  skip,
+  startWith,
+  switchMap,
+} from "rxjs/operators";
 
 @Component({
   selector: "app-home",
   templateUrl: "./home.component.html",
   styleUrls: ["./home.component.scss"],
+  encapsulation: ViewEncapsulation.None,
 })
 export class HomeComponent implements OnInit {
+  public DateRangeOptions: FlatpickrOptions = {
+    altInput: true,
+    mode: "range",
+    altFormat: "d-m-Y",
+    locale: require("flatpickr/dist/l10n/vn").default.vn,
+    onClose: (res: [Date, Date]) => {
+      this.form.patchValue({
+        fromDate: res[0].getTime(),
+        toDate: res[1].getTime(),
+      });
+    },
+  };
+
   public data = {
     profileData: {
-      header: {
-        avatar: "assets/images/portrait/small/avatar-s-2.jpg",
-        username: "Kitty Allanson",
-        designation: "UI/UX Designer",
-        coverImg: "assets/images/profile/user-uploads/timeline.jpg",
-      },
-      userAbout: {
-        about:
-          "Tart I love sugar plum I love oat cake. Sweet ⭐️ roll caramels I love jujubes. Topping cake wafer.",
-        joined: "November 15, 2015",
-        lives: "New York, USA",
-        email: "bucketful@fiendhead.org",
-        website: "www.pixinvent.com",
-      },
-      suggestedPages: [
-        {
-          avatar: "assets/images/avatars/12-small.png",
-          username: "Peter Reed",
-          subtitle: "Company",
-          favorite: false,
-        },
-        {
-          avatar: "assets/images/avatars/1-small.png",
-          username: "Harriett Adkins",
-          subtitle: "Company",
-          favorite: false,
-        },
-        {
-          avatar: "assets/images/avatars/10-small.png",
-          username: "Juan Weaver",
-          subtitle: "Company",
-          favorite: false,
-        },
-        {
-          avatar: "assets/images/avatars/3-small.png",
-          username: "Claudia Chandler",
-          subtitle: "Company",
-          favorite: false,
-        },
-        {
-          avatar: "assets/images/avatars/5-small.png",
-          username: "Earl Briggs",
-          subtitle: "Company",
-          favorite: true,
-        },
-        {
-          avatar: "assets/images/avatars/6-small.png",
-          username: "Jonathan Lyons",
-          subtitle: "Beauty Store",
-          favorite: false,
-        },
-      ],
-      twitterFeeds: [
-        {
-          imgUrl: "assets/images/avatars/5-small.png",
-          title: "Gertrude Stevens",
-          id: "@tiana59 ",
-          tags: "#design #fasion",
-          desc: "I love cookie chupa chups sweet tart apple pie ⭐️ chocolate bar.",
-          favorite: false,
-        },
-        {
-          imgUrl: "assets/images/avatars/12-small.png",
-          title: "Lura Jones",
-          id: "@tiana59 ",
-          tags: "#vuejs #code #coffeez",
-          desc: "Halvah I love powder jelly I love cheesecake cotton candy. 😍",
-          favorite: true,
-        },
-        {
-          imgUrl: "assets/images/avatars/1-small.png",
-          title: "Norman Gross",
-          id: "@tiana59 ",
-          tags: "#sketch #uiux #figma",
-          desc: "Candy jelly beans powder brownie biscuit. Jelly marzipan oat cake cake.",
-          favorite: false,
-        },
-      ],
-      post: [
-        {
-          avatar: "assets/images/portrait/small/avatar-s-18.jpg",
-          username: "Leeanna Alvord",
-          postTime: "12 Dec 2018 at 1:16 AM",
-          postText:
-            "Wonderful Machine· A well-written bio allows viewers to get to know a photographer beyond the work. This can make the difference when presenting to clients who are looking for the perfect fit.",
-          postImg: "assets/images/profile/post-media/2.jpg",
-          likes: "1.25k",
-          youLiked: true,
-          comments: "1.25k",
-          share: "1.25k",
-          likedUsers: [
-            {
-              avatar: "assets/images/portrait/small/avatar-s-1.jpg",
-              username: "Trine Lynes",
-            },
-            {
-              avatar: "assets/images/portrait/small/avatar-s-2.jpg",
-              username: "Lilian Nenes",
-            },
-            {
-              avatar: "assets/images/portrait/small/avatar-s-3.jpg",
-              username: "Alberto Glotzbach",
-            },
-            {
-              avatar: "assets/images/portrait/small/avatar-s-5.jpg",
-              username: "George Nordic",
-            },
-            {
-              avatar: "assets/images/portrait/small/avatar-s-4.jpg",
-              username: "Vinnie Mostowy",
-            },
-          ],
-          likedCount: 140,
-          detailedComments: [
-            {
-              avatar: "assets/images/portrait/small/avatar-s-6.jpg",
-              username: "Kitty Allanson",
-              comment:
-                "Easy & smart fuzzy search🕵🏻 functionality which enables users to search quickly.",
-              commentsLikes: 34,
-              youLiked: false,
-            },
-            {
-              avatar: "assets/images/portrait/small/avatar-s-8.jpg",
-              username: "Jackey Potter",
-              comment:
-                "Unlimited color🖌 options allows you to set your application color as per your branding 🤪.",
-              commentsLikes: 61,
-              youLiked: true,
-            },
-            {
-              avatar: "assets/images/portrait/small/avatar-s-6.jpg",
-              username: "Kitty Allanson",
-              comment:
-                "Easy & smart fuzzy search🕵🏻 functionality which enables users to search quickly.",
-              commentsLikes: 34,
-              youLiked: false,
-            },
-            {
-              avatar: "assets/images/portrait/small/avatar-s-8.jpg",
-              username: "Jackey Potter",
-              comment:
-                "Unlimited color🖌 options allows you to set your application color as per your branding 🤪.",
-              commentsLikes: 61,
-              youLiked: true,
-            },
-            {
-              avatar: "assets/images/portrait/small/avatar-s-6.jpg",
-              username: "Kitty Allanson",
-              comment:
-                "Easy & smart fuzzy search🕵🏻 functionality which enables users to search quickly.",
-              commentsLikes: 34,
-              youLiked: false,
-            },
-            {
-              avatar: "assets/images/portrait/small/avatar-s-8.jpg",
-              username: "Jackey Potter",
-              comment:
-                "Unlimited color🖌 options allows you to set your application color as per your branding 🤪.",
-              commentsLikes: 61,
-              youLiked: true,
-            },
-            {
-              avatar: "assets/images/portrait/small/avatar-s-6.jpg",
-              username: "Kitty Allanson",
-              comment:
-                "Easy & smart fuzzy search🕵🏻 functionality which enables users to search quickly.",
-              commentsLikes: 34,
-              youLiked: false,
-            },
-            {
-              avatar: "assets/images/portrait/small/avatar-s-8.jpg",
-              username: "Jackey Potter",
-              comment:
-                "Unlimited color🖌 options allows you to set your application color as per your branding 🤪.",
-              commentsLikes: 61,
-              youLiked: true,
-            },
-          ],
-        },
-        {
-          avatar: "assets/images/portrait/small/avatar-s-22.jpg",
-          username: "Rosa Walters",
-          postTime: "11 Dec 2019 at 1:16 AM",
-          postText:
-            "Wonderful Machine· A well-written bio allows viewers to get to know a photographer beyond the work. This can make the difference when presenting to clients who are looking for the perfect fit.",
-          postImg: "assets/images/profile/post-media/25.jpg",
-          likes: "1.25k",
-          youLiked: true,
-          comments: "1.25k",
-          share: "1.25k",
-          likedUsers: [
-            {
-              avatar: "assets/images/portrait/small/avatar-s-1.jpg",
-              username: "Trine Lynes",
-            },
-            {
-              avatar: "assets/images/portrait/small/avatar-s-2.jpg",
-              username: "Lilian Nenes",
-            },
-            {
-              avatar: "assets/images/portrait/small/avatar-s-3.jpg",
-              username: "Alberto Glotzbach",
-            },
-            {
-              avatar: "assets/images/portrait/small/avatar-s-5.jpg",
-              username: "George Nordic",
-            },
-            {
-              avatar: "assets/images/portrait/small/avatar-s-4.jpg",
-              username: "Vinnie Mostowy",
-            },
-          ],
-          likedCount: 271,
-          detailedComments: [
-            {
-              avatar: "assets/images/portrait/small/avatar-s-3.jpg",
-              username: "Kitty Allanson",
-              comment:
-                "Easy & smart fuzzy search🕵🏻 functionality which enables users to search quickly.",
-              commentsLikes: 34,
-              youLiked: false,
-            },
-          ],
-        },
-        {
-          avatar: "assets/images/portrait/small/avatar-s-15.jpg",
-          username: "Charles Watson",
-          postTime: "12 Dec 2019 at 1:16 AM",
-          postText:
-            "Wonderful Machine· A well-written bio allows viewers to get to know a photographer beyond the work. This can make the difference when presenting to clients who are looking for the perfect fit.",
-          postVid: "https://www.youtube.com/embed/6stlCkUDG_s",
-          likes: "1.25k ",
-          youLiked: true,
-          comments: "1.25k",
-          share: "1.25k",
-          likedUsers: [
-            {
-              avatar: "assets/images/portrait/small/avatar-s-1.jpg",
-              username: "Trine Lynes",
-            },
-            {
-              avatar: "assets/images/portrait/small/avatar-s-2.jpg",
-              username: "Lilian Nenes",
-            },
-            {
-              avatar: "assets/images/portrait/small/avatar-s-3.jpg",
-              username: "Alberto Glotzbach",
-            },
-            {
-              avatar: "assets/images/portrait/small/avatar-s-5.jpg",
-              username: "George Nordic",
-            },
-            {
-              avatar: "assets/images/portrait/small/avatar-s-4.jpg",
-              username: "Vinnie Mostowy",
-            },
-          ],
-          likedCount: 264,
-          detailedComments: [
-            {
-              avatar: "assets/images/portrait/small/avatar-s-3.jpg",
-              username: "Kitty Allanson",
-              comment:
-                "Easy & smart fuzzy search🕵🏻 functionality which enables users to search quickly.",
-              commentsLikes: 34,
-              youLiked: false,
-            },
-          ],
-        },
-      ],
-      latestPhotos: [
-        { img: "assets/images/profile/user-uploads/user-13.jpg" },
-        { img: "assets/images/profile/user-uploads/user-02.jpg" },
-        { img: "assets/images/profile/user-uploads/user-03.jpg" },
-        { img: "assets/images/profile/user-uploads/user-04.jpg" },
-        { img: "assets/images/profile/user-uploads/user-05.jpg" },
-        { img: "assets/images/profile/user-uploads/user-06.jpg" },
-        { img: "assets/images/profile/user-uploads/user-07.jpg" },
-        { img: "assets/images/profile/user-uploads/user-08.jpg" },
-        { img: "assets/images/profile/user-uploads/user-09.jpg" },
-      ],
       suggestions: [
         {
           avatar: "assets/images/portrait/small/avatar-s-9.jpg",
@@ -324,61 +74,69 @@ export class HomeComponent implements OnInit {
           mutualFriend: "25 Mutual Friends",
         },
       ],
-      polls: [
-        {
-          name: "RDJ",
-          result: "82%",
-          votedUser: [
-            {
-              img: "assets/images/portrait/small/avatar-s-12.jpg",
-              username: "Tonia Seabold",
-            },
-            {
-              img: "assets/images/portrait/small/avatar-s-5.jpg",
-              username: "Carissa Dolle",
-            },
-            {
-              img: "assets/images/portrait/small/avatar-s-9.jpg",
-              username: "Kelle Herrick",
-            },
-            {
-              img: "assets/images/portrait/small/avatar-s-10.jpg",
-              username: "Len Bregantini",
-            },
-            {
-              img: "assets/images/portrait/small/avatar-s-11.jpg",
-              username: "John Doe",
-            },
-          ],
-        },
-        {
-          name: "Chris Hemswort",
-          result: "67%",
-          votedUser: [
-            {
-              img: "assets/images/portrait/small/avatar-s-9.jpg",
-              username: "Tonia Seabold",
-            },
-            {
-              img: "assets/images/portrait/small/avatar-s-1.jpg",
-              username: "Carissa Dolle",
-            },
-            {
-              img: "assets/images/portrait/small/avatar-s-8.jpg",
-              username: "Jonathan Lyons",
-            },
-          ],
-        },
-      ],
     },
   };
 
-  public currentPage = 0;
   public totalPages = 0;
+  public sortOption = [
+    {
+      label: "Mới nhất",
+      value: "",
+    },
+    {
+      label: "Nhiều bình luận nhất",
+      value: EPostSort.COMMENT,
+    },
+    {
+      label: "Nhiều lượt thích nhất",
+      value: EPostSort.REACT,
+    },
+  ];
+  public form: FormGroup;
 
   public posts: Post[] = [];
 
-  constructor(private _postService: PostService) {}
+  constructor(private _postService: PostService, private _fb: FormBuilder) {}
+
+  ngOnInit(): void {
+    this.form = this._fb.group({
+      sort: this.sortOption[0].value,
+      content: "",
+      fromDate: "",
+      toDate: "",
+      page: 0,
+      size: 10,
+    });
+
+    this.form
+      .get("page")
+      .valueChanges.pipe(
+        delay(0),
+        mergeMap(() => this._postService.search(this.form.value))
+      )
+      .subscribe((res) => {
+        this.posts = [...this.posts, ...res.data.data];
+        this.totalPages = res.data.totalPages;
+      });
+
+    combineLatest([
+      this.form
+        .get("content")
+        .valueChanges.pipe(
+          debounceTime(1000),
+          startWith(""),
+          distinctUntilChanged()
+        ),
+      this.form
+        .get("sort")
+        .valueChanges.pipe(startWith(this.sortOption[0].value)),
+      this.form.get("toDate").valueChanges.pipe(startWith("")),
+    ]).subscribe(() => {
+      this.posts = [];
+      this.totalPages = 0;
+      this.form.patchValue({ page: 0 });
+    });
+  }
 
   @HostListener("window:scroll", ["$event"])
   onWindowScroll() {
@@ -386,23 +144,22 @@ export class HomeComponent implements OnInit {
       (document.documentElement.scrollTop || document.body.scrollTop) +
       document.documentElement.offsetHeight;
     const max = document.documentElement.scrollHeight;
-
-    if (pos == max && this.currentPage < this.totalPages - 1) {
-      this.currentPage += 1;
-      this.getPosts();
-    }
-  }
-
-  ngOnInit(): void {
-    this.getPosts();
+    const currentPage = this.form.get("page").value;
+    if (pos == max && currentPage < this.totalPages - 1)
+      this.form.patchValue({ page: currentPage + 1 });
   }
 
   getPosts() {
-    this._postService
-      .search({ page: this.currentPage, size: 10 })
-      .subscribe((res) => {
-        this.posts = [...this.posts, ...res.data.data];
-        this.totalPages = res.data.totalPages;
-      });
+    // this._postService
+    //   .search({ page: this.currentPage, size: 10 })
+    //   .subscribe((res) => {
+    //     this.posts = [...this.posts, ...res.data.data];
+    //     this.totalPages = res.data.totalPages;
+    //   });
+  }
+
+  refresh() {
+    this.form.patchValue({ page: 0 });
+    this.totalPages = 0;
   }
 }

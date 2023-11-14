@@ -2,13 +2,18 @@ package com.example.socialnetwork.service.impl;
 
 import com.example.socialnetwork.converter.UserConverter;
 import com.example.socialnetwork.dto.UserDto;
+import com.example.socialnetwork.dto.response.PaginationResponse;
 import com.example.socialnetwork.model.User;
 import com.example.socialnetwork.repository.UserRepository;
 import com.example.socialnetwork.service.UserService;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -46,5 +51,18 @@ public class UserServiceImpl implements UserService {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         UserDetailsImpl userDetails = (UserDetailsImpl) auth.getPrincipal();
         return userConverter.toDto(userRepository.findById(userDetails.getId()).get());
+    }
+
+    @Override
+    public PaginationResponse<UserDto> search(String username, Pageable pageable) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        UserDetailsImpl userDetails = (UserDetailsImpl) auth.getPrincipal();
+        Page<User> page = userRepository.findByUsernameContainsAndIdNot(username, userDetails.getId(), pageable);
+        PaginationResponse<UserDto> result = new PaginationResponse<>();
+        result.setData(page.getContent().stream().map(item -> userConverter.toDto(item)).collect(Collectors.toList()));
+        result.setTotalItems((int) page.getTotalElements());
+        result.setCurrentPage(page.getNumber());
+        result.setTotalPages(page.getTotalPages());
+        return result;
     }
 }

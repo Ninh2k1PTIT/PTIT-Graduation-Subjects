@@ -3,6 +3,7 @@ package com.example.socialnetwork.model;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -23,11 +24,15 @@ public class Friend {
     @Column(name = "created_at")
     private Date createdAt;
 
+    @Column(name = "accepted_at")
+    private Date acceptedAt;
+
+    @CreatedBy
     @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+    @JoinColumn(name = "sender_id")
+    private User sender;
 
     @ManyToOne
-    @JoinColumn(name = "friend_id")
-    private User friend;
+    @JoinColumn(name = "receiver_id")
+    private User receiver;
 }

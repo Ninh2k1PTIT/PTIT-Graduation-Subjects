@@ -1,0 +1,68 @@
+<a *ngIf="comment.createdAt" href="javascript:void(0)">
+  <a
+    id="profile-info"
+    (click)="reactComment()"
+    href="javascript:void(0)"
+    class="text-muted"
+  >
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="14"
+      height="14"
+      viewBox="0 0 24 24"
+      stroke-width="2"
+      fill="none"
+      stroke="#6e6b7b"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      class="feather feather-heart profile-likes font-medium-3 mr-50"
+      [ngClass]="{ 'is-react': comment.isReact }"
+    >
+      <path
+        d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"
+      ></path>
+    </svg>
+  </a>
+
+  <span class="align-middle text-muted" (click)="modalOpen(modal)">
+    {{ comment.totalReact }}</span
+  >
+</a>
+
+<ng-template #modal let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="myModalLabel1">Lượt thích</h4>
+    <button
+      type="button"
+      class="close"
+      (click)="modal.dismiss('Cross click')"
+      aria-label="Close"
+    >
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div
+    class="modal-body"
+    style="max-height: 500px"
+    tabindex="0"
+    ngbAutofocus
+    (scroll)="onScroll($event)"
+    [perfectScrollbar]
+  >
+    <div class="d-flex align-items-center mb-1" *ngFor="let react of reacts">
+      <div class="avatar mt-25 mr-75">
+        <img
+          [src]="react.createdBy.avatar"
+          alt="Avatar"
+          height="34"
+          width="34"
+        />
+      </div>
+      <div class="profile-user-info w-100">
+        <div class="d-flex align-items-center justify-content-between">
+          <h6 class="mb-0">{{ react.createdBy.username }}</h6>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>
