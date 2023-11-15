@@ -1,5 +1,6 @@
 package com.example.socialnetwork.converter;
 
+import com.example.socialnetwork.dto.ERelationship;
 import com.example.socialnetwork.dto.UserDto;
 import com.example.socialnetwork.model.Friend;
 import com.example.socialnetwork.model.User;
@@ -25,10 +26,15 @@ public class UserConverter {
         UserDetailsImpl userDetails = (UserDetailsImpl) auth.getPrincipal();
         List<Friend> friends = user.getFriends1();
         friends.addAll(user.getFriends2());
-        if(friends.stream().anyMatch(item -> item.getSender().getId() == userDetails.getId() || item.getReceiver().getId() == userDetails.getId()))
-            userDto.setIsFriend(true);
-        else
-            userDto.setIsFriend(false);
+        Friend friend = friends.stream().filter(item -> (item.getSender().getId() == userDetails.getId() || item.getReceiver().getId() == userDetails.getId())).findFirst().orElse(null);
+        if (friend != null) {
+            if (friend.getAcceptedAt() != null)
+                userDto.setRelationship(ERelationship.FRIEND);
+            else if (friend.getSender().getId() == userDetails.getId())
+                userDto.setRelationship(ERelationship.RECEIVED_REQUEST);
+            else
+                userDto.setRelationship(ERelationship.REQUESTED);
+        } else userDto.setRelationship(ERelationship.NONE);
 
         return userDto;
     }

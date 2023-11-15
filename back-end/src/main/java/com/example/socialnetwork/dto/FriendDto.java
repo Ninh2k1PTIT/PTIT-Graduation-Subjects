@@ -9,5 +9,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class FriendDto {
     public Integer id;
+    public UserDto sender;
     public UserDto receiver;
+    public Boolean isFriend;
 }

@@ -16,45 +16,11 @@
             aria-expanded="true"
             role="tab"
           >
-            <i [data-feather]="'users'" class="font-medium-3 mr-1"></i>
-            <span class="font-weight-bold">Gợi ý kết bạn</span>
+            <i [data-feather]="'search'" class="font-medium-3 mr-1"></i>
+            <span class="font-weight-bold">Tìm kiếm</span>
           </a>
           <ng-template ngbNavContent>
-            <div class="card">
-              <div class="card-body">
-                <input
-                  type="text"
-                  class="form-control"
-                  placeholder="Tìm kiếm"
-                />
-                <div
-                  class="d-flex justify-content-start align-items-center mt-1"
-                  *ngFor="let suggestionsRef of suggestions"
-                >
-                  <div class="avatar mr-75">
-                    <img
-                      [src]="suggestionsRef.avatar"
-                      alt="avatar"
-                      height="40"
-                      width="40"
-                    />
-                  </div>
-                  <div class="profile-user-info">
-                    <h6 class="mb-0">{{ suggestionsRef.name }}</h6>
-                    <small class="text-muted">{{
-                      suggestionsRef.mutualFriend
-                    }}</small>
-                  </div>
-                  <button
-                    type="button"
-                    class="btn btn-primary btn-icon btn-sm ml-auto"
-                    rippleEffect
-                  >
-                    <i data-feather="user-plus"></i>
-                  </button>
-                </div>
-              </div>
-            </div>
+            <app-search></app-search>
           </ng-template>
         </li>
         <li class="nav-item" ngbNavItem>
@@ -67,53 +33,12 @@
             aria-expanded="true"
             role="tab"
           >
-            <i [data-feather]="'file-text'" class="font-medium-3 mr-1"></i>
+            <i [data-feather]="'send'" class="font-medium-3 mr-1"></i>
             <span class="font-weight-bold">Lời mời</span>
           </a>
           <ng-template ngbNavContent>
             <div class="card">
-              <div class="card-body">
-                <input
-                  type="text"
-                  class="form-control"
-                  placeholder="Tìm kiếm"
-                />
-                <div
-                  class="d-flex justify-content-start align-items-center mt-1"
-                  *ngFor="let suggestionsRef of suggestions"
-                >
-                  <div class="avatar mr-75">
-                    <img
-                      [src]="suggestionsRef.avatar"
-                      alt="avatar"
-                      height="40"
-                      width="40"
-                    />
-                  </div>
-                  <div class="profile-user-info">
-                    <h6 class="mb-0">{{ suggestionsRef.name }}</h6>
-                    <small class="text-muted">{{
-                      suggestionsRef.mutualFriend
-                    }}</small>
-                  </div>
-                  <div class="ml-auto">
-                    <button
-                      type="button"
-                      class="btn btn-primary btn-icon btn-sm mr-1"
-                      rippleEffect
-                    >
-                      <i data-feather="check"></i>
-                    </button>
-                    <button
-                      type="button"
-                      class="btn btn-danger btn-icon btn-sm"
-                      rippleEffect
-                    >
-                      <i data-feather="x"></i>
-                    </button>
-                  </div>
-                </div>
-              </div>
+              <app-request></app-request>
             </div>
           </ng-template>
         </li>
@@ -127,7 +52,7 @@
             aria-expanded="true"
             role="tab"
           >
-            <i [data-feather]="'smartphone'" class="font-medium-3 mr-1"></i>
+            <i [data-feather]="'users'" class="font-medium-3 mr-1"></i>
             <span class="font-weight-bold">Bạn bè</span>
           </a>
           <ng-template ngbNavContent>

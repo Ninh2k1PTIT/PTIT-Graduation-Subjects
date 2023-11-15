@@ -1,0 +1,6 @@
+export enum ERelationship {
+  NONE = 'NONE',
+  FRIEND = 'FRIEND',
+  REQUESTED = 'REQUESTED',
+  RECEIVED_REQUEST = 'RECEIVED_REQUEST',
+}

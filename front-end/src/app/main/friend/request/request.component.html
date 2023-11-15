@@ -1,0 +1,37 @@
+<div class="card">
+  <div class="card-body">
+    <input type="text" class="form-control" placeholder="Tìm kiếm" />
+    <div
+      class="d-flex justify-content-start align-items-center mt-1"
+      *ngFor="let request of requests"
+    >
+      <div class="avatar mr-75">
+        <img
+          [src]="request.sender.avatar"
+          alt="avatar"
+          height="40"
+          width="40"
+        />
+      </div>
+      <div class="profile-user-info">
+        <h6 class="mb-0">{{ request.sender.username }}</h6>
+      </div>
+      <div class="ml-auto">
+        <button
+          type="button"
+          class="btn btn-primary btn-icon btn-sm mr-1"
+          rippleEffect
+        >
+          <i data-feather="check"></i>
+        </button>
+        <button
+          type="button"
+          class="btn btn-danger btn-icon btn-sm"
+          rippleEffect
+        >
+          <i data-feather="x"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

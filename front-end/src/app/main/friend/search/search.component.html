@@ -8,30 +8,87 @@
         formControlName="username"
       />
     </form>
-
-    <div
-      class="d-flex justify-content-start align-items-center mt-1"
-      *ngFor="let suggestionsRef of suggestions"
-    >
-      <div class="avatar mr-75">
-        <img
-          [src]="suggestionsRef.avatar"
-          alt="avatar"
-          height="40"
-          width="40"
-        />
+  </div>
+</div>
+<div class="row">
+  <div class="col-lg-4 col-md-6 col-12" *ngFor="let user of users">
+    <div class="card card-profile">
+      <div class="card-body">
+        <div class="profile-image-wrapper mb-2">
+          <div class="profile-image" style="top: 0.5rem">
+            <div class="avatar">
+              <img
+                [src]="user.avatar"
+                alt="Profile Picture"
+                style="width: 60px; height: 60px"
+              />
+            </div>
+          </div>
+        </div>
+        <h3>{{ user.username }}</h3>
+        <div *ngIf="user.relationship == 'NONE'" class="badge profile-badge">
+          &nbsp;
+        </div>
+        <div
+          *ngIf="user.relationship == 'REQUESTED'"
+          class="badge badge-light-primary profile-badge"
+        >
+          Đã gửi lời mời cho bạn
+        </div>
+        <div
+          *ngIf="user.relationship == 'RECEIVED_REQUEST'"
+          class="badge badge-light-primary profile-badge"
+        >
+          Đã gửi lời mời
+        </div>
+        <div
+          *ngIf="user.relationship == 'FRIEND'"
+          class="badge badge-light-primary profile-badge"
+        >
+          Bạn bè
+        </div>
+        <hr class="mb-2" />
+        <div class="d-flex justify-content-around align-items-center">
+          <button *ngIf="user.relationship == 'NONE'" class="btn btn-primary">
+            Gửi lời mời
+          </button>
+          <button
+            *ngIf="user.relationship == 'REQUESTED'"
+            class="btn btn-primary"
+          >
+            Chấp nhận
+          </button>
+          <button
+            *ngIf="user.relationship == 'REQUESTED'"
+            class="btn btn-outline-danger"
+          >
+            Từ chối
+          </button>
+          <button
+            *ngIf="user.relationship == 'RECEIVED_REQUEST'"
+            class="btn btn-outline-danger"
+          >
+            Hủy yêu cầu
+          </button>
+          <button *ngIf="user.relationship == 'FRIEND'" class="btn btn-danger">
+            Xóa bạn bè
+          </button>
+        </div>
       </div>
-      <div class="profile-user-info">
-        <h6 class="mb-0">{{ suggestionsRef.name }}</h6>
-        <small class="text-muted">{{ suggestionsRef.mutualFriend }}</small>
-      </div>
-      <button
-        type="button"
-        class="btn btn-primary btn-icon btn-sm ml-auto"
-        rippleEffect
-      >
-        <i data-feather="user-plus"></i>
-      </button>
+    </div>
+  </div>
+</div>
+<div *ngIf="users.length == 0" class="card misc-wrapper">
+  <div class="misc-inner p-2 p-sm-3">
+    <div class="w-100 text-center">
+      <h2 class="mb-1">Không có người dùng phù hợp</h2>
+      <img
+        class="img-fluid"
+        src="
+            assets/images/illustration/personalization.svg
+            "
+        alt="Error page"
+      />
     </div>
   </div>
 </div>

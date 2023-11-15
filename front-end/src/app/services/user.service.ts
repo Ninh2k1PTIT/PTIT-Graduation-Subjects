@@ -12,7 +12,7 @@ export class UserService {
   constructor(private _http: HttpClient) {}
 
   search(params: { page: number; size: number; username: string }) {
-    this._http.get<BaseResponse<PaginationResponse<User>>>(
+    return this._http.get<BaseResponse<PaginationResponse<User>>>(
       `${environment.apiUrl}/users`,
       { params: new HttpParams({ fromObject: params }) }
     );

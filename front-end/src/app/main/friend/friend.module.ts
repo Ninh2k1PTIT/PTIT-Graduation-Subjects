@@ -5,6 +5,8 @@ import { FriendComponent } from './friend.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { CoreCommonModule } from '@core/common.module';
 import { SearchComponent } from './search/search.component';
+import { RequestComponent } from './request/request.component';
+
 
 const routes: Routes = [
   {
@@ -14,12 +16,13 @@ const routes: Routes = [
 ]
 
 @NgModule({
-  declarations: [FriendComponent, SearchComponent],
+  declarations: [FriendComponent, SearchComponent, RequestComponent],
   imports: [
     CommonModule,
     RouterModule.forChild(routes),
     CoreCommonModule,
-    NgbModule
+    NgbModule,
+    
   ]
 })
 export class FriendModule { }

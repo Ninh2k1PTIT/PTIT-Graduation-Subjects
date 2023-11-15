@@ -1,7 +1,12 @@
 import { Component, OnInit } from "@angular/core";
 import { FormBuilder, FormGroup } from "@angular/forms";
 import { UserService } from "app/services/user.service";
-import { debounceTime, distinctUntilChanged } from "rxjs/operators";
+import {
+  debounceTime,
+  distinctUntilChanged,
+  startWith,
+  switchMap,
+} from "rxjs/operators";
 
 @Component({
   selector: "app-search",
@@ -10,7 +15,7 @@ import { debounceTime, distinctUntilChanged } from "rxjs/operators";
 })
 export class SearchComponent implements OnInit {
   public form: FormGroup;
-  suggestions = []
+  public users = [];
 
   constructor(private _userService: UserService, private _fb: FormBuilder) {}
 
@@ -24,8 +29,22 @@ export class SearchComponent implements OnInit {
     this.form
       .get("username")
       .valueChanges.pipe(debounceTime(1000), distinctUntilChanged())
-      .subscribe((res) => {
-        console.log(res);
+      .subscribe((res: string) => {
+        if (res.trim() == "") this.users = [];
+        else this.form.patchValue({ page: 0 });
       });
+
+    this.form
+      .get("page")
+      .valueChanges.pipe(
+        switchMap(() => this._userService.search(this.form.value))
+      )
+      .subscribe((res) => {
+        this.users = res.data.data;
+      });
+  }
+
+  onScroll(event: Event) {
+    console.log(event.target);
   }
 }
