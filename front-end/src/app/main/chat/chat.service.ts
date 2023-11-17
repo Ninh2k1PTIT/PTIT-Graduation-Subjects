@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
+import { environment } from 'environments/environment';
 
 import { BehaviorSubject, Observable } from 'rxjs';
 
@@ -221,5 +222,9 @@ export class ChatService {
   updateUserProfile(userProfileRef) {
     this.userProfile = userProfileRef;
     this.onUserProfileChange.next(this.userProfile);
+  }
+
+  send() {
+    return this._httpClient.post<any>(`${environment.apiUrl}/chat`, { content: "hello", receiverUserId: 2 })
   }
 }

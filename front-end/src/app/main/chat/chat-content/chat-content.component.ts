@@ -1,7 +1,9 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { CoreSidebarService } from '@core/components/core-sidebar/core-sidebar.service';
 import { ChatService } from '../chat.service';
-
+import SockJS from "sockjs-client";
+import { Client } from "@stomp/stompjs";
+import { environment } from 'environments/environment';
 
 @Component({
   selector: 'app-chat-content',
@@ -35,27 +37,33 @@ export class ChatContentComponent implements OnInit {
    * Update Chat
    */
   updateChat() {
-    this.newChat = {
-      message: this.chatMessage,
-      time: 'Mon Dec 10 2018 07:46:43 GMT+0000 (GMT)',
-      senderId: this.userProfile.id
-    };
+    // this.newChat = {
+    //   message: this.chatMessage,
+    //   time: 'Mon Dec 10 2018 07:46:43 GMT+0000 (GMT)',
+    //   senderId: this.userProfile.id
+    // };
 
-    // If chat data is available (update chat)
-    if (this.chats.chat) {
-      if (this.newChat.message !== '') {
-        this.chats.chat.push(this.newChat);
-        this._chatService.updateChat(this.chats);
-        this.chatMessage = '';
-        setTimeout(() => {
-          this.scrolltop = this.scrollMe?.nativeElement.scrollHeight;
-        }, 0);
-      }
-    }
-    // Else create new chat
-    else {
-      this._chatService.createNewChat(this.chatUser.id, this.newChat);
-    }
+    // // If chat data is available (update chat)
+    // if (this.chats.chat) {
+    //   if (this.newChat.message !== '') {
+    //     this.chats.chat.push(this.newChat);
+    //     this._chatService.updateChat(this.chats);
+    //     this.chatMessage = '';
+    //     setTimeout(() => {
+    //       this.scrolltop = this.scrollMe?.nativeElement.scrollHeight;
+    //     }, 0);
+    //   }
+    // }
+    // // Else create new chat
+    // else {
+    //   this._chatService.createNewChat(this.chatUser.id, this.newChat);
+    // }
+
+    this._chatService.send().subscribe(res => {
+      console.log(res);
+
+    })
+
   }
 
   /**
@@ -73,7 +81,21 @@ export class ChatContentComponent implements OnInit {
   /**
    * On init
    */
+  public stompClient: Client
   ngOnInit(): void {
+    this.stompClient = new Client({
+      webSocketFactory: () => {
+        return new SockJS(`${environment.apiUrl}/socket`);
+      },
+      onConnect: (frame) => {
+        this.stompClient.subscribe(`/topic/2`, (message) => {
+          console.log(JSON.parse(message.body));
+        });
+      },
+    });
+    this.stompClient.activate();
+
+
     // Subscribe to Chat Change
     this._chatService.onChatOpenChange.subscribe(res => {
       this.chatMessage = '';
