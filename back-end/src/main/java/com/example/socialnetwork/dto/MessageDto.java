@@ -13,5 +13,5 @@ public class MessageDto {
     private String content;
     private Date createdAt;
     private Integer userId;
-    private Integer groupId;
+    private Integer roomId;
 }
