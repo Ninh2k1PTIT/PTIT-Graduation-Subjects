@@ -12,5 +12,6 @@ import java.util.Date;
 public class MessageDto {
     private String content;
     private Date createdAt;
-    private Integer receiverUserId;
+    private Integer userId;
+    private Integer groupId;
 }

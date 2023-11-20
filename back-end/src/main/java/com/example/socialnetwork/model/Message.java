@@ -30,5 +30,5 @@ public class Message {
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    private Group group;
+    private Room room;
 }

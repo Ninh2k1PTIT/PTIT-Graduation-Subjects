@@ -20,7 +20,7 @@ public class MessageController {
     @PostMapping("/chat")
     @PreAuthorize("hasRole('USER')")
     public boolean send(@RequestBody MessageDto message) {
-        messagingTemplate.convertAndSend("/topic/" + message.getReceiverUserId(), message);
+        messagingTemplate.convertAndSend("/topic/" + message.getGroupId(), message);
         return true;
     }
 }

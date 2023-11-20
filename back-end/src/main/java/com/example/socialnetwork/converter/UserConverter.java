@@ -38,4 +38,10 @@ public class UserConverter {
 
         return userDto;
     }
+
+    public User toEntity(UserDto userDto) {
+        User user = new User();
+        user.setId(userDto.getId());
+        return user;
+    }
 }
