@@ -38,7 +38,7 @@ export class ChatActiveSidebarComponent implements OnInit {
    * On init
    */
   ngOnInit(): void {
-    this._chatService.onSelectedChatUserChange.subscribe(res => {
+    this._chatService.onSelectedRoomChange.subscribe(res => {
       this.chatUser = res;
     });
   }

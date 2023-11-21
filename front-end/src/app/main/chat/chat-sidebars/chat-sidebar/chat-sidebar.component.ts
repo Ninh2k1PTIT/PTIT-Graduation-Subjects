@@ -1,17 +1,16 @@
-import { Component, OnInit } from '@angular/core';
-import { first } from 'rxjs/operators';
+import { Component, OnInit } from "@angular/core";
+import { first } from "rxjs/operators";
 
-import { CoreSidebarService } from '@core/components/core-sidebar/core-sidebar.service';
-import { ChatService } from '../../chat.service';
-import { AuthenticationService } from 'app/auth/service';
-import { Message } from 'app/model/Message';
-import { Room } from 'app/model/Room';
-import { User } from 'app/model/User';
-
+import { CoreSidebarService } from "@core/components/core-sidebar/core-sidebar.service";
+import { ChatService } from "../../chat.service";
+import { AuthenticationService } from "app/auth/service";
+import { Message } from "app/model/Message";
+import { Room } from "app/model/Room";
+import { User } from "app/model/User";
 
 @Component({
-  selector: 'app-chat-sidebar',
-  templateUrl: './chat-sidebar.component.html'
+  selector: "app-chat-sidebar",
+  templateUrl: "./chat-sidebar.component.html",
 })
 export class ChatSidebarComponent implements OnInit {
   // Public
@@ -28,7 +27,11 @@ export class ChatSidebarComponent implements OnInit {
    * @param {ChatService} _chatService
    * @param {CoreSidebarService} _coreSidebarService
    */
-  constructor(private _chatService: ChatService, private _coreSidebarService: CoreSidebarService, private _authService: AuthenticationService) { }
+  constructor(
+    private _chatService: ChatService,
+    private _coreSidebarService: CoreSidebarService,
+    private _authService: AuthenticationService
+  ) {}
 
   // Public Methods
   // -----------------------------------------------------------------------------------------------------
@@ -75,17 +78,12 @@ export class ChatSidebarComponent implements OnInit {
    * On init
    */
   ngOnInit(): void {
-    this.currentUser = this._authService.currentUserValue
-
-    // Subscribe to contacts
-    this._chatService.onContactsChange.subscribe(res => {
-      this.contacts = res;
-    });
+    this.currentUser = this._authService.currentUserValue;
 
     let skipFirst = 0;
 
     // Subscribe to chat users
-    this._chatService.onChatUsersChange.subscribe(res => {
+    this._chatService.onChatUsersChange.subscribe((res) => {
       this.rooms = res;
 
       // Skip setIndex first time when initialized
@@ -96,13 +94,13 @@ export class ChatSidebarComponent implements OnInit {
     });
 
     // Subscribe to selected Chats
-    this._chatService.onSelectedChatChange.subscribe(res => {
+    this._chatService.onSelectedChatChange.subscribe((res) => {
       this.chats = res;
     });
 
     // Add Unseen Message To Chat User
-    this._chatService.onChatsChange.pipe(first()).subscribe(rooms => {
-      this.rooms = rooms
+    this._chatService.onChatsChange.pipe(first()).subscribe((rooms) => {
+      this.rooms = rooms;
 
       // chats.map(chat => {
       //   this.chatUsers.map(user => {
@@ -112,5 +110,15 @@ export class ChatSidebarComponent implements OnInit {
       //   });
       // });
     });
+  }
+
+  formatLastMessage(room: Room) {
+    if (room.lastMessage) {
+      return room.lastMessage?.userId == this.currentUser.id
+        ? "Tôi"
+        : room.users[0].id == this.currentUser.id
+        ? room.users[1].username
+        : room.users[0].username + ": " + room.lastMessage.content;
+    } else return null;
   }
 }

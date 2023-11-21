@@ -20,8 +20,10 @@ export class UploadComponent implements OnInit {
   @ViewChild("modalBasic") public modal: NgbActiveModal;
   @Output() public onSuccess = new EventEmitter<void>();
   public form: FormGroup;
+  public isPhotoPreview = false;
   public isPhotoEdit = false;
   public photos: Photo[] = [];
+  public photoEdit: Photo
 
   constructor(
     private _modalService: NgbModal,
@@ -46,8 +48,15 @@ export class UploadComponent implements OnInit {
     });
   }
 
-  togglePhotoEdit() {
+  togglePhotoPreview() {
+    this.isPhotoPreview = !this.isPhotoPreview;
+  }
+
+  togglePhotoEdit(index: number) {
     this.isPhotoEdit = !this.isPhotoEdit;
+    this.photoEdit = this.photos[index]
+    console.log(this.photoEdit);
+    
   }
 
   async onFileInput(event: Event) {
@@ -94,5 +103,14 @@ export class UploadComponent implements OnInit {
   deletePhotoItem(i: number) {
     this.photos.splice(i, 1);
     if (this.photos.length == 0) this.isPhotoEdit = false;
+  }
+
+  crop(index: string) {
+    const canvas = document.getElementById("canvas") as HTMLCanvasElement;
+    const ctx = canvas.getContext("2d");
+    const img = document.getElementById(index) as HTMLImageElement;
+    console.log(img.offsetWidth);
+
+    ctx.drawImage(img, 0, 0, 800, 550, 0, 0, 400, 300);
   }
 }

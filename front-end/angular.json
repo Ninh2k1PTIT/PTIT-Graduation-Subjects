@@ -46,7 +46,8 @@
               "src/assets/fonts/feather/iconfont.css",
               "src/assets/fonts/font-awesome/css/font-awesome.min.css",
               "src/assets/fonts/flag-icon-css/css/flag-icon.min.css",
-              "src/@core/scss/angular/libs/toastr.component.scss"
+              "src/@core/scss/angular/libs/toastr.component.scss",
+              "node_modules/@ctrl/ngx-emoji-mart/picker.css"
             ],
             "stylePreprocessorOptions": {
               "includePaths": ["node_modules", "src/assets/"]

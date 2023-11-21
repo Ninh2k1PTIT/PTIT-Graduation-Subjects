@@ -1,28 +1,29 @@
-import { CommonModule } from '@angular/common';
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
+import { CommonModule } from "@angular/common";
+import { NgModule } from "@angular/core";
+import { RouterModule, Routes } from "@angular/router";
 
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
+import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
+import { PerfectScrollbarModule } from "ngx-perfect-scrollbar";
 
-import { CoreSidebarModule } from '@core/components';
-import { CoreCommonModule } from '@core/common.module';
-import { ChatContentComponent } from './chat-content/chat-content.component';
-import { ChatActiveSidebarComponent } from './chat-sidebars/chat-active-sidebar/chat-active-sidebar.component';
-import { ChatSidebarComponent } from './chat-sidebars/chat-sidebar/chat-sidebar.component';
-import { ChatUserSidebarComponent } from './chat-sidebars/chat-user-sidebar/chat-user-sidebar.component';
-import { ChatComponent } from './chat.component';
-import { ChatService } from './chat.service';
+import { CoreSidebarModule } from "@core/components";
+import { CoreCommonModule } from "@core/common.module";
+import { ChatContentComponent } from "./chat-content/chat-content.component";
+import { ChatActiveSidebarComponent } from "./chat-sidebars/chat-active-sidebar/chat-active-sidebar.component";
+import { ChatSidebarComponent } from "./chat-sidebars/chat-sidebar/chat-sidebar.component";
+import { ChatComponent } from "./chat.component";
+import { ChatService } from "./chat.service";
+import { PickerModule } from "@ctrl/ngx-emoji-mart";
+import { EmojiModule } from "@ctrl/ngx-emoji-mart/ngx-emoji";
 
 // routing
 const routes: Routes = [
   {
-    path: '',
+    path: "",
     component: ChatComponent,
     resolve: {
-      chatData: ChatService
+      chatData: ChatService,
     },
-  }
+  },
 ];
 
 @NgModule({
@@ -30,8 +31,7 @@ const routes: Routes = [
     ChatComponent,
     ChatContentComponent,
     ChatSidebarComponent,
-    ChatUserSidebarComponent,
-    ChatActiveSidebarComponent
+    ChatActiveSidebarComponent,
   ],
   imports: [
     CommonModule,
@@ -39,8 +39,10 @@ const routes: Routes = [
     RouterModule.forChild(routes),
     CoreCommonModule,
     PerfectScrollbarModule,
-    NgbModule
+    NgbModule,
+    EmojiModule,
+    PickerModule,
   ],
-  providers: [ChatService]
+  providers: [ChatService],
 })
-export class ChatModule { }
+export class ChatModule {}

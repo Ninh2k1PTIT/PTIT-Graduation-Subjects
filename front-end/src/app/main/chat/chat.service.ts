@@ -1,37 +1,59 @@
-import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
-import { environment } from 'environments/environment';
+import { HttpClient } from "@angular/common/http";
+import { Injectable } from "@angular/core";
+import { ActivatedRouteSnapshot, RouterStateSnapshot } from "@angular/router";
+import { Client } from "@stomp/stompjs";
+import { AuthenticationService } from "app/auth/service";
+import { Message } from "app/model/Message";
+import { Room } from "app/model/Room";
+import { environment } from "environments/environment";
 
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, Subject } from "rxjs";
+import SockJS from "sockjs-client";
 
 @Injectable()
 export class ChatService {
   public contacts: any[];
-  public chats: any[];
-  public userProfile;
+  public rooms: Room[];
+
   public isChatOpen: Boolean;
   public chatUsers: any[];
-  public selectedChat;
-  public selectedChatUser;
-
-  public onContactsChange: BehaviorSubject<any>;
   public onChatsChange: BehaviorSubject<any>;
   public onSelectedChatChange: BehaviorSubject<any>;
-  public onSelectedChatUserChange: BehaviorSubject<any>;
+  public onSelectedRoomChange: BehaviorSubject<Room>;
   public onChatUsersChange: BehaviorSubject<any>;
   public onChatOpenChange: BehaviorSubject<Boolean>;
   public onUserProfileChange: BehaviorSubject<any>;
+  public stompClient: Client;
+  public onReceiveMessage: Subject<Message>;
 
-  constructor(private _httpClient: HttpClient) {
+  constructor(
+    private _httpClient: HttpClient,
+    private _authService: AuthenticationService
+  ) {
     this.isChatOpen = false;
-    this.onContactsChange = new BehaviorSubject([]);
     this.onChatsChange = new BehaviorSubject([]);
     this.onSelectedChatChange = new BehaviorSubject([]);
-    this.onSelectedChatUserChange = new BehaviorSubject([]);
+    this.onSelectedRoomChange = new BehaviorSubject(null);
     this.onChatUsersChange = new BehaviorSubject([]);
     this.onChatOpenChange = new BehaviorSubject(false);
     this.onUserProfileChange = new BehaviorSubject([]);
+    this.onReceiveMessage = new Subject();
+
+    this.stompClient = new Client({
+      webSocketFactory: () => {
+        return new SockJS(`${environment.apiUrl}/socket`);
+      },
+      onConnect: (frame) => {
+        this.stompClient.subscribe(
+          `/topic/${_authService.currentUserValue.id}`,
+          (message) => {
+            const body: Message = JSON.parse(message.body)
+            this.onReceiveMessage.next(JSON.parse(message.body))
+          }
+        );
+      },
+    });
+    this.stompClient.activate();
   }
 
   /**
@@ -41,29 +63,13 @@ export class ChatService {
    * @param {RouterStateSnapshot} state
    * @returns {Observable<any> | Promise<any> | any}
    */
-  resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<any> | Promise<any> | any {
+  resolve(
+    route: ActivatedRouteSnapshot,
+    state: RouterStateSnapshot
+  ): Observable<any> | Promise<any> | any {
     return new Promise<void>((resolve, reject) => {
-      Promise.all([
-        this.getContacts(),
-        this.getChats(),
-        this.getUserProfile(),
-      ]).then(() => {
+      Promise.all([this.getRooms()]).then(() => {
         resolve();
-      }, reject);
-    });
-  }
-
-  /**
-   * Get Contacts
-   */
-  getContacts(): Promise<any[]> {
-    const url = `api/chat-contacts`;
-
-    return new Promise((resolve, reject) => {
-      this._httpClient.get(url).subscribe((response: any) => {
-        this.contacts = response;
-        this.onContactsChange.next(this.contacts);
-        resolve(this.contacts);
       }, reject);
     });
   }
@@ -71,44 +77,22 @@ export class ChatService {
   /**
    * Get Chats
    */
-  getChats(): Promise<any[]> {
-    const url = `${environment.apiUrl}/rooms`;
-
+  getRooms(): Promise<any[]> {
     return new Promise((resolve, reject) => {
-      this._httpClient.get(url).subscribe((response: any) => {
-        this.chats = response;
-        this.onChatsChange.next(this.chats);
+      this._httpClient
+        .get<Room[]>(`${environment.apiUrl}/rooms`)
+        .subscribe((res) => {
+          this.rooms = res;
+          this.onChatsChange.next(this.rooms);
 
-        resolve(this.chats);
-      }, reject);
+          resolve(this.rooms);
+        }, reject);
     });
   }
 
-  /**
-   * Get User Profile
-   */
-  getUserProfile(): Promise<any[]> {
-    const url = `api/chat-profileUser`;
-
-    return new Promise((resolve, reject) => {
-      this._httpClient.get(url).subscribe((response: any) => {
-        this.userProfile = response;
-        this.onUserProfileChange.next(this.userProfile);
-        resolve(this.userProfile);
-      }, reject);
-    });
-  }
-
-  /**
-   * Get Selected Chat User
-   *
-   * @param userId
-   */
-  getSelectedChatUser(userId) {
-    const selectUser = this.contacts.find(contact => contact.id === userId);
-    this.selectedChatUser = selectUser;
-
-    this.onSelectedChatUserChange.next(this.selectedChatUser);
+  getSelectedRoom(roomId) {
+    const selectRoom = this.rooms.find((room) => room.id === roomId);
+    this.onSelectedRoomChange.next(selectRoom);
   }
 
   /**
@@ -116,25 +100,13 @@ export class ChatService {
    *
    * @param id
    */
-  selectedChats(id) {
-    const selectChat = this.chats.find(chat => chat.userId === id);
-
-    // If Chat is Avaiable of Selected Id
-    if (selectChat !== undefined) {
-      this.selectedChat = selectChat;
-
-      this.onSelectedChatChange.next(this.selectedChat);
-      this.getSelectedChatUser(id);
-    }
-    // Else Create New Chat
-    else {
-      const newChat = {
-        userId: id,
-        unseenMsgs: 0
-      };
-      this.onSelectedChatChange.next(newChat);
-      this.getSelectedChatUser(id);
-    }
+  selectedRooms(id: number) {
+    this._httpClient
+      .get<Message[]>(`${environment.apiUrl}/room/${id}/chats`)
+      .subscribe((res) => {
+        this.onSelectedChatChange.next(res);
+        this.getSelectedRoom(id);
+      });
   }
 
   /**
@@ -147,17 +119,19 @@ export class ChatService {
     const newChat = {
       userId: id,
       unseenMsgs: 0,
-      chat: [chat]
+      chat: [chat],
     };
 
-    if (chat.message !== '') {
+    if (chat.message !== "") {
       return new Promise<void>((resolve, reject) => {
-        this._httpClient.post('api/chat-chats/', { ...newChat }).subscribe(() => {
-          this.getChats();
-          this.getSelectedChatUser(id);
-          this.openChat(id);
-          resolve();
-        }, reject);
+        this._httpClient
+          .post("api/chat-chats/", { ...newChat })
+          .subscribe(() => {
+            this.getRooms();
+            this.getSelectedRoom(id);
+            this.openChat(id);
+            resolve();
+          }, reject);
       });
     }
   }
@@ -170,7 +144,7 @@ export class ChatService {
   openChat(id) {
     this.isChatOpen = true;
     this.onChatOpenChange.next(this.isChatOpen);
-    this.selectedChats(id);
+    this.selectedRooms(id);
   }
 
   /**
@@ -180,24 +154,19 @@ export class ChatService {
    */
   updateChat(chats) {
     return new Promise<void>((resolve, reject) => {
-      this._httpClient.post('api/chat-chats/' + chats.id, { ...chats }).subscribe(() => {
-        this.getChats();
-        resolve();
-      }, reject);
+      this._httpClient
+        .post("api/chat-chats/" + chats.id, { ...chats })
+        .subscribe(() => {
+          this.getRooms();
+          resolve();
+        }, reject);
     });
   }
 
-  /**
-   * Update User Profile
-   *
-   * @param userProfileRef
-   */
-  updateUserProfile(userProfileRef) {
-    this.userProfile = userProfileRef;
-    this.onUserProfileChange.next(this.userProfile);
-  }
-
-  send() {
-    return this._httpClient.post<any>(`${environment.apiUrl}/chat`, { content: "hello", receiverUserId: 2 })
+  sendMessage(message: Message) {
+    return this._httpClient.post<Message>(
+      `${environment.apiUrl}/chat`,
+      message
+    );
   }
 }

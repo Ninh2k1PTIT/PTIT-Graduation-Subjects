@@ -35,16 +35,19 @@ const appRoutes: Routes = [
     path: "friend",
     loadChildren: () =>
       import("./main/friend/friend.module").then((m) => m.FriendModule),
+    canActivate: [AuthGuard],
   },
   {
     path: "chat",
     loadChildren: () =>
       import("./main/chat/chat.module").then((m) => m.ChatModule),
+    canActivate: [AuthGuard],
   },
   {
     path: "profile",
     loadChildren: () =>
       import("./main/profile/profile.module").then((m) => m.ProfileModule),
+    canActivate: [AuthGuard],
   },
   {
     path: "",

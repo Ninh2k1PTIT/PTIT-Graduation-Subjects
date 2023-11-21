@@ -3,6 +3,6 @@ import { User } from "./User"
 
 export class Room {
     id: number
-    users: User
+    users: User[]
     lastMessage: Message
 }

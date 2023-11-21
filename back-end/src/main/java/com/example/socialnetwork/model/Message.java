@@ -31,6 +31,6 @@ public class Message {
     @ManyToOne
     private User user;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     private Room room;
 }
