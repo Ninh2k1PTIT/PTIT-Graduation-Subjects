@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 public class MessageConverter {
     public Message toEntity(MessageDto messageDto) {
         Message message = new Message();
-        message.setContent(message.getContent());
+        message.setContent(messageDto.getContent());
 
         Room room = new Room();
         room.setId(messageDto.getRoomId());
@@ -20,8 +20,8 @@ public class MessageConverter {
 
     public MessageDto toDto(Message message) {
         MessageDto messageDto = new MessageDto();
-        messageDto.setContent(messageDto.getContent());
-        messageDto.setRoomId(messageDto.getRoomId());
+        messageDto.setContent(message.getContent());
+        messageDto.setRoomId(message.getRoom().getId());
         messageDto.setUserId(message.getUser().getId());
         messageDto.setCreatedAt(message.getCreatedAt());
 

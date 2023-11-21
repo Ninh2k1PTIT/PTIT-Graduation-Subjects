@@ -3,6 +3,10 @@ import { first } from 'rxjs/operators';
 
 import { CoreSidebarService } from '@core/components/core-sidebar/core-sidebar.service';
 import { ChatService } from '../../chat.service';
+import { AuthenticationService } from 'app/auth/service';
+import { Message } from 'app/model/Message';
+import { Room } from 'app/model/Room';
+import { User } from 'app/model/User';
 
 
 @Component({
@@ -12,11 +16,11 @@ import { ChatService } from '../../chat.service';
 export class ChatSidebarComponent implements OnInit {
   // Public
   public contacts;
-  public chatUsers;
+  public rooms: Room[] = [];
   public searchText;
   public chats;
   public selectedIndex = null;
-  public userProfile;
+  public currentUser: User;
 
   /**
    * Constructor
@@ -24,7 +28,7 @@ export class ChatSidebarComponent implements OnInit {
    * @param {ChatService} _chatService
    * @param {CoreSidebarService} _coreSidebarService
    */
-  constructor(private _chatService: ChatService, private _coreSidebarService: CoreSidebarService) { }
+  constructor(private _chatService: ChatService, private _coreSidebarService: CoreSidebarService, private _authService: AuthenticationService) { }
 
   // Public Methods
   // -----------------------------------------------------------------------------------------------------
@@ -39,11 +43,11 @@ export class ChatSidebarComponent implements OnInit {
     this._chatService.openChat(id);
 
     // Reset unread Message to zero
-    this.chatUsers.map(user => {
-      if (user.id === id) {
-        user.unseenMsgs = 0;
-      }
-    });
+    // this.chatUsers.map(user => {
+    //   if (user.id === id) {
+    //     user.unseenMsgs = 0;
+    //   }
+    // });
   }
 
   /**
@@ -71,6 +75,8 @@ export class ChatSidebarComponent implements OnInit {
    * On init
    */
   ngOnInit(): void {
+    this.currentUser = this._authService.currentUserValue
+
     // Subscribe to contacts
     this._chatService.onContactsChange.subscribe(res => {
       this.contacts = res;
@@ -80,11 +86,11 @@ export class ChatSidebarComponent implements OnInit {
 
     // Subscribe to chat users
     this._chatService.onChatUsersChange.subscribe(res => {
-      this.chatUsers = res;
+      this.rooms = res;
 
       // Skip setIndex first time when initialized
       if (skipFirst >= 1) {
-        this.setIndex(this.chatUsers.length - 1);
+        this.setIndex(this.rooms.length - 1);
       }
       skipFirst++;
     });
@@ -95,19 +101,16 @@ export class ChatSidebarComponent implements OnInit {
     });
 
     // Add Unseen Message To Chat User
-    this._chatService.onChatsChange.pipe(first()).subscribe(chats => {
-      chats.map(chat => {
-        this.chatUsers.map(user => {
-          if (user.id === chat.userId) {
-            user.unseenMsgs = chat.unseenMsgs;
-          }
-        });
-      });
-    });
+    this._chatService.onChatsChange.pipe(first()).subscribe(rooms => {
+      this.rooms = rooms
 
-    // Subscribe to User Profile
-    this._chatService.onUserProfileChange.subscribe(response => {
-      this.userProfile = response;
+      // chats.map(chat => {
+      //   this.chatUsers.map(user => {
+      //     if (user.id === chat.userId) {
+      //       user.unseenMsgs = chat.unseenMsgs;
+      //     }
+      //   });
+      // });
     });
   }
 }

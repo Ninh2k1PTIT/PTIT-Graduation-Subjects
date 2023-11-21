@@ -47,8 +47,6 @@ export class ChatService {
         this.getContacts(),
         this.getChats(),
         this.getUserProfile(),
-        this.getActiveChats(),
-        this.getChatUsers()
       ]).then(() => {
         resolve();
       }, reject);
@@ -74,7 +72,7 @@ export class ChatService {
    * Get Chats
    */
   getChats(): Promise<any[]> {
-    const url = `api/chat-chats`;
+    const url = `${environment.apiUrl}/rooms`;
 
     return new Promise((resolve, reject) => {
       this._httpClient.get(url).subscribe((response: any) => {
@@ -111,30 +109,6 @@ export class ChatService {
     this.selectedChatUser = selectUser;
 
     this.onSelectedChatUserChange.next(this.selectedChatUser);
-  }
-
-  /**
-   * Get Active Chats
-   */
-  getActiveChats() {
-    const chatArr = this.chats.filter(chat => {
-      return this.contacts.some(contact => {
-        return contact.id === chat.userId;
-      });
-    });
-  }
-
-  /**
-   * Get Chat Users
-   */
-  getChatUsers() {
-    const contactArr = this.contacts.filter(contact => {
-      return this.chats.some(chat => {
-        return chat.userId === contact.id;
-      });
-    });
-    this.chatUsers = contactArr;
-    this.onChatUsersChange.next(this.chatUsers);
   }
 
   /**
@@ -180,7 +154,6 @@ export class ChatService {
       return new Promise<void>((resolve, reject) => {
         this._httpClient.post('api/chat-chats/', { ...newChat }).subscribe(() => {
           this.getChats();
-          this.getChatUsers();
           this.getSelectedChatUser(id);
           this.openChat(id);
           resolve();

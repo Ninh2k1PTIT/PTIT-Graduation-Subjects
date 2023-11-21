@@ -27,6 +27,7 @@ public class MessageController {
     }
 
     @GetMapping("room/{roomId}/chats")
+    @PreAuthorize("hasRole('USER')")
     public List<MessageDto> getByRoomId(@PathVariable Integer roomId) {
         return messageService.getByRoomId(roomId);
     }

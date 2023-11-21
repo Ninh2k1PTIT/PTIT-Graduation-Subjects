@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class RoomConverter {
     private UserConverter userConverter;
+    private MessageConverter messageConverter;
 
     public Room toEntity(RoomDto roomDto) {
         Room group = new Room();
@@ -21,6 +22,8 @@ public class RoomConverter {
         RoomDto roomDto = new RoomDto();
         roomDto.setId(room.getId());
         roomDto.setUsers(room.getUsers().stream().map(item -> userConverter.toDto(item)).collect(Collectors.toSet()));
+        if (!room.getMessages().isEmpty())
+            roomDto.setLastMessage(messageConverter.toDto(room.getMessages().get(room.getMessages().size() - 1)));
         return roomDto;
     }
 }

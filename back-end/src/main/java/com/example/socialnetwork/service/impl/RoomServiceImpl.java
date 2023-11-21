@@ -1,7 +1,6 @@
 package com.example.socialnetwork.service.impl;
 
 import com.example.socialnetwork.converter.RoomConverter;
-import com.example.socialnetwork.converter.UserConverter;
 import com.example.socialnetwork.dto.RoomDto;
 import com.example.socialnetwork.model.Room;
 import com.example.socialnetwork.repository.RoomRepository;
@@ -20,7 +19,6 @@ import java.util.stream.Collectors;
 public class RoomServiceImpl implements RoomService {
     private RoomRepository roomRepository;
     private RoomConverter roomConverter;
-    private UserConverter userConverter;
     private UserRepository userRepository;
 
     @Override
