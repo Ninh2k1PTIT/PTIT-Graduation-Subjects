@@ -38,7 +38,7 @@ export const coreConfig: CoreConfig = {
       backgroundColor      : ''               // BS color i.e bg-primary, bg-success
     },
     footer: {
-      hidden               : true,           // Boolean: true, false
+      hidden               : false,           // Boolean: true, false
       type                 : 'footer-static', // footer-static, footer-sticky, d-none
       background           : 'footer-light',  // footer-light. footer-dark
       customBackgroundColor: false,           // Boolean: true, false
