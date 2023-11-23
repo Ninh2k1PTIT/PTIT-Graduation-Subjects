@@ -73,6 +73,9 @@ public class User {
     @OneToMany(mappedBy = "receiver", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Friend> friends2 = new ArrayList<>();
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Tag> tags = new ArrayList<>();
+
     public User(String email, String password, String username, String phoneNumber, EGender gender, EProvider provider) {
         this.email = email;
         this.password = password;
