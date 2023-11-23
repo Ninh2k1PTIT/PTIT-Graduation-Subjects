@@ -1,31 +1,50 @@
 <div class="container-xxl p-0">
   <div class="row">
     <!-- center profile info section -->
-    <div class="col-lg-9 col-12 order-1 order-lg-2">
-      <app-upload (onSuccess)="getPosts()"></app-upload>
+    <div class="col-lg-12 col-12 order-1 order-lg-2">
+      <app-upload (onSuccess)="newPost($event)"></app-upload>
       <div class="card">
         <div class="card-body">
           <form [formGroup]="form">
             <div class="row">
               <div class="col-3">
                 <div class="form-group">
-                  <input type="text" class="form-control" placeholder="Nội dung" formControlName="content" />
+                  <input
+                    type="text"
+                    class="form-control"
+                    placeholder="Nội dung"
+                    formControlName="content"
+                  />
                 </div>
               </div>
               <div class="col-3">
                 <div class="form-group">
-                  <ng-select [items]="sortOption" bindValue="value" bindLabel="label" [clearable]="false"
-                    formControlName="sort"></ng-select>
+                  <ng-select
+                    [items]="sortOption"
+                    bindValue="value"
+                    bindLabel="label"
+                    [clearable]="false"
+                    formControlName="sort"
+                  ></ng-select>
                 </div>
               </div>
               <div class="col-4">
                 <div class="form-group">
-                  <ng2-flatpickr [config]="DateRangeOptions" name="DateRange" placeholder="Ngày tạo"></ng2-flatpickr>
+                  <ng2-flatpickr
+                    [config]="DateRangeOptions"
+                    name="DateRange"
+                    placeholder="Ngày tạo"
+                  ></ng2-flatpickr>
                 </div>
               </div>
               <div class="col-2">
                 <div class="d-flex justify-content-end">
-                  <button type="button" class="btn btn-icon btn-outline-primary" rippleEffect (click)="refresh()">
+                  <button
+                    type="button"
+                    class="btn btn-icon btn-outline-primary"
+                    rippleEffect
+                    (click)="refresh()"
+                  >
                     <span [data-feather]="'refresh-cw'"></span>
                   </button>
                 </div>
@@ -39,23 +58,34 @@
     <!--/ center profile info section -->
 
     <!-- right profile info section -->
-    <div class="col-lg-3 col-12 order-3">
+    <div class="col-lg-3 col-12 order-3 d-none">
       <!-- suggestion -->
       <div class="card">
         <div class="card-body">
           <h5 class="mb-2">Gợi ý</h5>
-          <div class="d-flex justify-content-start align-items-center mt-1"
-            *ngFor="let suggestionsRef of data.profileData.suggestions">
+          <div
+            class="d-flex justify-content-start align-items-center mt-1"
+            *ngFor="let suggestionsRef of data.profileData.suggestions"
+          >
             <div class="avatar mr-75">
-              <img [src]="suggestionsRef.avatar" alt="avatar" height="40" width="40" />
+              <img
+                [src]="suggestionsRef.avatar"
+                alt="avatar"
+                height="40"
+                width="40"
+              />
             </div>
             <div class="profile-user-info">
               <h6 class="mb-0">{{ suggestionsRef.name }}</h6>
               <small class="text-muted">{{
                 suggestionsRef.mutualFriend
-                }}</small>
+              }}</small>
             </div>
-            <button type="button" class="btn btn-primary btn-icon btn-sm ml-auto" rippleEffect>
+            <button
+              type="button"
+              class="btn btn-primary btn-icon btn-sm ml-auto"
+              rippleEffect
+            >
               <i data-feather="user-plus"></i>
             </button>
           </div>

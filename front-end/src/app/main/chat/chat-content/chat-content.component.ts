@@ -6,15 +6,12 @@ import {
   ViewChild,
 } from "@angular/core";
 import { CoreSidebarService } from "@core/components/core-sidebar/core-sidebar.service";
-import { ChatService } from "../chat.service";
-import SockJS from "sockjs-client";
-import { Client } from "@stomp/stompjs";
-import { environment } from "environments/environment";
-import { AuthenticationService } from "app/auth/service";
-import { User } from "app/model/User";
-import { Message } from "app/model/Message";
 import { EmojiEvent } from "@ctrl/ngx-emoji-mart/ngx-emoji";
+import { AuthenticationService } from "app/auth/service";
+import { Message } from "app/model/Message";
 import { Room } from "app/model/Room";
+import { User } from "app/model/User";
+import { ChatService } from "../chat.service";
 
 @Component({
   selector: "app-chat-content",

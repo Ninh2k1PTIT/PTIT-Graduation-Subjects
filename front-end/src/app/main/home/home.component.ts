@@ -5,6 +5,7 @@ import {
   ViewEncapsulation,
 } from "@angular/core";
 import { FormBuilder, FormGroup } from "@angular/forms";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { EPostSort } from "app/model/EPostSort";
 import { Post } from "app/model/Post";
 import { PostService } from "app/services/post.service";
@@ -96,7 +97,11 @@ export class HomeComponent implements OnInit {
 
   public posts: Post[] = [];
 
-  constructor(private _postService: PostService, private _fb: FormBuilder) {}
+  constructor(
+    private _postService: PostService,
+    private _fb: FormBuilder,
+    private _modalService: NgbModal
+  ) {}
 
   ngOnInit(): void {
     this.form = this._fb.group({
@@ -149,17 +154,19 @@ export class HomeComponent implements OnInit {
       this.form.patchValue({ page: currentPage + 1 });
   }
 
-  getPosts() {
-    // this._postService
-    //   .search({ page: this.currentPage, size: 10 })
-    //   .subscribe((res) => {
-    //     this.posts = [...this.posts, ...res.data.data];
-    //     this.totalPages = res.data.totalPages;
-    //   });
+  newPost(post: Post) {
+    this.posts = [post, ...this.posts];
   }
 
   refresh() {
     this.form.patchValue({ page: 0 });
     this.totalPages = 0;
+  }
+
+  modalOpen(modal) {
+    this._modalService.open(modal, {
+      size: "lg",
+      scrollable: true,
+    });
   }
 }

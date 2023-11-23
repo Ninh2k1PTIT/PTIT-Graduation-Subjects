@@ -114,11 +114,13 @@ export class ChatSidebarComponent implements OnInit {
 
   formatLastMessage(room: Room) {
     if (room.lastMessage) {
-      return room.lastMessage?.userId == this.currentUser.id
-        ? "Tôi"
-        : room.users[0].id == this.currentUser.id
-        ? room.users[1].username
-        : room.users[0].username + ": " + room.lastMessage.content;
+      return (
+        (room.lastMessage?.userId == this.currentUser.id
+          ? "Tôi: "
+          : room.users[0].id == this.currentUser.id
+          ? room.users[1].username
+          : room.users[0].username + ": ") + room.lastMessage.content
+      );
     } else return null;
   }
 }

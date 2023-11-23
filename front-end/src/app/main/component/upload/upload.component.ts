@@ -1,6 +1,5 @@
 import {
   Component,
-  ElementRef,
   EventEmitter,
   OnInit,
   Output,
@@ -8,9 +7,14 @@ import {
 } from "@angular/core";
 import { FormBuilder, FormGroup } from "@angular/forms";
 import { NgbActiveModal, NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { UploadService } from "./upload.service";
-import { Post } from "app/model/Post";
 import { Photo } from "app/model/Photo";
+import { Post } from "app/model/Post";
+import { UploadService } from "./upload.service";
+import { User } from "app/model/User";
+import { Observable, Subject, of } from "rxjs";
+import { debounceTime, distinctUntilChanged } from "rxjs/operators";
+import { UserService } from "app/services/user.service";
+import { ToastrService } from "ngx-toastr";
 
 @Component({
   selector: "app-upload",
@@ -19,30 +23,53 @@ import { Photo } from "app/model/Photo";
 })
 export class UploadComponent implements OnInit {
   @ViewChild("modalBasic") public modal: NgbActiveModal;
-  @Output() public onSuccess = new EventEmitter<void>();
+  @Output() public onSuccess = new EventEmitter<Post>();
+  public users: Observable<User[]> = null;
+  public $search = new Subject<string>();
   public form: FormGroup;
   public isPhotoPreview = false;
   public isPhotoEdit = false;
+  public isCrop = false;
+  public isAddTag = false;
   public photos: Photo[] = [];
-  public photoEditIndex: number
+  public photoEditIndex: number;
+  public binding;
 
   constructor(
     private _modalService: NgbModal,
     private _fb: FormBuilder,
-    private _uploadService: UploadService
-  ) { }
+    private _uploadService: UploadService,
+    private _userService: UserService,
+    private _toastrService: ToastrService
+  ) {}
 
   get f() {
     return this.form.controls;
   }
 
   ngOnInit(): void {
-    this.form = this._fb.group({
-      content: "",
-    });
+    this.$search
+      .pipe(debounceTime(500), distinctUntilChanged())
+      .subscribe((val) => {
+        this.users = this._filter(val);
+      });
+  }
+
+  private _filter(value: string) {
+    return value
+      ? this._userService.getByUsername({ username: value })
+      : of([] as User[]);
   }
 
   modalOpen() {
+    this.photos = [];
+    this.isPhotoPreview = false;
+    this.isPhotoEdit = false;
+    this.isCrop = false;
+    this.isAddTag = false;
+    this.form = this._fb.group({
+      content: "",
+    });
     this._modalService.open(this.modal, {
       size: "lg",
       scrollable: true,
@@ -54,66 +81,102 @@ export class UploadComponent implements OnInit {
   }
 
   openPhotoEdit(index: number) {
-    this.isPhotoEdit = true
-    this.photoEditIndex = index
+    this.isPhotoEdit = true;
+    this.photoEditIndex = index;
     setTimeout(() => {
-      const crop = document.getElementById('crop-wrapper') as HTMLDivElement
-      const img = document.getElementById('photo-edit') as HTMLImageElement
-      crop.style.width = img.width + "px"
-      crop.style.height = img.height + "px"
+      const crop = document.getElementById("crop-wrapper") as HTMLDivElement;
+      const cropBorder = document.getElementById(
+        "crop-border"
+      ) as HTMLDivElement;
+      const img = document.getElementById("photo-edit") as HTMLImageElement;
+      crop.style.width = img.width + "px";
+      crop.style.height = img.height + "px";
 
-      const resizable = document.getElementsByClassName('resize')
+      const resizable = document.getElementsByClassName("resize");
       for (let i = 0; i < resizable.length; i++) {
-        const element = resizable.item(i) as HTMLDivElement
+        const element = resizable.item(i) as HTMLDivElement;
         let resize = (event: MouseEvent) => {
-          const startLeft = crop.offsetLeft, startX = event.clientX, startTop = crop.offsetTop, startY = event.clientY, startWidth = crop.offsetWidth, startHeight = crop.offsetHeight
-          console.log(crop.offsetLeft);
-
+          const startLeft = crop.offsetLeft,
+            startX = event.clientX,
+            startTop = crop.offsetTop,
+            startY = event.clientY,
+            startWidth = crop.offsetWidth,
+            startHeight = crop.offsetHeight;
           let onMouseMove = (event: MouseEvent) => {
+            event.preventDefault();
+            const offsetX = event.clientX - startX,
+              offsetY = event.clientY - startY;
 
-            if (i == 0) {
-              crop.style.width = startWidth - (event.clientX - startX) + "px"
-              crop.style.height = startHeight - (event.clientY - startY) + "px"
-              crop.style.left = startLeft + (event.clientX - startX) + "px"
-              crop.style.top = startTop + (event.clientY - startY) + "px"
-            } else if (i == 1) {
-              crop.style.width = startWidth - (startX - event.clientX) + "px"
-              crop.style.height = startHeight - (event.clientY - startY) + "px"
-              crop.style.top = startTop + (event.clientY - startY) + "px"
-            } else if (i == 2) {
-              crop.style.width = startWidth - (event.clientX - startX) + "px"
-              crop.style.height = startHeight - (startY - event.clientY) + "px"
-              crop.style.left = startLeft + (event.clientX - startX) + "px"
-            } else if (i == 3) {
-              crop.style.width = startWidth - (startX - event.clientX) + "px"
-              crop.style.height = startHeight - (startY - event.clientY) + "px"
+            if (element.id == "top-left") {
+              if (startLeft + offsetX >= 0) {
+                crop.style.width = startWidth - offsetX + "px";
+                crop.style.left = startLeft + offsetX + "px";
+              }
+              if (startTop + offsetY >= 0) {
+                crop.style.height = startHeight - offsetY + "px";
+                crop.style.top = startTop + offsetY + "px";
+              }
+            } else if (element.id == "top-right") {
+              if (startLeft + startWidth + offsetX <= img.offsetWidth)
+                crop.style.width = startWidth + offsetX + "px";
+              if (startTop + offsetY >= 0) {
+                crop.style.height = startHeight - offsetY + "px";
+                crop.style.top = startTop + offsetY + "px";
+              }
+            } else if (element.id == "bottom-left") {
+              if (startLeft + offsetX >= 0) {
+                crop.style.width = startWidth - offsetX + "px";
+                crop.style.left = startLeft + offsetX + "px";
+              }
+              if (startTop + startHeight + offsetY <= img.offsetHeight)
+                crop.style.height = startHeight + offsetY + "px";
+            } else if (element.id == "bottom-right") {
+              if (startLeft + startWidth + offsetX <= img.offsetWidth)
+                crop.style.width = startWidth + offsetX + "px";
+              if (startTop + startHeight + offsetY <= img.offsetHeight)
+                crop.style.height = startHeight + offsetY + "px";
             }
-          }
-          let onMouseUp = () => {
-            document.removeEventListener('mousemove', onMouseMove);
-            document.removeEventListener('mouseup', onMouseUp);
-          };
-          document.addEventListener('mousemove', onMouseMove);
-          document.addEventListener('mouseup', onMouseUp);
-        };
-        element.addEventListener('mousedown', resize)
 
+            cropBorder.style.borderWidth = `${crop.offsetTop}px ${
+              img.width - crop.offsetWidth - crop.offsetLeft
+            }px ${img.height - crop.offsetHeight - crop.offsetTop}px ${
+              crop.offsetLeft
+            }px`;
+          };
+          let onMouseUp = () => {
+            document.removeEventListener("mousemove", onMouseMove);
+            document.removeEventListener("mouseup", onMouseUp);
+          };
+          document.addEventListener("mousemove", onMouseMove);
+          document.addEventListener("mouseup", onMouseUp);
+        };
+        element.addEventListener("mousedown", resize);
       }
 
-    })
-
+      img.addEventListener("mousedown", (event: MouseEvent) => {
+        if (this.isAddTag) {
+          this.binding = null;
+          const search = document.getElementById(
+            "search-user"
+          ) as HTMLDivElement;
+          search.style.display = "block";
+          search.style.top = event.offsetY + "px";
+          search.style.left = event.offsetX + "px";
+        }
+      });
+    });
   }
 
   async onFileInput(event: Event) {
     const target = event.target as HTMLInputElement;
     const files = target.files;
-    console.log(files);
 
     if (files.length > 0) {
       for (let i = 0; i < files.length; i++)
         this.photos.push({
           file: files.item(i),
           b64: await this.convertFileToUrl(files.item(i)),
+          tags: [],
         });
     }
   }
@@ -139,8 +202,12 @@ export class UploadComponent implements OnInit {
       )
       .subscribe((res) => {
         if (res.success) {
-          this.onSuccess.emit();
-          this._modalService.dismissAll()
+          this.onSuccess.emit(res.data);
+          this._modalService.dismissAll();
+          this._toastrService.success("Đã tạo bài viết", "Thành công", {
+            toastClass: "toast ngx-toastr",
+            closeButton: true,
+          });
         }
       });
   }
@@ -150,35 +217,58 @@ export class UploadComponent implements OnInit {
     if (this.photos.length == 0) this.isPhotoEdit = false;
   }
 
-  // crop(index: string) {
-  //   const canvas = document.getElementById("canvas") as HTMLCanvasElement;
-  //   const ctx = canvas.getContext("2d");
-  //   const img = document.getElementById(index) as HTMLImageElement;
-  //   console.log(img.offsetWidth);
-
-  //   ctx.drawImage(img, 0, 0, 800, 550, 0, 0, 400, 300);
-  // }
-
   savePhotoEdit() {
-    const crop = document.getElementById('crop-wrapper') as HTMLDivElement
-    const img = document.getElementById('photo-edit') as HTMLImageElement
-    const ratioX = img.naturalWidth / img.offsetWidth, ratioY = img.naturalHeight / img.offsetHeight
-    const canvas = document.createElement('canvas')
-    canvas.width = crop.offsetWidth * ratioX
-    canvas.height = crop.offsetHeight * ratioY
+    const img = document.getElementById("photo-edit") as HTMLImageElement;
+    const crop = document.getElementById("crop-wrapper") as HTMLDivElement;
+    const ratioX = img.naturalWidth / img.offsetWidth,
+      ratioY = img.naturalHeight / img.offsetHeight;
+    const canvas = document.createElement("canvas");
+    canvas.width = crop.offsetWidth * ratioX;
+    canvas.height = crop.offsetHeight * ratioY;
+
     const ctx = canvas.getContext("2d");
-    console.log(crop.offsetLeft, crop.offsetTop, crop.offsetWidth, crop.offsetHeight, crop.offsetWidth, crop.offsetHeight);
+    ctx.drawImage(
+      img,
+      crop.offsetLeft * ratioX,
+      crop.offsetTop * ratioY,
+      canvas.width,
+      canvas.height,
+      0,
+      0,
+      canvas.width,
+      canvas.height
+    );
 
-    ctx.drawImage(img, crop.offsetLeft * ratioX, crop.offsetTop * ratioY, canvas.width, canvas.height, 0, 0, canvas.width, canvas.height);
-    console.log(canvas.toDataURL());
     canvas.toBlob((blob: File) => {
-      this.photos[this.photoEditIndex] = {
-        b64: canvas.toDataURL(),
-        file: blob
-      }
-      this.isPhotoEdit = false
-    })
+      this.photos[this.photoEditIndex].b64 = canvas.toDataURL();
+      this.photos[this.photoEditIndex].file = blob;
+      this.isPhotoEdit = false;
+    });
+  }
 
+  onSelectedUser(event: User) {
+    const search = document.getElementById("search-user") as HTMLDivElement;
+    const img = document.getElementById("photo-edit") as HTMLImageElement;
+    const ratioX = img.naturalWidth / img.offsetWidth;
+    const ratioY = img.naturalHeight / img.offsetHeight;
+    this.photos[this.photoEditIndex].tags.push({
+      left: search.offsetLeft * ratioX,
+      top: search.offsetTop * ratioY,
+      user: event,
+    });
+    console.log(this.photos);
 
+    search.style.display = "none";
+  }
+
+  convertCoordinates(imageId: string, left: number, top: number) {
+    const img = document.getElementById(imageId) as HTMLImageElement;
+    const ratioX = img.naturalWidth / img.offsetWidth;
+    const ratioY = img.naturalHeight / img.offsetHeight;
+
+    return {
+      left: left / ratioX + "px",
+      top: top / ratioY + "px",
+    };
   }
 }

@@ -49,4 +49,10 @@ public class UserController {
         Pageable pageable = PageRequest.of(page, size);
         return ResponseEntity.ok(new BaseResponse<>(userService.search(username, pageable), true, null, null));
     }
+
+    @GetMapping("users/all")
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<?> getByUsername(@RequestParam(defaultValue = "") String username) {
+        return ResponseEntity.ok(userService.getByUsername(username));
+    }
 }

@@ -9,16 +9,6 @@
   <!-- Sidebar header start -->
   <div class="chat-fixed-search">
     <div class="d-flex align-items-center w-100">
-      <div class="sidebar-profile-toggle">
-        <button class="btn avatar avatar-border bg-transparent p-0">
-          <img
-            [src]="currentUser.avatar"
-            alt="user_avatar"
-            height="42"
-            width="42"
-          />
-        </button>
-      </div>
       <div class="input-group input-group-merge ml-1 w-100">
         <div class="input-group-prepend">
           <span class="input-group-text round"
@@ -29,7 +19,7 @@
           type="text"
           class="form-control round"
           id="chat-search"
-          placeholder="Search or start a new chat"
+          placeholder="Tìm kiếm"
           aria-label="Search..."
           aria-describedby="chat-search"
           [(ngModel)]="searchText"
@@ -57,7 +47,11 @@
       >
         <span class="avatar"
           ><img
-            [src]="currentUser.avatar"
+            [src]="
+              room.users[0].id == currentUser.id
+                ? room.users[1].avatar
+                : room.users[0].avatar
+            "
             height="42"
             width="42"
             alt="Generic placeholder image"
@@ -77,7 +71,7 @@
         </div>
         <div class="chat-meta text-nowrap">
           <small class="float-right mb-25 chat-time">{{
-            room.lastMessage?.createdAt | date: 'HH:mm'
+            room.lastMessage?.createdAt | date : "HH:mm"
           }}</small>
         </div>
       </li>
