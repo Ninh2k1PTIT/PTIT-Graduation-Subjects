@@ -1,16 +1,16 @@
 package com.example.socialnetwork.service.impl;
 
-import com.example.socialnetwork.converter.PostPhotoConverter;
 import com.example.socialnetwork.converter.PostConverter;
-import com.example.socialnetwork.dto.PostPhotoDto;
+import com.example.socialnetwork.converter.PostPhotoConverter;
+import com.example.socialnetwork.converter.TagConverter;
 import com.example.socialnetwork.dto.PostDto;
+import com.example.socialnetwork.dto.PostPhotoDto;
+import com.example.socialnetwork.dto.TagDto;
 import com.example.socialnetwork.dto.response.PaginationResponse;
-import com.example.socialnetwork.model.EAudience;
-import com.example.socialnetwork.model.EPostSort;
-import com.example.socialnetwork.model.PostPhoto;
-import com.example.socialnetwork.model.Post;
+import com.example.socialnetwork.model.*;
 import com.example.socialnetwork.repository.PostPhotoRepository;
 import com.example.socialnetwork.repository.PostRepository;
+import com.example.socialnetwork.repository.TagRepository;
 import com.example.socialnetwork.service.FirebaseImageService;
 import com.example.socialnetwork.service.PostService;
 import lombok.AllArgsConstructor;
@@ -22,6 +22,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.xml.bind.DatatypeConverter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -34,8 +36,10 @@ import java.util.stream.Collectors;
 public class PostServiceImpl implements PostService {
     private PostRepository postRepository;
     private PostPhotoRepository postPhotoRepository;
+    private TagRepository tagRepository;
     private PostConverter postConverter;
     private PostPhotoConverter postPhotoConverter;
+    private TagConverter tagConverter;
     private FirebaseImageService imageService;
 
     @Override
@@ -65,6 +69,40 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    public PostDto create2(PostDto postDto) throws IOException {
+        Post post = postConverter.toEntity(postDto);
+        Post newPost = postRepository.save(post);
+        PostDto newPostDto = postConverter.toDto(newPost);
+
+        List<PostPhotoDto> postPhotoDtos = new ArrayList<>();
+        for (PostPhotoDto postPhotoDto : postDto.getPhotos()) {
+            String content = postPhotoDto.getContent().split(",")[1];
+            byte[] bytes = DatatypeConverter.parseBase64Binary(content);
+            String fileName = imageService.save(bytes, postPhotoDto.getName(), postPhotoDto.getType());
+            String imageUrl = imageService.getImageUrl(fileName);
+
+            PostPhoto postPhoto = new PostPhoto();
+            postPhoto.setContent(imageUrl);
+            postPhoto.setPost(newPost);
+            PostPhoto newPostPhoto = postPhotoRepository.save(postPhoto);
+            PostPhotoDto newPostPhotoDto = postPhotoConverter.toDto(newPostPhoto);
+
+            List<TagDto> tagDtos = new ArrayList<>();
+            for (TagDto tagDto : postPhotoDto.getTags()) {
+                Tag tag = tagConverter.toEntity(tagDto);
+                tag.setPostPhoto(newPostPhoto);
+                tagDtos.add(tagConverter.toDto(tagRepository.save(tag)));
+            }
+            newPostPhotoDto.setTags(tagDtos);
+
+            postPhotoDtos.add(newPostPhotoDto);
+        }
+        newPostDto.setPhotos(postPhotoDtos);
+
+        return newPostDto;
+    }
+
+    @Override
     public PostDto update(Integer id, PostDto postDto) {
         postDto.setId(id);
         Post post = postRepository.findById(id).get();
@@ -81,7 +119,7 @@ public class PostServiceImpl implements PostService {
         //Save photo
         for (PostPhotoDto postPhotoDto : postDto.getPhotos()) {
             if (postPhotoDto.getId() == null) {
-                postPhotoDto.setPost(postDto);
+//                postPhotoDto.setPost(postDto);
                 PostPhoto postPhoto = postPhotoConverter.toEntity(postPhotoDto);
                 post.getPostPhotos().add(postPhoto);
             }

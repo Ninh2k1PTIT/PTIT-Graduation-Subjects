@@ -7,7 +7,7 @@ import {
 } from "@angular/core";
 import { FormBuilder, FormGroup } from "@angular/forms";
 import { NgbActiveModal, NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { Photo } from "app/model/Photo";
+import { Photo, Tag } from "app/model/Photo";
 import { Post } from "app/model/Post";
 import { UploadService } from "./upload.service";
 import { User } from "app/model/User";
@@ -33,6 +33,7 @@ export class UploadComponent implements OnInit {
   public isAddTag = false;
   public photos: Photo[] = [];
   public photoEditIndex: number;
+  public tags: Tag[];
   public binding;
 
   constructor(
@@ -65,8 +66,6 @@ export class UploadComponent implements OnInit {
     this.photos = [];
     this.isPhotoPreview = false;
     this.isPhotoEdit = false;
-    this.isCrop = false;
-    this.isAddTag = false;
     this.form = this._fb.group({
       content: "",
     });
@@ -82,7 +81,10 @@ export class UploadComponent implements OnInit {
 
   openPhotoEdit(index: number) {
     this.isPhotoEdit = true;
+    this.isCrop = false;
+    this.isAddTag = false;
     this.photoEditIndex = index;
+    this.tags = this.photos[index].tags;
     setTimeout(() => {
       const crop = document.getElementById("crop-wrapper") as HTMLDivElement;
       const cropBorder = document.getElementById(
@@ -177,6 +179,7 @@ export class UploadComponent implements OnInit {
           file: files.item(i),
           b64: await this.convertFileToUrl(files.item(i)),
           tags: [],
+          type: files.item(i).type,
         });
     }
   }
@@ -240,10 +243,18 @@ export class UploadComponent implements OnInit {
     );
 
     canvas.toBlob((blob: File) => {
-      this.photos[this.photoEditIndex].b64 = canvas.toDataURL();
-      this.photos[this.photoEditIndex].file = blob;
+      for (let tag of this.tags) {
+        tag.left = tag.left - crop.offsetLeft * ratioX;
+        tag.top = tag.top - crop.offsetTop * ratioY;
+      }
+      this.photos[this.photoEditIndex] = {
+        b64: canvas.toDataURL(blob.type),
+        file: blob,
+        type: blob.type,
+        tags: this.tags,
+      };
       this.isPhotoEdit = false;
-    });
+    }, this.photos[this.photoEditIndex].type);
   }
 
   onSelectedUser(event: User) {
@@ -251,12 +262,11 @@ export class UploadComponent implements OnInit {
     const img = document.getElementById("photo-edit") as HTMLImageElement;
     const ratioX = img.naturalWidth / img.offsetWidth;
     const ratioY = img.naturalHeight / img.offsetHeight;
-    this.photos[this.photoEditIndex].tags.push({
+    this.tags.push({
       left: search.offsetLeft * ratioX,
       top: search.offsetTop * ratioY,
       user: event,
     });
-    console.log(this.photos);
 
     search.style.display = "none";
   }

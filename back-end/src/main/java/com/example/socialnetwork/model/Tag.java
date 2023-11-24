@@ -17,10 +17,10 @@ public class Tag {
     private Integer id;
 
     @Column
-    private Integer left;
+    private Integer offsetLeft;
 
     @Column
-    private Integer top;
+    private Integer offsetTop;
 
     @ManyToOne
     private PostPhoto postPhoto;

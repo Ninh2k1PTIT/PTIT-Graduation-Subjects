@@ -5,7 +5,6 @@ import com.example.socialnetwork.dto.response.BaseResponse;
 import com.example.socialnetwork.dto.response.PaginationResponse;
 import com.example.socialnetwork.model.EPostSort;
 import com.example.socialnetwork.service.PostService;
-import com.example.socialnetwork.service.impl.UserDetailsImpl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.data.domain.PageRequest;
@@ -13,12 +12,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Date;
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 
 @RestController
 @CrossOrigin(origins = "*")
@@ -37,6 +37,12 @@ public class PostController {
         return ResponseEntity.ok(new BaseResponse<>(postService.create(postDto, files), true, null, null));
     }
 
+    @PostMapping("post2")
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<?> create2(@RequestBody PostDto post) throws IOException {
+        return ResponseEntity.ok(postService.create2(post));
+    }
+
     @PutMapping("post/{id}")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<?> update(@RequestBody PostDto postDto, @PathVariable Integer id) {
@@ -51,9 +57,19 @@ public class PostController {
 
     @GetMapping("posts")
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<?> search(@RequestParam Integer page, @RequestParam Integer size, @RequestParam(required = false) String content, @RequestParam(required = false) Long fromDate, @RequestParam(required = false) Long toDate, @RequestParam(required = false) EPostSort sort, @RequestParam(required = false) Integer userId) {
+    public ResponseEntity<?> search(@RequestParam Integer page, @RequestParam Integer size, @RequestParam(required = false) String content, @RequestParam(required = false) Long fromDate, @RequestParam(required = false) Long toDate, @RequestParam(required = false) EPostSort sort, @RequestParam(required = false) Integer userId) throws IOException {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
         return ResponseEntity.ok(new BaseResponse<>(postService.search(content, fromDate, toDate, sort, userId, pageable), true, null, null));
+    }
+
+    @PostMapping("tests")
+    @PreAuthorize("hasRole('USER')")
+    public String test(@RequestBody Test test) throws IOException {
+        String base64Image = test.test.split(",")[1];
+        byte[] imageBytes = javax.xml.bind.DatatypeConverter.parseBase64Binary(base64Image);
+        BufferedImage img = ImageIO.read(new ByteArrayInputStream(imageBytes));
+        System.out.println(img.getHeight());
+        return test.test;
     }
 
     @GetMapping("post/{id}")
@@ -77,4 +93,8 @@ public class PostController {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
         return postService.getAllByUserId(id, pageable);
     }
+}
+
+class Test {
+    public String test;
 }

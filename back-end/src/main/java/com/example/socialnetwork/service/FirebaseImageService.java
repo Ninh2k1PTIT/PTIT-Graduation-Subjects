@@ -13,6 +13,7 @@ public interface FirebaseImageService {
     String getImageUrl(String name);
     String save(MultipartFile file) throws IOException;
     String save(BufferedImage bufferedImage, String originalFileName) throws IOException;
+    String save(byte[] bytes, String originalFileName, String type);
     void delete(String name) throws IOException;
     default String getExtension(String originalFileName) {
         return StringUtils.getFilenameExtension(originalFileName);

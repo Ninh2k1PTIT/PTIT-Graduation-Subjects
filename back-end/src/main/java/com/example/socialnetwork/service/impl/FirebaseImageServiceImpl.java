@@ -63,6 +63,14 @@ public class FirebaseImageServiceImpl implements FirebaseImageService {
     }
 
     @Override
+    public String save(byte[] bytes, String originalFileName, String type)  {
+        Bucket bucket = StorageClient.getInstance().bucket();
+        String name = generateFileName(originalFileName);
+        bucket.create(name, bytes, type);
+        return name;
+    }
+
+    @Override
     public void delete(String name) throws IOException {
         Bucket bucket = StorageClient.getInstance().bucket();
         if (StringUtils.isEmpty(name))

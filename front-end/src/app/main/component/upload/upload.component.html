@@ -40,7 +40,7 @@
         </fieldset>
 
         <!-- ngb-carousel component -->
-        <div class="text-center" *ngIf="photos.length > 0">
+        <div class="d-flex justify-content-center" *ngIf="photos.length > 0">
           <ngb-carousel [interval]="3000">
             <ng-template *ngFor="let photo of photos; let i = index" ngbSlide>
               <div class="photo-edit-btn">
