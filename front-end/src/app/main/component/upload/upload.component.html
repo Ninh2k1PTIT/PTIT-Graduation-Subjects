@@ -3,13 +3,7 @@
     <div class="row">
       <div class="col-12">
         <div class="form-group">
-          <input
-            type="text"
-            class="form-control"
-            placeholder="Bài viết mới"
-            (click)="modalOpen()"
-            readonly
-          />
+          <input type="text" class="form-control" placeholder="Bài viết mới" (click)="modalOpen()" readonly />
         </div>
       </div>
     </div>
@@ -18,12 +12,7 @@
 <ng-template #modalBasic let-modal>
   <div class="modal-header">
     <h4 class="modal-title" id="myModalLabel1">Tạo bài viết</h4>
-    <button
-      type="button"
-      class="close"
-      (click)="modal.dismiss('Cross click')"
-      aria-label="Close"
-    >
+    <button type="button" class="close" (click)="modal.dismiss('Cross click')" aria-label="Close">
       <span aria-hidden="true">&times;</span>
     </button>
   </div>
@@ -31,12 +20,7 @@
     <div *ngIf="!isPhotoPreview; else photoPreview">
       <form [formGroup]="form">
         <fieldset class="form-group">
-          <textarea
-            class="form-control"
-            rows="3"
-            placeholder="Nội dung"
-            formControlName="content"
-          ></textarea>
+          <textarea class="form-control" rows="3" placeholder="Nội dung" formControlName="content"></textarea>
         </fieldset>
 
         <!-- ngb-carousel component -->
@@ -44,23 +28,16 @@
           <ngb-carousel [interval]="3000">
             <ng-template *ngFor="let photo of photos; let i = index" ngbSlide>
               <div class="photo-edit-btn">
-                <button
-                  type="button"
-                  class="btn btn-outline-primary"
-                  rippleEffect
-                  (click)="togglePhotoPreview()"
-                >
+                <button type="button" class="btn btn-outline-primary" rippleEffect (click)="togglePhotoPreview()">
                   <span [data-feather]="'edit'" [class]="'mr-25'"></span>Chỉnh
                   sửa
                 </button>
               </div>
               <div class="carousel-img-wrapper">
-                <img [src]="photo.b64" [id]="'image' + i" class="img-fluid" />
-                <div
-                  *ngFor="let tag of photo.tags"
-                  [ngStyle]="convertCoordinates('image' + i, tag.left, tag.top)"
-                  class="badge badge-primary position-absolute"
-                >
+                <img [src]="photo.content" [id]="'image' + i" class="img-fluid" />
+                <div *ngFor="let tag of photo.tags"
+                  [ngStyle]="convertCoordinates('image' + i, tag.offsetLeft, tag.offsetTop)"
+                  class="badge badge-primary position-absolute">
                   <i data-feather="tag" class="mr-25"></i>
                   <span>{{ tag.user.username }}</span>
                 </div>
@@ -75,79 +52,47 @@
     </div>
     <ng-template #photoPreview>
       <div class="row" *ngIf="!isPhotoEdit; else photoEdit">
-        <div
-          *ngFor="let item of photos; let i = index"
-          class="col-6 mb-1 photo-item"
-        >
+        <div *ngFor="let item of photos; let i = index" class="col-6 mb-1 photo-item">
           <div class="position-relative text-center">
             <div class="photo-edit-btn photo-item-edit-btn">
-              <button
-                (click)="openPhotoEdit(i)"
-                type="button"
-                class="btn btn-icon btn-outline-primary"
-                rippleEffect
-              >
+              <button (click)="openPhotoEdit(i)" type="button" class="btn btn-icon btn-outline-primary" rippleEffect>
                 <span [data-feather]="'edit'"></span>
               </button>
-              <button
-                type="button"
-                class="btn btn-icon btn-outline-danger ml-50"
-                rippleEffect
-                (click)="deletePhotoItem(i)"
-              >
+              <button type="button" class="btn btn-icon btn-outline-danger ml-50" rippleEffect
+                (click)="deletePhotoItem(i)">
                 <span [data-feather]="'trash'"></span>
               </button>
             </div>
 
-            <img [src]="item.b64" class="img-fluid" [id]="i" />
+            <img [src]="item.content" class="img-fluid" [id]="i" />
           </div>
         </div>
       </div>
       <ng-template #photoEdit>
         <div class="row">
           <div class="col-2">
-            <button
-              (click)="isCrop = true; isAddTag = false"
-              type="button"
-              class="btn btn-icon btn-outline-primary w-100 mb-1"
-              rippleEffect
-              [ngClass]="{ 'btn-primary': isCrop }"
-            >
+            <button (click)="isCrop = true; isAddTag = false" type="button"
+              class="btn btn-icon btn-outline-primary w-100 mb-1" rippleEffect [ngClass]="{ 'btn-primary': isCrop }">
               Cắt
             </button>
-            <button
-              (click)="isCrop = false; isAddTag = true"
-              type="button"
-              class="btn btn-icon btn-outline-primary w-100"
-              rippleEffect
-              [ngClass]="{ 'btn-primary': isAddTag }"
-            >
+            <button (click)="isCrop = false; isAddTag = true" type="button"
+              class="btn btn-icon btn-outline-primary w-100" rippleEffect [ngClass]="{ 'btn-primary': isAddTag }">
               Gắn thẻ
             </button>
           </div>
           <div class="col-10">
-            <div
-              id="img-wrapper"
-              class="position-relative"
-              [ngClass]="{ 'cursor-pointer': isAddTag }"
-            >
-              <img
-                [src]="photos[photoEditIndex].b64"
-                id="photo-edit"
-                class="img-fluid"
-              />
-              <div
-                *ngFor="let i of photos[photoEditIndex].tags"
-                [ngStyle]="convertCoordinates('photo-edit', i.left, i.top)"
-                class="badge badge-primary position-absolute"
-              >
-                <i data-feather="tag" class="mr-25"></i>
+            <div id="img-wrapper" class="position-relative" [ngClass]="{ 'cursor-pointer': isAddTag }">
+              <img [src]="photos[photoEditIndex].content" id="photo-edit" class="img-fluid" />
+              <div *ngFor="let i of photos[photoEditIndex].tags"
+                [ngStyle]="convertCoordinates('photo-edit', i.offsetLeft, i.offsetTop)"
+                class="badge badge-primary position-absolute">
+                <span (click)="deleteTag(i)">
+                  <i data-feather="x" class="mr-25"></i>
+                </span>
+
                 <span>{{ i.user.username }}</span>
               </div>
-              <div
-                id="crop-wrapper"
-                [ngStyle]="{ 'pointer-events': isAddTag ? 'none' : '' }"
-              >
+              <div id="crop-wrapper" [ngStyle]="{ 'pointer-events': isAddTag ? 'none' : '' }">
                 <div class="d-none" [ngClass]="{ 'd-block': isCrop }">
                   <div class="resize" id="top-left"></div>
                   <div class="resize" id="top-right"></div>
@@ -155,54 +100,25 @@
                   <div class="resize" id="bottom-right"></div>
                 </div>
               </div>
-              <div
-                id="crop-border"
-                [ngStyle]="{ 'pointer-events': isAddTag ? 'none' : '' }"
-              ></div>
+              <div id="crop-border" [ngStyle]="{ 'pointer-events': isAddTag ? 'none' : '' }"></div>
               <div *ngIf="isAddTag" id="search-user">
-                <ng-select
-                  [items]="users | async"
-                  [typeahead]="$search"
-                  notFoundText="Không có dữ liệu"
-                  typeToSearchText="Nhập tên người dùng"
-                  placeholder="Nhập tên người dùng"
-                  appendTo="body"
-                  (change)="onSelectedUser($event)"
-                  [(ngModel)]="binding"
-                >
+                <ng-select [items]="users | async" [typeahead]="$search" notFoundText="Không có dữ liệu"
+                  typeToSearchText="Nhập tên người dùng" placeholder="Nhập tên người dùng" appendTo="body"
+                  (change)="onSelectedUser($event)" [(ngModel)]="binding">
                   <ng-template ng-label-tmp let-item="item">
-                    <div
-                      class="d-flex justify-content-start align-items-center"
-                    >
+                    <div class="d-flex justify-content-start align-items-center">
                       <div class="avatar mr-75">
-                        <img
-                          [src]="item.avatar"
-                          alt="avatar"
-                          height="20"
-                          width="20"
-                        />
+                        <img [src]="item.avatar" alt="avatar" height="20" width="20" />
                       </div>
                       <div class="profile-user-info">
                         <h6 class="mb-0">{{ item.username }}</h6>
                       </div>
                     </div>
                   </ng-template>
-                  <ng-template
-                    ng-option-tmp
-                    let-item="item"
-                    let-index="index"
-                    let-search="searchTerm"
-                  >
-                    <div
-                      class="d-flex justify-content-start align-items-center"
-                    >
+                  <ng-template ng-option-tmp let-item="item" let-index="index" let-search="searchTerm">
+                    <div class="d-flex justify-content-start align-items-center">
                       <div class="avatar mr-75">
-                        <img
-                          [src]="item.avatar"
-                          alt="avatar"
-                          height="20"
-                          width="20"
-                        />
+                        <img [src]="item.avatar" alt="avatar" height="20" width="20" />
                       </div>
                       <div class="profile-user-info">
                         <h6 class="mb-0">{{ item.username }}</h6>
@@ -216,61 +132,27 @@
         </div>
       </ng-template>
     </ng-template>
-    <input
-      #fileInput
-      type="file"
-      hidden
-      multiple
-      (change)="onFileInput($event)"
-      onclick="this.value=null"
-      accept=".jpeg, .jpg, .png"
-    />
+    <input #fileInput type="file" hidden multiple (change)="onFileInput($event)" onclick="this.value=null"
+      accept=".jpeg, .jpg, .png" />
   </div>
   <div class="modal-footer">
-    <button
-      *ngIf="!isPhotoEdit"
-      type="button"
-      class="btn btn-outline-primary w-100"
-      (click)="fileInput.click()"
-      rippleEffect
-    >
+    <button *ngIf="!isPhotoEdit" type="button" class="btn btn-outline-primary w-100" (click)="fileInput.click()"
+      rippleEffect>
       Thêm ảnh
     </button>
-    <button
-      *ngIf="isPhotoEdit"
-      type="button"
-      class="btn btn-primary w-100"
-      (click)="savePhotoEdit()"
-      rippleEffect
-    >
+    <button *ngIf="isPhotoEdit" type="button" class="btn btn-primary w-100" (click)="savePhotoEdit()" rippleEffect>
       Lưu ảnh
     </button>
-    <button
-      *ngIf="!isPhotoPreview"
-      type="button"
-      class="btn btn-primary w-100"
-      (click)="onSubmit()"
-      rippleEffect
-      [disabled]="!(f.content.value || photos.length > 0)"
-    >
+    <button *ngIf="!isPhotoPreview" type="button" class="btn btn-primary w-100" (click)="onSubmit()" rippleEffect
+      [disabled]="!(f.content.value || photos.length > 0)">
       Đăng
     </button>
-    <button
-      *ngIf="isPhotoPreview && !isPhotoEdit"
-      type="button"
-      class="btn btn-outline-primary w-100"
-      (click)="togglePhotoPreview()"
-      rippleEffect
-    >
+    <button *ngIf="isPhotoPreview && !isPhotoEdit" type="button" class="btn btn-outline-primary w-100"
+      (click)="togglePhotoPreview()" rippleEffect>
       Quay lại
     </button>
-    <button
-      *ngIf="isPhotoEdit"
-      type="button"
-      class="btn btn-outline-primary w-100"
-      (click)="isPhotoEdit = false"
-      rippleEffect
-    >
+    <button *ngIf="isPhotoEdit" type="button" class="btn btn-outline-primary w-100" (click)="isPhotoEdit = false"
+      rippleEffect>
       Hủy
     </button>
   </div>

@@ -8,17 +8,12 @@ import { environment } from "environments/environment";
   providedIn: "root",
 })
 export class UploadService {
-  constructor(private _http: HttpClient) {}
+  constructor(private _http: HttpClient) { }
 
-  create(post: Post, files: File[]) {
-    const formData = new FormData();
-    formData.append("post", JSON.stringify(post));
-    files.forEach((file) => {
-      formData.append("files", file);
-    });
-    return this._http.post<BaseResponse<Post>>(
+  create(post: Post) {
+    return this._http.post<Post>(
       `${environment.apiUrl}/post`,
-      formData
+      post
     );
   }
 }

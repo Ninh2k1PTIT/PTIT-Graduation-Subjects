@@ -90,7 +90,8 @@ export class CommentListComponent implements OnInit {
         this.photos.push({
           file: files.item(i),
           b64: await this.convertFileToUrl(files.item(i)),
-          type: files.item(i).type
+          type: files.item(i).type,
+          name: ""
         });
     }
   }

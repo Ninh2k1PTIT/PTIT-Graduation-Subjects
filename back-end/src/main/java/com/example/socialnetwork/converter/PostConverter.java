@@ -1,6 +1,7 @@
 package com.example.socialnetwork.converter;
 
 import com.example.socialnetwork.dto.PostDto;
+import com.example.socialnetwork.dto.UserDto;
 import com.example.socialnetwork.model.Post;
 import com.example.socialnetwork.service.impl.UserDetailsImpl;
 import lombok.AllArgsConstructor;
@@ -14,7 +15,6 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class PostConverter {
     private PostPhotoConverter postPhotoConverter;
-    private UserConverter userConverter;
     public Post toEntity(PostDto postDto) {
         Post post = new Post();
         post.setContent(postDto.getContent());
@@ -32,9 +32,14 @@ public class PostConverter {
         postDto.setTotalComment(post.getComments().size());
         postDto.setCreatedAt(post.getCreatedAt());
         postDto.setUpdatedAt(post.getUpdatedAt());
-        postDto.setCreatedBy(userConverter.toDto(post.getUser()));
         postDto.setPhotos(post.getPostPhotos().stream().map(item -> postPhotoConverter.toDto(item)).collect(Collectors.toList()));
         postDto.setIsReact(false);
+
+        UserDto userDto = new UserDto();
+        userDto.setId(post.getUser().getId());
+        userDto.setUsername(post.getUser().getUsername());
+        userDto.setAvatar(post.getUser().getAvatar());
+        postDto.setCreatedBy(userDto);
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         UserDetailsImpl userDetails = (UserDetailsImpl) auth.getPrincipal();

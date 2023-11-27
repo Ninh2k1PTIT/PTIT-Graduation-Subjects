@@ -14,4 +14,15 @@ export class PostItemComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  convertCoordinates(imageId: string, left: number, top: number) {
+    const img = document.getElementById(imageId) as HTMLImageElement;
+    const ratioX = img.naturalWidth / img.offsetWidth;
+    const ratioY = img.naturalHeight / img.offsetHeight;
+
+    return {
+      left: left / ratioX + "px",
+      top: top / ratioY + "px",
+    };
+  }
+
 }

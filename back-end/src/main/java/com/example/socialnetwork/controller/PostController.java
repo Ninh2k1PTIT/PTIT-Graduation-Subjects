@@ -5,15 +5,12 @@ import com.example.socialnetwork.dto.response.BaseResponse;
 import com.example.socialnetwork.dto.response.PaginationResponse;
 import com.example.socialnetwork.model.EPostSort;
 import com.example.socialnetwork.service.PostService;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -31,15 +28,7 @@ public class PostController {
 
     @PostMapping("post")
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<?> create(@RequestParam(required = false) String post, @RequestParam(required = false) MultipartFile[] files) throws JsonProcessingException {
-        ObjectMapper mapper = new ObjectMapper();
-        PostDto postDto = mapper.readValue(post, PostDto.class);
-        return ResponseEntity.ok(new BaseResponse<>(postService.create(postDto, files), true, null, null));
-    }
-
-    @PostMapping("post2")
-    @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<?> create2(@RequestBody PostDto post) throws IOException {
+    public ResponseEntity<?> create(@RequestBody PostDto post) throws IOException {
         return ResponseEntity.ok(postService.create2(post));
     }
 
