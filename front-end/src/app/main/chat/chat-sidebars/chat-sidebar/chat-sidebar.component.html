@@ -22,26 +22,23 @@
           placeholder="Tìm kiếm"
           aria-label="Search..."
           aria-describedby="chat-search"
-          [(ngModel)]="searchText"
+          [formControl]="searchControl"
         />
       </div>
     </div>
   </div>
   <!-- Sidebar header end -->
 
-  <!-- Sidebar Users start -->
+  <!-- Sidebar Rooms start -->
   <div
     id="users-list"
     class="chat-user-list-wrapper list-group"
     [perfectScrollbar]
   >
     <!-- <ng-container *ngIf="(chatUsers | filter: searchText:'fullName').length; else noResultsChats"></ng-container> -->
-    <ul class="chat-users-list chat-list media-list">
+    <ul *ngIf="users.length == 0" class="chat-users-list chat-list media-list">
       <li
-        *ngFor="
-          let room of rooms | filter : searchText : 'fullName';
-          let i = index
-        "
+        *ngFor="let room of rooms; let i = index"
         [class.active]="selectedIndex === i"
         (click)="openChat(room.id); toggleSidebar('chat-sidebar'); setIndex(i)"
       >
@@ -83,11 +80,44 @@
             show: (chatUsers | filter : searchText : 'fullName').length <= 0
           }"
         >
-          <h6 class="mb-0">No Chats Found</h6>
+          <h6 class="mb-0">Không có kết quả</h6>
+        </li>
+      </ng-template>
+    </ul>
+
+    <ul *ngIf="users.length > 0" class="chat-users-list chat-list media-list">
+      <li
+        *ngFor="let user of users; let i = index"
+        [class.active]="selectedIndex === i"
+        (click)="openUserChat(user.id); toggleSidebar('chat-sidebar'); setIndex(i)"
+      >
+        <span class="avatar"
+          ><img
+            [src]="user.avatar"
+            height="42"
+            width="42"
+            alt="Generic placeholder image"
+          />
+        </span>
+        <div class="chat-info flex-grow-1">
+          <h5 class="mb-0">
+            {{ user.username }}
+          </h5>
+        </div>
+      </li>
+
+      <ng-template #noResultsChats>
+        <li
+          class="no-results"
+          [ngClass]="{
+            show: (chatUsers | filter : searchText : 'fullName').length <= 0
+          }"
+        >
+          <h6 class="mb-0">Không có kết quả</h6>
         </li>
       </ng-template>
     </ul>
   </div>
-  <!-- Sidebar Users end -->
+  <!-- Sidebar Rooms end -->
 </div>
 <!--/ Chat Sidebar area -->

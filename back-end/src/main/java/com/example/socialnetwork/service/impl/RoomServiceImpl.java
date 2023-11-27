@@ -32,7 +32,6 @@ public class RoomServiceImpl implements RoomService {
     public RoomDto create(RoomDto roomDto) {
         Room room = new Room();
         room.setUsers(roomDto.getUsers().stream().map(item -> userRepository.getById(item.getId())).collect(Collectors.toSet()));
-        System.out.println(room.getUsers().size());
         return roomConverter.toDto(roomRepository.save(room));
     }
 }

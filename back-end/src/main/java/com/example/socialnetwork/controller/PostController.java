@@ -12,9 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 
 @RestController
@@ -51,16 +48,6 @@ public class PostController {
         return ResponseEntity.ok(new BaseResponse<>(postService.search(content, fromDate, toDate, sort, userId, pageable), true, null, null));
     }
 
-    @PostMapping("tests")
-    @PreAuthorize("hasRole('USER')")
-    public String test(@RequestBody Test test) throws IOException {
-        String base64Image = test.test.split(",")[1];
-        byte[] imageBytes = javax.xml.bind.DatatypeConverter.parseBase64Binary(base64Image);
-        BufferedImage img = ImageIO.read(new ByteArrayInputStream(imageBytes));
-        System.out.println(img.getHeight());
-        return test.test;
-    }
-
     @GetMapping("post/{id}")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<?> getById(@PathVariable Integer id) {
@@ -82,8 +69,4 @@ public class PostController {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
         return postService.getAllByUserId(id, pageable);
     }
-}
-
-class Test {
-    public String test;
 }

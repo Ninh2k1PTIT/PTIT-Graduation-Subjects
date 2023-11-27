@@ -5,9 +5,11 @@ import { Client } from "@stomp/stompjs";
 import { AuthenticationService } from "app/auth/service";
 import { Message } from "app/model/Message";
 import { Room } from "app/model/Room";
+import { User } from "app/model/User";
 import { environment } from "environments/environment";
 
 import { BehaviorSubject, Observable, Subject } from "rxjs";
+import { tap } from "rxjs/operators";
 import SockJS from "sockjs-client";
 
 @Injectable()
@@ -47,8 +49,8 @@ export class ChatService {
         this.stompClient.subscribe(
           `/topic/${_authService.currentUserValue.id}`,
           (message) => {
-            const body: Message = JSON.parse(message.body)
-            this.onReceiveMessage.next(JSON.parse(message.body))
+            const body: Message = JSON.parse(message.body);
+            this.onReceiveMessage.next(JSON.parse(message.body));
           }
         );
       },
@@ -77,14 +79,14 @@ export class ChatService {
   /**
    * Get Chats
    */
-  getRooms(): Promise<any[]> {
+  getRooms() {
     return new Promise((resolve, reject) => {
       this._httpClient
         .get<Room[]>(`${environment.apiUrl}/rooms`)
         .subscribe((res) => {
           this.rooms = res;
           this.onChatsChange.next(this.rooms);
-
+          this.onChatUsersChange.next(this.rooms);
           resolve(this.rooms);
         }, reject);
     });
@@ -168,5 +170,15 @@ export class ChatService {
       `${environment.apiUrl}/chat`,
       message
     );
+  }
+
+  searchUser(username: string) {
+    return this._httpClient.get<User[]>(
+      `${environment.apiUrl}/users/all?username=${username}`
+    );
+  }
+
+  createRoom(room: Room) {
+    return this._httpClient.post<Room>(`${environment.apiUrl}/room`, room);
   }
 }

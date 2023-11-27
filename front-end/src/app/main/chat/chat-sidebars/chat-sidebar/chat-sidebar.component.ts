@@ -1,5 +1,10 @@
 import { Component, OnInit } from "@angular/core";
-import { first } from "rxjs/operators";
+import {
+  debounceTime,
+  distinctUntilChanged,
+  first,
+  switchMap,
+} from "rxjs/operators";
 
 import { CoreSidebarService } from "@core/components/core-sidebar/core-sidebar.service";
 import { ChatService } from "../../chat.service";
@@ -7,6 +12,8 @@ import { AuthenticationService } from "app/auth/service";
 import { Message } from "app/model/Message";
 import { Room } from "app/model/Room";
 import { User } from "app/model/User";
+import { FormControl } from "@angular/forms";
+import { of } from "rxjs";
 
 @Component({
   selector: "app-chat-sidebar",
@@ -16,10 +23,12 @@ export class ChatSidebarComponent implements OnInit {
   // Public
   public contacts;
   public rooms: Room[] = [];
+  public users: User[] = [];
   public searchText;
   public chats;
   public selectedIndex = null;
   public currentUser: User;
+  public searchControl = new FormControl();
 
   /**
    * Constructor
@@ -44,13 +53,25 @@ export class ChatSidebarComponent implements OnInit {
    */
   openChat(id) {
     this._chatService.openChat(id);
+    this.users = [];
+    this.searchControl.reset();
+  }
 
-    // Reset unread Message to zero
-    // this.chatUsers.map(user => {
-    //   if (user.id === id) {
-    //     user.unseenMsgs = 0;
-    //   }
-    // });
+  openUserChat(id: number) {
+    const room = this.rooms.find((room) =>
+      room.users.some((user) => user.id == id)
+    );
+    if (room) this.openChat(room.id);
+    else
+      this._chatService
+        .createRoom({
+          users: [{ id: id }, { id: this.currentUser.id }],
+        })
+        .subscribe((res) => {
+          this._chatService.getRooms().then(() => {
+            this.openChat(res.id);
+          });
+        });
   }
 
   /**
@@ -78,6 +99,18 @@ export class ChatSidebarComponent implements OnInit {
    * On init
    */
   ngOnInit(): void {
+    this.searchControl.valueChanges
+      .pipe(
+        debounceTime(500),
+        distinctUntilChanged(),
+        switchMap((username) =>
+          username ? this._chatService.searchUser(username) : of([])
+        )
+      )
+      .subscribe((res) => {
+        this.users = res.filter((item) => item.id != this.currentUser.id);
+      });
+
     this.currentUser = this._authService.currentUserValue;
 
     let skipFirst = 0;
@@ -100,6 +133,8 @@ export class ChatSidebarComponent implements OnInit {
 
     // Add Unseen Message To Chat User
     this._chatService.onChatsChange.pipe(first()).subscribe((rooms) => {
+      console.log(rooms);
+      
       this.rooms = rooms;
 
       // chats.map(chat => {

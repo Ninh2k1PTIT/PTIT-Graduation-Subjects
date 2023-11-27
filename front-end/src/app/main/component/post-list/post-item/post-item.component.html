@@ -3,28 +3,47 @@
     <div class="d-flex justify-content-start align-items-center mb-1">
       <!-- avatar -->
       <div class="avatar mr-1">
-        <img [src]="post.createdBy.avatar" alt="avatar img" height="35" width="35" />
+        <img
+          [src]="post.createdBy.avatar"
+          alt="avatar img"
+          height="35"
+          width="35"
+        />
       </div>
       <!--/ avatar -->
       <div class="profile-user-info">
         <h6 class="mb-0">{{ post.createdBy.username }}</h6>
         <small class="text-muted">{{
           post.createdAt | date : "HH:mm dd/MM/yyyy"
-          }}</small>
+        }}</small>
       </div>
     </div>
     <p class="card-text">
       {{ post.content }}
     </p>
     <!-- post img -->
-    <div *ngIf="post.photos.length > 0">
+    <div *ngIf="post.photos.length > 0" class="d-flex justify-content-center">
       <!-- ngb-carousel component -->
       <ngb-carousel [interval]="3000">
-        <ng-template *ngFor="let photo of post.photos; let i = index" ngbSlide>
-          <div class="img-fluid rounded mb-75 text-center position-relative">
-            <img [id]="'img' + i" [src]="photo.content" class="img-fluid" style="height: 500px" />
-            <div *ngFor="let tag of photo.tags" [ngStyle]="convertCoordinates('img' + i, tag.offsetLeft, tag.offsetTop)"
-              class="badge badge-primary position-absolute">
+        <ng-template *ngFor="let photo of post.photos" ngbSlide>
+          <div class="img-fluid rounded mb-75 position-relative">
+            <img
+              [id]="'img' + photo.id"
+              [src]="photo.content"
+              class="img-fluid"
+              style="height: 500px"
+            />
+            <div
+              *ngFor="let tag of photo.tags"
+              [ngStyle]="
+                convertCoordinates(
+                  'img' + photo.id,
+                  tag.offsetLeft,
+                  tag.offsetTop
+                )
+              "
+              class="badge badge-primary position-absolute"
+            >
               <i data-feather="tag" class="mr-25"></i>
               <span>{{ tag.user.username }}</span>
             </div>
@@ -43,13 +62,19 @@
     </div> -->
 
     <!-- like share -->
-    <div class="row d-flex justify-content-start align-items-center flex-wrap pb-50">
-      <div class="col-sm-6 d-flex justify-content-between justify-content-sm-start mb-2">
+    <div
+      class="row d-flex justify-content-start align-items-center flex-wrap pb-50"
+    >
+      <div
+        class="col-sm-6 d-flex justify-content-between justify-content-sm-start mb-2"
+      >
         <app-react-list [post]="post"></app-react-list>
       </div>
 
       <!-- share and like count and icons -->
-      <div class="col-sm-6 d-flex justify-content-between justify-content-sm-end align-items-center mb-2">
+      <div
+        class="col-sm-6 d-flex justify-content-between justify-content-sm-end align-items-center mb-2"
+      >
         <app-comment [post]="post"></app-comment>
       </div>
       <!-- share and like count and icons -->
