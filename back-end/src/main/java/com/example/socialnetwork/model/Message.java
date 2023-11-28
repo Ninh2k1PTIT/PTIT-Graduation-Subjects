@@ -8,7 +8,9 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Getter
@@ -33,4 +35,7 @@ public class Message {
 
     @ManyToOne
     private Room room;
+
+    @OneToMany(mappedBy = "message", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<MessagePhoto> messagePhotos = new ArrayList<>();
 }

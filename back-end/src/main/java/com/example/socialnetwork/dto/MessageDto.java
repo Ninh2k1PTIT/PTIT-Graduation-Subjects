@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Date;
+import java.util.List;
 
 @Getter
 @Setter
@@ -14,4 +15,5 @@ public class MessageDto {
     private Date createdAt;
     private Integer userId;
     private Integer roomId;
+    private List<MessagePhotoDto> photos;
 }
