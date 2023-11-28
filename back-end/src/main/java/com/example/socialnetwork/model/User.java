@@ -76,12 +76,10 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Tag> tags = new ArrayList<>();
 
-    public User(String email, String password, String username, String phoneNumber, EGender gender, EProvider provider) {
+    public User(String email, String password, String username, EProvider provider) {
         this.email = email;
         this.password = password;
         this.username = username;
-        this.phoneNumber = phoneNumber;
-        this.gender = gender;
         this.provider = provider;
     }
 }

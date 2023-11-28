@@ -50,67 +50,29 @@ export class ChatContentComponent implements OnInit {
     private _authService: AuthenticationService
   ) {}
 
-  // Public Methods
-  // -----------------------------------------------------------------------------------------------------
-
-  /**
-   * Update Chat
-   */
   updateChat() {
     if (this.chatMessage) {
       this._chatService
-        .sendMessage({ roomId: this.room.id, content: this.chatMessage })
-        .subscribe((res) => {
-          console.log(res);
+        .sendMessage({
+          roomId: this.room.id,
+          content: this.chatMessage,
+          photos: [],
+        })
+        .subscribe(() => {
+          this.chatMessage = "";
         });
     }
-    console.log(this.chatMessage);
-
-    // this.newChat = {
-    //   message: this.chatMessage,
-    //   time: 'Mon Dec 10 2018 07:46:43 GMT+0000 (GMT)',
-    //   senderId: this.userProfile.id
-    // };
-    // // If chat data is available (update chat)
-    // if (this.chats.chat) {
-    //   if (this.newChat.message !== '') {
-    //     this.chats.chat.push(this.newChat);
-    //     this._chatService.updateChat(this.chats);
-    //     this.chatMessage = '';
-    //     setTimeout(() => {
-    //       this.scrolltop = this.scrollMe?.nativeElement.scrollHeight;
-    //     }, 0);
-    //   }
-    // }
-    // // Else create new chat
-    // else {
-    //   this._chatService.createNewChat(this.chatUser.id, this.newChat);
-    // }
-    // this._chatService.send().subscribe((res) => {
-    //   console.log(res);
-    // });
   }
 
-  /**
-   * Toggle Sidebar
-   *
-   * @param name
-   */
   toggleSidebar(name) {
     this._coreSidebarService.getSidebarRegistry(name).toggleOpen();
   }
 
-  // Lifecycle Hooks
-  // -----------------------------------------------------------------------------------------------------
-
-  /**
-   * On init
-   */
   ngOnInit(): void {
     this.currentUser = this._authService.currentUserValue;
 
     this._chatService.onReceiveMessage.subscribe((res) => {
-      if (this.room.id === res.roomId) {
+      if (this.room?.id === res.roomId) {
         this.chats.push(res);
         setTimeout(() => {
           this.scrolltop = this.scrollMe?.nativeElement.scrollHeight;
@@ -120,11 +82,8 @@ export class ChatContentComponent implements OnInit {
 
     // Subscribe to Chat Change
     this._chatService.onChatOpenChange.subscribe((res) => {
-      console.log(res);
-
       this.chatMessage = "";
       this.activeChat = res;
-
     });
 
     // Subscribe to Selected Chat Change
@@ -137,7 +96,6 @@ export class ChatContentComponent implements OnInit {
 
     // Subscribe to Selected Chat User Change
     this._chatService.onSelectedRoomChange.subscribe((res) => {
-      console.log(res);
       this.room = res;
       if (res)
         this.chatUser =
@@ -154,5 +112,34 @@ export class ChatContentComponent implements OnInit {
 
   emojiSelect(event: EmojiEvent) {
     this.chatMessage += event.emoji.native;
+  }
+
+  async onFileInput(event: Event) {
+    const target = event.target as HTMLInputElement;
+    const files = target.files;
+
+    if (files.length > 0) {
+      this._chatService
+        .sendMessage({
+          roomId: this.room.id,
+          content: null,
+          photos: [
+            {
+              content: await this.convertFileToUrl(files.item(0)),
+            },
+          ],
+        })
+        .subscribe();
+    }
+  }
+
+  convertFileToUrl(file: File) {
+    return new Promise<string>((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        resolve(reader.result.toString());
+      };
+      reader.readAsDataURL(file);
+    });
   }
 }

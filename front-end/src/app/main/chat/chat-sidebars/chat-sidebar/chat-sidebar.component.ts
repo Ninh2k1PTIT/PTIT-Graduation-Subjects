@@ -6,14 +6,13 @@ import {
   switchMap,
 } from "rxjs/operators";
 
+import { FormControl } from "@angular/forms";
 import { CoreSidebarService } from "@core/components/core-sidebar/core-sidebar.service";
-import { ChatService } from "../../chat.service";
 import { AuthenticationService } from "app/auth/service";
-import { Message } from "app/model/Message";
 import { Room } from "app/model/Room";
 import { User } from "app/model/User";
-import { FormControl } from "@angular/forms";
 import { of } from "rxjs";
+import { ChatService } from "../../chat.service";
 
 @Component({
   selector: "app-chat-sidebar",
@@ -30,28 +29,14 @@ export class ChatSidebarComponent implements OnInit {
   public currentUser: User;
   public searchControl = new FormControl();
 
-  /**
-   * Constructor
-   *
-   * @param {ChatService} _chatService
-   * @param {CoreSidebarService} _coreSidebarService
-   */
   constructor(
     private _chatService: ChatService,
     private _coreSidebarService: CoreSidebarService,
     private _authService: AuthenticationService
   ) {}
 
-  // Public Methods
-  // -----------------------------------------------------------------------------------------------------
-
-  /**
-   * Open Chat
-   *
-   * @param id
-   * @param newChat
-   */
-  openChat(id) {
+  openChat(id: number) {
+    this.selectedIndex = id;
     this._chatService.openChat(id);
     this.users = [];
     this.searchControl.reset();
@@ -74,30 +59,11 @@ export class ChatSidebarComponent implements OnInit {
         });
   }
 
-  /**
-   * Toggle Sidebar
-   *
-   * @param name
-   */
+
   toggleSidebar(name) {
     this._coreSidebarService.getSidebarRegistry(name).toggleOpen();
   }
 
-  /**
-   * Set Index
-   *
-   * @param index
-   */
-  setIndex(index: number) {
-    this.selectedIndex = index;
-  }
-
-  // Lifecycle Hooks
-  // -----------------------------------------------------------------------------------------------------
-
-  /**
-   * On init
-   */
   ngOnInit(): void {
     this.searchControl.valueChanges
       .pipe(
@@ -113,17 +79,9 @@ export class ChatSidebarComponent implements OnInit {
 
     this.currentUser = this._authService.currentUserValue;
 
-    let skipFirst = 0;
-
     // Subscribe to chat users
     this._chatService.onChatUsersChange.subscribe((res) => {
       this.rooms = res;
-
-      // Skip setIndex first time when initialized
-      if (skipFirst >= 1) {
-        this.setIndex(this.rooms.length - 1);
-      }
-      skipFirst++;
     });
 
     // Subscribe to selected Chats
@@ -133,17 +91,7 @@ export class ChatSidebarComponent implements OnInit {
 
     // Add Unseen Message To Chat User
     this._chatService.onChatsChange.pipe(first()).subscribe((rooms) => {
-      console.log(rooms);
-      
       this.rooms = rooms;
-
-      // chats.map(chat => {
-      //   this.chatUsers.map(user => {
-      //     if (user.id === chat.userId) {
-      //       user.unseenMsgs = chat.unseenMsgs;
-      //     }
-      //   });
-      // });
     });
   }
 
@@ -153,9 +101,27 @@ export class ChatSidebarComponent implements OnInit {
         (room.lastMessage?.userId == this.currentUser.id
           ? "Tôi: "
           : room.users[0].id == this.currentUser.id
-          ? room.users[1].username
-          : room.users[0].username + ": ") + room.lastMessage.content
+          ? room.users[1].username + ": "
+          : room.users[0].username + ": ") +
+        (room.lastMessage.photos.length > 0
+          ? "Đã gửi 1 ảnh"
+          : room.lastMessage.content)
       );
     } else return null;
+  }
+
+  formatTime(time: string) {
+    if (time) {
+      const minute = 60000;
+      const hour = 3600000;
+      const day = 86400000;
+      const diff = new Date().getTime() - new Date(time).getTime();
+      if (isNaN(diff)) return "";
+      if (diff < minute) return "Vừa xong";
+      if (diff < hour) return Math.floor(diff / minute) + " phút trước";
+      if (diff < day) return Math.floor(diff / hour) + " giờ trước";
+      return new Date(time).toLocaleDateString("en-GB");
+    }
+    return "";
   }
 }

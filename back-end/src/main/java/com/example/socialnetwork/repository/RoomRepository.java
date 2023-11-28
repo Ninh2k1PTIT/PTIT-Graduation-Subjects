@@ -8,5 +8,5 @@ import java.util.List;
 
 @Repository
 public interface RoomRepository extends JpaRepository<Room, Integer> {
-    List<Room> findByUsers_Id(Integer usersId);
+    List<Room> findByUsers_IdOrderByUpdatedAtDesc(Integer usersId);
 }

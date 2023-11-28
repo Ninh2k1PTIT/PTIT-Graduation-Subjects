@@ -11,6 +11,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,12 +26,13 @@ public class RoomServiceImpl implements RoomService {
     public List<RoomDto> getAll() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         UserDetailsImpl userDetails = (UserDetailsImpl) auth.getPrincipal();
-        return roomRepository.findByUsers_Id(userDetails.getId()).stream().map(item -> roomConverter.toDto(item)).collect(Collectors.toList());
+        return roomRepository.findByUsers_IdOrderByUpdatedAtDesc(userDetails.getId()).stream().map(item -> roomConverter.toDto(item)).collect(Collectors.toList());
     }
 
     @Override
     public RoomDto create(RoomDto roomDto) {
         Room room = new Room();
+        room.setUpdatedAt(new Date());
         room.setUsers(roomDto.getUsers().stream().map(item -> userRepository.getById(item.getId())).collect(Collectors.toSet()));
         return roomConverter.toDto(roomRepository.save(room));
     }

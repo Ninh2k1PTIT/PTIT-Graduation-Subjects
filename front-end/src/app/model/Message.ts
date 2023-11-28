@@ -3,4 +3,9 @@ export class Message {
     createdAt?: Date
     userId?: number
     roomId: number
+    photos: MessagePhoto[]
+}
+
+export class MessagePhoto {
+    content: string
 }

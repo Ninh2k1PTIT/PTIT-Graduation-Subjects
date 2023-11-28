@@ -10,4 +10,5 @@ import lombok.Setter;
 public class MessagePhotoDto {
     private Integer id;
     private String content;
+    private Integer messageId;
 }

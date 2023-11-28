@@ -38,9 +38,9 @@
     <!-- <ng-container *ngIf="(chatUsers | filter: searchText:'fullName').length; else noResultsChats"></ng-container> -->
     <ul *ngIf="users.length == 0" class="chat-users-list chat-list media-list">
       <li
-        *ngFor="let room of rooms; let i = index"
-        [class.active]="selectedIndex === i"
-        (click)="openChat(room.id); toggleSidebar('chat-sidebar'); setIndex(i)"
+        *ngFor="let room of rooms"
+        [class.active]="selectedIndex === room.id"
+        (click)="openChat(room.id); toggleSidebar('chat-sidebar')"
       >
         <span class="avatar"
           ><img
@@ -68,7 +68,7 @@
         </div>
         <div class="chat-meta text-nowrap">
           <small class="float-right mb-25 chat-time">{{
-            room.lastMessage?.createdAt | date : "HH:mm"
+            formatTime(room.lastMessage?.createdAt)
           }}</small>
         </div>
       </li>
@@ -89,7 +89,7 @@
       <li
         *ngFor="let user of users; let i = index"
         [class.active]="selectedIndex === i"
-        (click)="openUserChat(user.id); toggleSidebar('chat-sidebar'); setIndex(i)"
+        (click)="openUserChat(user.id); toggleSidebar('chat-sidebar')"
       >
         <span class="avatar"
           ><img

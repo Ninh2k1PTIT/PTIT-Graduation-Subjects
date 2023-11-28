@@ -9,8 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 
 public interface PostService {
-    PostDto create(PostDto postDto, MultipartFile[] files);
-    PostDto create2(PostDto postDto) throws IOException;
+    PostDto create(PostDto postDto) throws IOException;
 
     PostDto update(Integer id, PostDto postDto);
 

@@ -90,20 +90,12 @@
         aria-labelledby="navbarUserDropdown"
         class="dropdown-menu dropdown-menu-right"
       >
-        <a ngbDropdownItem [routerLink]="['/']"
-          ><span [data-feather]="'user'" [class]="'mr-50'"></span> Profile</a
-        ><a ngbDropdownItem [routerLink]="['/']"
-          ><span [data-feather]="'mail'" [class]="'mr-50'"></span> Inbox</a
-        ><a ngbDropdownItem [routerLink]="['/']"
-          ><span [data-feather]="'check-square'" [class]="'mr-50'"></span>
-          Task</a
-        ><a ngbDropdownItem [routerLink]="['/']"
-          ><span [data-feather]="'message-square'" [class]="'mr-50'"></span>
-          Chats</a
+        <a ngbDropdownItem [routerLink]="['/profile']"
+          ><span [data-feather]="'user'" [class]="'mr-50'"></span> Cá nhân</a
         >
         <div class="dropdown-divider"></div>
         <a ngbDropdownItem [routerLink]="['/pages/authentication/login']"
-          ><span [data-feather]="'power'" [class]="'mr-50'"></span> Logout</a
+          ><span [data-feather]="'power'" [class]="'mr-50'"></span> Đăng xuất</a
         >
       </div>
     </li>

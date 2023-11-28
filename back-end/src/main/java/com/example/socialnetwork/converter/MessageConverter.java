@@ -1,16 +1,17 @@
 package com.example.socialnetwork.converter;
 
 import com.example.socialnetwork.dto.MessageDto;
-import com.example.socialnetwork.dto.MessagePhotoDto;
 import com.example.socialnetwork.model.Message;
-import com.example.socialnetwork.model.MessagePhoto;
 import com.example.socialnetwork.model.Room;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.stream.Collectors;
 
 @Component
+@AllArgsConstructor
 public class MessageConverter {
+    private MessagePhotoConverter messagePhotoConverter;
     public Message toEntity(MessageDto messageDto) {
         Message message = new Message();
         message.setContent(messageDto.getContent());
@@ -28,13 +29,7 @@ public class MessageConverter {
         messageDto.setRoomId(message.getRoom().getId());
         messageDto.setUserId(message.getUser().getId());
         messageDto.setCreatedAt(message.getCreatedAt());
-        messageDto.setPhotos(message.getMessagePhotos().stream().map(item -> {
-            MessagePhotoDto messagePhotoDto = new MessagePhotoDto();
-            messagePhotoDto.setId(item.getId());
-            messagePhotoDto.setContent(item.getContent());
-            return messagePhotoDto;
-        }).collect(Collectors.toList()));
-
+        messageDto.setPhotos(message.getMessagePhotos().stream().map(item -> messagePhotoConverter.toDto(item)).collect(Collectors.toList()));
         return messageDto;
     }
 }

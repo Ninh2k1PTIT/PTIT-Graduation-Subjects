@@ -5,19 +5,20 @@ import com.example.socialnetwork.dto.request.GoogleLoginRequest;
 import com.example.socialnetwork.dto.request.LoginRequest;
 import com.example.socialnetwork.dto.request.SignupRequest;
 import com.example.socialnetwork.dto.response.BaseResponse;
-import com.example.socialnetwork.dto.response.LoginResponse;
 import com.example.socialnetwork.dto.response.MessageResponse;
-import com.example.socialnetwork.model.*;
+import com.example.socialnetwork.exception.BadRequestException;
+import com.example.socialnetwork.model.EProvider;
+import com.example.socialnetwork.model.ERole;
+import com.example.socialnetwork.model.Role;
+import com.example.socialnetwork.model.User;
 import com.example.socialnetwork.repository.RoleRepository;
 import com.example.socialnetwork.repository.UserRepository;
 import com.example.socialnetwork.security.JwtUtils;
-import com.example.socialnetwork.service.impl.UserDetailsImpl;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.gson.GsonFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -33,7 +34,6 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Properties;
 import java.util.Set;
 import java.util.regex.Pattern;
 
@@ -67,8 +67,6 @@ public class AuthController {
             String jwt = jwtUtils.generateJwtToken(authentication);
             JwtDto jwtDto = new JwtDto();
             jwtDto.setAccessToken(jwt);
-//            UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-//            return ResponseEntity.ok(new LoginResponse(jwt, userDetails.getId(), userDetails.getUsername(), userDetails.getEmail(), userDetails.getPhoneNumber(), userDetails.getAvatar(), userDetails.getGender()));
             return ResponseEntity.ok(new BaseResponse<JwtDto>(jwtDto, true, null, null));
         } catch (BadCredentialsException e) {
             return ResponseEntity.ok(new BaseResponse<String>(null, false, "Email hoặc mật khẩu chưa chính xác!", e.getMessage()));
@@ -77,15 +75,14 @@ public class AuthController {
 
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
-        if (!Pattern.compile(EMAIL_PATTERN).matcher(signUpRequest.getEmail()).matches()) {
-            return ResponseEntity.ok(new BaseResponse<>(null, false, "Email không hợp lệ", null));
-        }
+        if (!Pattern.compile(EMAIL_PATTERN).matcher(signUpRequest.getEmail()).matches())
+            throw new BadRequestException("Email không hợp lệ");
 
-        if (userRepository.existsByEmail(signUpRequest.getEmail())) {
-            return ResponseEntity.ok(new BaseResponse<>(null, false, "Email đã tồn tại", null));
-        }
 
-        User user = new User(signUpRequest.getEmail(), encoder.encode(signUpRequest.getPassword()), signUpRequest.getUsername(), signUpRequest.getPhoneNumber(), signUpRequest.getGender(), EProvider.LOCAL);
+        if (userRepository.existsByEmail(signUpRequest.getEmail()))
+            throw new BadRequestException("Email đã tồn tại");
+
+        User user = new User(signUpRequest.getEmail(), encoder.encode(signUpRequest.getPassword()), signUpRequest.getUsername(), EProvider.LOCAL);
         Set<String> strRoles = signUpRequest.getRole();
         Set<Role> roles = new HashSet<>();
 
@@ -109,7 +106,7 @@ public class AuthController {
         user.setRoles(roles);
         user.setAvatar("https://www.facebook.com/images/fb_icon_325x325.png");
         userRepository.save(user);
-        return ResponseEntity.ok(new BaseResponse<>(null, true, "Đăng kí thành công!", null));
+        return ResponseEntity.ok(userRepository.save(user));
     }
 
     @PostMapping("/googleSignIn")
@@ -123,7 +120,7 @@ public class AuthController {
         if (googleIdToken != null) {
             GoogleIdToken.Payload payload = googleIdToken.getPayload();
             if (!userRepository.existsByEmail(payload.getEmail())) {
-                User user = new User(payload.getEmail(), encoder.encode(payload.getSubject()), payload.get("name").toString(), null, EGender.MALE, EProvider.GOOGLE);
+                User user = new User(payload.getEmail(), encoder.encode(payload.getSubject()), payload.get("name").toString(), EProvider.GOOGLE);
                 Set<Role> roles = new HashSet<>();
                 roles.add(roleRepository.findByName(ERole.ROLE_USER).get());
                 user.setRoles(roles);

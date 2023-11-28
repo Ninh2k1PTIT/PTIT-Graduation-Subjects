@@ -51,6 +51,7 @@ export class ChatService {
           (message) => {
             const body: Message = JSON.parse(message.body);
             this.onReceiveMessage.next(JSON.parse(message.body));
+            this.getRooms();
           }
         );
       },

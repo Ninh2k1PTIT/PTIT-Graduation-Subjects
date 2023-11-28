@@ -92,10 +92,7 @@ export class AuthenticationService {
                   "Thành công",
                   { toastClass: "toast ngx-toastr", closeButton: true }
                 );
-                localStorage.setItem(
-                  "currentUser",
-                  JSON.stringify(res.data)
-                );
+                localStorage.setItem("currentUser", JSON.stringify(res.data));
                 this.currentUserSubject.next(res.data);
                 return res.data;
               })
@@ -109,6 +106,10 @@ export class AuthenticationService {
           return of(null);
         })
       );
+  }
+
+  signup(body: { email: string; password: string; username: string }) {
+    return this._http.post<User>(`${environment.apiUrl}/auth/signup`, body);
   }
 
   getCurrentUser() {

@@ -43,33 +43,7 @@ public class PostServiceImpl implements PostService {
     private FirebaseImageService imageService;
 
     @Override
-    public PostDto create(PostDto postDto, MultipartFile[] files) {
-        Post post = postConverter.toEntity(postDto);
-        Post newPost = postRepository.save(post);
-        PostDto result = postConverter.toDto(newPost);
-
-        if (files != null) {
-            List<PostPhotoDto> postPhotoDtos = new ArrayList<>();
-            for (MultipartFile file : files) {
-                try {
-                    String fileName = imageService.save(file);
-                    String imageUrl = imageService.getImageUrl(fileName);
-                    PostPhoto postPhoto = new PostPhoto();
-                    postPhoto.setContent(imageUrl);
-                    postPhoto.setPost(newPost);
-                    PostPhoto newPostPhoto = postPhotoRepository.save(postPhoto);
-                    postPhotoDtos.add(postPhotoConverter.toDto(newPostPhoto));
-                } catch (Exception e) {
-                }
-            }
-            result.setPhotos(postPhotoDtos);
-        }
-
-        return result;
-    }
-
-    @Override
-    public PostDto create2(PostDto postDto) throws IOException {
+    public PostDto create(PostDto postDto) throws IOException {
         Post post = postConverter.toEntity(postDto);
         Post newPost = postRepository.save(post);
         PostDto newPostDto = postConverter.toDto(newPost);
@@ -181,10 +155,11 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public Boolean delete(Integer id) {
-        if (postRepository.existsById(id)) {
-            postRepository.deleteById(id);
-            return true;
-        }
+        Po
+//        if (postRepository.existsById(id)) {
+//            postRepository.deleteById(id);
+//            return true;
+//        }
         return false;
     }
 }

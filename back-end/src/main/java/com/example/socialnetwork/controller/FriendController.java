@@ -3,16 +3,13 @@ package com.example.socialnetwork.controller;
 import com.example.socialnetwork.dto.ERelationship;
 import com.example.socialnetwork.dto.FriendDto;
 import com.example.socialnetwork.dto.response.BaseResponse;
-import com.example.socialnetwork.exception.EntityNotFoundException;
 import com.example.socialnetwork.service.FriendService;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @CrossOrigin(origins = "*")

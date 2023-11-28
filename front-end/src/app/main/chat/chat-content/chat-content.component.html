@@ -77,7 +77,8 @@
           </div>
           <div class="chat-body">
             <div class="chat-content">
-              <p>{{ chat.content }}</p>
+              <p *ngIf="chat.photos.length == 0">{{ chat.content }}</p>
+              <img class="img-fluid" *ngIf="chat.photos.length > 0" [src]="chat.photos[0].content" />
             </div>
           </div>
         </div>
@@ -116,7 +117,13 @@
                 data-feather="image"
                 class="cursor-pointer lighten-2 text-secondary"
               ></i>
-              <input type="file" id="attach-doc" hidden /> </label
+              <input
+                type="file"
+                id="attach-doc"
+                hidden
+                (change)="onFileInput($event)"
+                accept=".jpeg, .jpg, .png"
+              /> </label
           ></span>
           <span
             class="input-group-text pl-0"
