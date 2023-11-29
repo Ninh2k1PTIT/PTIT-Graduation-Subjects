@@ -155,11 +155,10 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public Boolean delete(Integer id) {
-        Po
-//        if (postRepository.existsById(id)) {
-//            postRepository.deleteById(id);
-//            return true;
-//        }
+        if (postRepository.existsById(id)) {
+            postRepository.deleteById(id);
+            return true;
+        }
         return false;
     }
 }

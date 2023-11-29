@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewEncapsulation } from "@angular/core";
+import { AfterViewInit, Component, OnInit, ViewEncapsulation } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { takeUntil } from "rxjs/operators";
@@ -13,7 +13,7 @@ import { AuthenticationService } from "app/auth/service";
   styleUrls: ["./auth-login-v2.component.scss"],
   encapsulation: ViewEncapsulation.None,
 })
-export class AuthLoginV2Component implements OnInit {
+export class AuthLoginV2Component implements OnInit, AfterViewInit {
   //  Public
   public coreConfig: any;
   public loginForm: FormGroup;
@@ -56,6 +56,16 @@ export class AuthLoginV2Component implements OnInit {
         enableLocalStorage: false,
       },
     };
+  }
+  ngAfterViewInit(): void {
+    google.accounts.id.initialize({
+      client_id: "427947856574-9kuvkbobk276vvq4eude89kvvs7724p7.apps.googleusercontent.com",
+      callback: (response: any) => this.handleGoogleSignIn(response)
+    });
+    google.accounts.id.renderButton(
+      document.getElementById("google-btn"),
+      { size: "large", type: "icon", shape: "square" }  // customization attributes
+    );
   }
 
   // convenience getter for easy access to form fields
@@ -101,6 +111,8 @@ export class AuthLoginV2Component implements OnInit {
    * On init
    */
   ngOnInit(): void {
+
+
     this.loginForm = this._formBuilder.group({
       email: ["", [Validators.required, Validators.email]],
       password: ["", Validators.required],
@@ -124,5 +136,18 @@ export class AuthLoginV2Component implements OnInit {
     // Unsubscribe from all subscriptions
     this._unsubscribeAll.next();
     this._unsubscribeAll.complete();
+  }
+
+  handleGoogleSignIn(response) {
+    this._authService.googleSignin({ credential: response.credential }).subscribe(
+      (res) => {
+        console.log(res);
+        this._router.navigate(["/home"]);
+        this.loading = false;
+      },
+      (err) => {
+        this.loading = false;
+
+      })
   }
 }

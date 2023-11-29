@@ -26,7 +26,7 @@ public class PostController {
     @PostMapping("post")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<?> create(@RequestBody PostDto post) throws IOException {
-        return ResponseEntity.ok(postService.create2(post));
+        return ResponseEntity.ok(postService.create(post));
     }
 
     @PutMapping("post/{id}")

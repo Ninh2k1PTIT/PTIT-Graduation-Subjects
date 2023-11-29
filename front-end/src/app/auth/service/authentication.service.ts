@@ -112,6 +112,40 @@ export class AuthenticationService {
     return this._http.post<User>(`${environment.apiUrl}/auth/signup`, body);
   }
 
+  googleSignin(body: { credential: string; }) {
+    return this._http
+      .post<BaseResponse<Jwt>>(`${environment.apiUrl}/auth/googleSignIn`, body)
+      .pipe(
+        switchMap((res) => {
+          if (res.success) {
+            localStorage.setItem(
+              "accessToken",
+              JSON.stringify(res.data.accessToken)
+            );
+            this.currentJwtSubject.next(res.data.accessToken);
+            return this.getCurrentUser().pipe(
+              map((res) => {
+                this._toastrService.success(
+                  "👋 Xin chào, " + res.data.username + "!",
+                  "Thành công",
+                  { toastClass: "toast ngx-toastr", closeButton: true }
+                );
+                localStorage.setItem("currentUser", JSON.stringify(res.data));
+                this.currentUserSubject.next(res.data);
+                return res.data;
+              })
+            );
+          }
+
+          this._toastrService.error(res.userMessage, "Thất bại", {
+            toastClass: "toast ngx-toastr",
+            closeButton: true,
+          });
+          return of(null);
+        })
+      );
+  }
+
   getCurrentUser() {
     return this._http.get<BaseResponse<User>>(
       `${environment.apiUrl}/user/self`
