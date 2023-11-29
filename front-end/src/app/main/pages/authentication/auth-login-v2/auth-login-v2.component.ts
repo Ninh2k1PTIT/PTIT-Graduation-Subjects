@@ -1,4 +1,10 @@
-import { AfterViewInit, Component, OnInit, ViewEncapsulation } from "@angular/core";
+import {
+  AfterViewInit,
+  Component,
+  NgZone,
+  OnInit,
+  ViewEncapsulation,
+} from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { takeUntil } from "rxjs/operators";
@@ -26,17 +32,13 @@ export class AuthLoginV2Component implements OnInit, AfterViewInit {
   // Private
   private _unsubscribeAll: Subject<any>;
 
-  /**
-   * Constructor
-   *
-   * @param {CoreConfigService} _coreConfigService
-   */
   constructor(
     private _coreConfigService: CoreConfigService,
     private _formBuilder: FormBuilder,
     private _route: ActivatedRoute,
     private _router: Router,
-    private _authService: AuthenticationService
+    private _authService: AuthenticationService,
+    private _ngZone: NgZone
   ) {
     this._unsubscribeAll = new Subject();
 
@@ -57,14 +59,16 @@ export class AuthLoginV2Component implements OnInit, AfterViewInit {
       },
     };
   }
+
   ngAfterViewInit(): void {
     google.accounts.id.initialize({
-      client_id: "427947856574-9kuvkbobk276vvq4eude89kvvs7724p7.apps.googleusercontent.com",
-      callback: (response: any) => this.handleGoogleSignIn(response)
+      client_id:
+        "427947856574-9kuvkbobk276vvq4eude89kvvs7724p7.apps.googleusercontent.com",
+      callback: (response: any) => this.handleGoogleSignIn(response),
     });
     google.accounts.id.renderButton(
       document.getElementById("google-btn"),
-      { size: "large", type: "icon", shape: "square" }  // customization attributes
+      { size: "large", type: "icon", shape: "square" } // customization attributes
     );
   }
 
@@ -73,9 +77,6 @@ export class AuthLoginV2Component implements OnInit, AfterViewInit {
     return this.loginForm.controls;
   }
 
-  /**
-   * Toggle password
-   */
   togglePasswordTextType() {
     this.passwordTextType = !this.passwordTextType;
   }
@@ -104,15 +105,7 @@ export class AuthLoginV2Component implements OnInit, AfterViewInit {
       );
   }
 
-  // Lifecycle Hooks
-  // -----------------------------------------------------------------------------------------------------
-
-  /**
-   * On init
-   */
   ngOnInit(): void {
-
-
     this.loginForm = this._formBuilder.group({
       email: ["", [Validators.required, Validators.email]],
       password: ["", Validators.required],
@@ -129,9 +122,6 @@ export class AuthLoginV2Component implements OnInit, AfterViewInit {
       });
   }
 
-  /**
-   * On destroy
-   */
   ngOnDestroy(): void {
     // Unsubscribe from all subscriptions
     this._unsubscribeAll.next();
@@ -139,15 +129,18 @@ export class AuthLoginV2Component implements OnInit, AfterViewInit {
   }
 
   handleGoogleSignIn(response) {
-    this._authService.googleSignin({ credential: response.credential }).subscribe(
-      (res) => {
-        console.log(res);
-        this._router.navigate(["/home"]);
-        this.loading = false;
-      },
-      (err) => {
-        this.loading = false;
-
-      })
+    this._authService
+      .googleSignin({ credential: response.credential })
+      .subscribe(
+        (res) => {
+          this._ngZone.run(() => {
+            this._router.navigate(["/home"]);
+          });
+          this.loading = false;
+        },
+        (err) => {
+          this.loading = false;
+        }
+      );
   }
 }

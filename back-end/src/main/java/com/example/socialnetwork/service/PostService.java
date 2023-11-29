@@ -4,7 +4,6 @@ import com.example.socialnetwork.dto.PostDto;
 import com.example.socialnetwork.dto.response.PaginationResponse;
 import com.example.socialnetwork.model.EPostSort;
 import org.springframework.data.domain.Pageable;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 

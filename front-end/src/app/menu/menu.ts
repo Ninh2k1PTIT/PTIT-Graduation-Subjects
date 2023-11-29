@@ -8,13 +8,13 @@ export const menu: CoreMenu[] = [
     icon: 'home',
     url: 'home'
   },
-  // {
-  //   id: 'friend',
-  //   title: 'Bạn bè',
-  //   type: 'item',
-  //   icon: 'users',
-  //   url: 'friend'
-  // },
+  {
+    id: 'profile',
+    title: 'Cá nhân',
+    type: 'item',
+    icon: 'user',
+    url: 'profile'
+  },
   {
     id: 'chat',
     title: 'Tin nhắn',

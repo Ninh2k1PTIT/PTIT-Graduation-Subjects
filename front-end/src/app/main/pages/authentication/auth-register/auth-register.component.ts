@@ -1,4 +1,10 @@
-import { Component, OnInit, ViewEncapsulation } from "@angular/core";
+import {
+  AfterViewInit,
+  Component,
+  NgZone,
+  OnInit,
+  ViewEncapsulation,
+} from "@angular/core";
 import {
   FormGroup,
   FormBuilder,
@@ -19,7 +25,7 @@ import { takeUntil } from "rxjs/operators";
   styleUrls: ["./auth-register.component.scss"],
   encapsulation: ViewEncapsulation.None,
 })
-export class AuthRegisterComponent implements OnInit {
+export class AuthRegisterComponent implements OnInit, AfterViewInit {
   public coreConfig: any;
   public passwordTextType: boolean;
   public registerForm: FormGroup;
@@ -32,7 +38,8 @@ export class AuthRegisterComponent implements OnInit {
     private _formBuilder: FormBuilder,
     private _toastr: ToastrService,
     private _authService: AuthenticationService,
-    private _router: Router
+    private _router: Router,
+    private _ngZone: NgZone
   ) {
     this._unsubscribeAll = new Subject();
 
@@ -106,9 +113,18 @@ export class AuthRegisterComponent implements OnInit {
       });
   }
 
-  /**
-   * On destroy
-   */
+  ngAfterViewInit(): void {
+    google.accounts.id.initialize({
+      client_id:
+        "427947856574-9kuvkbobk276vvq4eude89kvvs7724p7.apps.googleusercontent.com",
+      callback: (response: any) => this.handleGoogleSignIn(response),
+    });
+    google.accounts.id.renderButton(
+      document.getElementById("google-btn"),
+      { size: "large", type: "icon", shape: "square" } // customization attributes
+    );
+  }
+
   ngOnDestroy(): void {
     // Unsubscribe from all subscriptions
     this._unsubscribeAll.next();
@@ -139,5 +155,15 @@ export class AuthRegisterComponent implements OnInit {
         return null;
       }
     };
+  }
+
+  handleGoogleSignIn(response) {
+    this._authService
+      .googleSignin({ credential: response.credential })
+      .subscribe((res) => {
+        this._ngZone.run(() => {
+          this._router.navigate(["/home"]);
+        });
+      });
   }
 }

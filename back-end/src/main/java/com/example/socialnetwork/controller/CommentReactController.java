@@ -1,8 +1,6 @@
 package com.example.socialnetwork.controller;
 
-import com.example.socialnetwork.dto.CommentReactDto;
 import com.example.socialnetwork.dto.response.BaseResponse;
-import com.example.socialnetwork.dto.response.PaginationResponse;
 import com.example.socialnetwork.service.CommentReactService;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;

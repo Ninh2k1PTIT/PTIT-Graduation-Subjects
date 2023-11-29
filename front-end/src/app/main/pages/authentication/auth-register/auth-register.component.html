@@ -125,8 +125,12 @@
               class="invalid-feedback"
               [ngClass]="{ 'd-block': submitted && f.confirmPassword.errors }"
             >
-              <div *ngIf="f.confirmPassword.errors.required">Không được để trống</div>
-              <div *ngIf="f.confirmPassword.errors.confirmedValidator">Chưa khớp với Mật khẩu</div>
+              <div *ngIf="f.confirmPassword.errors.required">
+                Không được để trống
+              </div>
+              <div *ngIf="f.confirmPassword.errors.confirmedValidator">
+                Chưa khớp với Mật khẩu
+              </div>
             </div>
           </div>
           <button class="btn btn-primary btn-block" tabindex="5" rippleEffect>
@@ -146,18 +150,7 @@
         </div>
 
         <div class="auth-footer-btn d-flex justify-content-center">
-          <a href="javascript:void(0)" class="btn btn-facebook">
-            <i data-feather="facebook"></i>
-          </a>
-          <a href="javascript:void(0)" class="btn btn-twitter white">
-            <i data-feather="twitter"></i>
-          </a>
-          <a href="javascript:void(0)" class="btn btn-google">
-            <i data-feather="mail"></i>
-          </a>
-          <a href="javascript:void(0)" class="btn btn-github">
-            <i data-feather="github"></i>
-          </a>
+          <div id="google-btn"></div>
         </div>
       </div>
     </div>
