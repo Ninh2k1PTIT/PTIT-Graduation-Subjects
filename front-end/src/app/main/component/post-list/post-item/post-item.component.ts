@@ -1,5 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { AuthenticationService } from 'app/auth/service';
 import { Post } from 'app/model/Post';
+import { User } from 'app/model/User';
 
 @Component({
   selector: 'app-post-item',
@@ -8,10 +10,12 @@ import { Post } from 'app/model/Post';
 })
 export class PostItemComponent implements OnInit {
   @Input('post') post: Post
+  public currentUser: User
 
-  constructor() { }
+  constructor(private _authService: AuthenticationService) { }
 
   ngOnInit(): void {
+    this.currentUser = this._authService.currentUserValue
   }
 
   convertCoordinates(imageId: string, left: number, top: number) {

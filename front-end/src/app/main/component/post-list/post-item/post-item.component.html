@@ -1,21 +1,62 @@
 <div class="card">
   <div class="card-body">
-    <div class="d-flex justify-content-start align-items-center mb-1">
-      <!-- avatar -->
-      <div class="avatar mr-1">
-        <img
-          [src]="post.createdBy.avatar"
-          alt="avatar img"
-          height="35"
-          width="35"
-        />
+    <div class="d-flex justify-content-between align-items-center mb-1">
+      <div class="d-flex">
+        <!-- avatar -->
+        <div class="avatar mr-1">
+          <a [routerLink]="'/profile/' + post.createdBy.id">
+            <img
+              [src]="post.createdBy.avatar"
+              alt="avatar img"
+              height="35"
+              width="35"
+            />
+          </a>
+        </div>
+        <!--/ avatar -->
+        <div class="profile-user-info">
+          <h6 class="mb-0">{{ post.createdBy.username }}</h6>
+          <small class="text-muted">{{
+            post.createdAt | date : "HH:mm dd/MM/yyyy"
+          }}</small>
+        </div>
       </div>
-      <!--/ avatar -->
-      <div class="profile-user-info">
-        <h6 class="mb-0">{{ post.createdBy.username }}</h6>
-        <small class="text-muted">{{
-          post.createdAt | date : "HH:mm dd/MM/yyyy"
-        }}</small>
+
+      <div *ngIf="currentUser.id == post.createdBy.id" class="btn-group">
+        <div ngbDropdown container="body">
+          <a
+            ngbDropdownToggle
+            href="javascript:void(0);"
+            class="hide-arrow"
+            id="dropdownBrowserState"
+            data-toggle="dropdown"
+            aria-haspopup="true"
+            aria-expanded="false"
+          >
+            <i
+              data-feather="more-vertical"
+              class="text-secondary cursor-pointer mr-50"
+            ></i>
+          </a>
+          <div
+            ngbDropdownMenu
+            class="dropdown-menu-right"
+            aria-labelledby="dropdownBrowserState"
+          >
+            <a
+              href="javascript:void(0)"
+              ngbDropdownItem
+              class="d-flex align-items-center"
+              ><i data-feather="edit" class="mr-50"></i> Chỉnh sửa</a
+            >
+            <a
+              href="javascript:void(0)"
+              ngbDropdownItem
+              class="d-flex align-items-center"
+              ><i data-feather="trash-2" class="mr-50"></i> Xóa</a
+            >
+          </div>
+        </div>
       </div>
     </div>
     <p class="card-text">

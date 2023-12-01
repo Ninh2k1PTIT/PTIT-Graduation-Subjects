@@ -32,7 +32,30 @@ const routes: Routes = [
       },
       {
         path: "",
-        redirectTo: "/profile/posts",
+        redirectTo: "posts",
+        pathMatch: "full",
+      },
+    ],
+  },
+  {
+    path: ":id",
+    component: ProfileComponent,
+    children: [
+      {
+        path: "posts",
+        component: PostsComponent,
+      },
+      {
+        path: "info",
+        component: InfoComponent,
+      },
+      {
+        path: "friends",
+        component: FriendsComponent,
+      },
+      {
+        path: "",
+        redirectTo: "posts",
         pathMatch: "full",
       },
     ],

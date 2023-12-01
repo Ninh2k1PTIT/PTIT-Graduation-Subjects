@@ -19,9 +19,12 @@ export class UserService {
   }
 
   getByUsername(params: { username: string }) {
-    return this._http.get<User[]>(
-      `${environment.apiUrl}/users/all`,
-      { params: new HttpParams({ fromObject: params }) }
-    );
+    return this._http.get<User[]>(`${environment.apiUrl}/users/all`, {
+      params: new HttpParams({ fromObject: params }),
+    });
+  }
+
+  getById(id: number) {
+    return this._http.get<User>(`${environment.apiUrl}/user/${id}`);
   }
 }

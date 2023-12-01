@@ -1,1 +1,8 @@
-@import '@core/scss/base/pages/page-profile';
+@import "@core/scss/base/pages/page-profile";
+
+.profile-img-upload {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  transform: translate(50%, 50%);
+}

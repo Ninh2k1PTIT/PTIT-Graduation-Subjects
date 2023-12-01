@@ -14,15 +14,16 @@
         <div class="position-relative">
           <!-- profile picture -->
           <div class="profile-img-container d-flex align-items-center">
-            <div class="profile-img">
-              <img
-                [src]="currentUser.avatar"
-                class="rounded w-100 h-100"
-              />
+            <div class="profile-img position-relative">
+              <img [src]="currentUser?.avatar" class="rounded w-100 h-100" />
+              <button (click)="fileInput.click()" type="button" class="profile-img-upload btn btn-icon btn-primary" rippleEffect>
+                <span [data-feather]="'camera'"></span></button
+              >
+              <input #fileInput hidden type="file">
             </div>
             <!-- profile title -->
             <div class="profile-title ml-3">
-              <h2 class="text-white">{{ currentUser.username }}</h2>
+              <h2 class="text-white">{{ currentUser?.username }}</h2>
             </div>
           </div>
         </div>

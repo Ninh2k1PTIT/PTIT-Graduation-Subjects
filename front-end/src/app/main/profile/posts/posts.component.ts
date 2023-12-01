@@ -1,30 +1,33 @@
-import { Component, HostListener, OnInit, ViewEncapsulation } from "@angular/core";
-import { FormGroup, FormBuilder } from "@angular/forms";
+import {
+  Component,
+  HostListener,
+  OnInit,
+  ViewEncapsulation,
+} from "@angular/core";
+import { FormBuilder, FormGroup } from "@angular/forms";
+import { ActivatedRoute } from "@angular/router";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { AuthenticationService } from "app/auth/service";
 import { EPostSort } from "app/model/EPostSort";
 import { Post } from "app/model/Post";
-import { User } from "app/model/User";
 import { PostService } from "app/services/post.service";
 import { FlatpickrOptions } from "ng2-flatpickr";
 import { combineLatest } from "rxjs";
 import {
-  delay,
-  mergeMap,
   debounceTime,
-  startWith,
+  delay,
   distinctUntilChanged,
+  mergeMap,
+  startWith
 } from "rxjs/operators";
 
 @Component({
   selector: "app-posts",
   templateUrl: "./posts.component.html",
   styleUrls: ["./posts.component.scss"],
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
 })
 export class PostsComponent implements OnInit {
-  public currentUser: User;
-
   public DateRangeOptions: FlatpickrOptions = {
     altInput: true,
     mode: "range",
@@ -61,12 +64,13 @@ export class PostsComponent implements OnInit {
     private _postService: PostService,
     private _fb: FormBuilder,
     private _modalService: NgbModal,
-    private _authService: AuthenticationService
+    private _authService: AuthenticationService,
+    private _route: ActivatedRoute,
   ) {}
 
   ngOnInit(): void {
-    this.currentUser = this._authService.currentUserValue;
-
+    console.log(this._route.snapshot.parent.params);
+    
     this.form = this._fb.group({
       sort: this.sortOption[0].value,
       content: "",
@@ -74,7 +78,7 @@ export class PostsComponent implements OnInit {
       toDate: "",
       page: 0,
       size: 10,
-      userId: this._authService.currentUserValue.id,
+      userId: this._route.snapshot.parent.params.id || this._authService.currentUserValue.id,
     });
 
     this.form

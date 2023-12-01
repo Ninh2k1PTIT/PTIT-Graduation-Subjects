@@ -9,6 +9,7 @@ import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { PerfectScrollbarModule } from "ngx-perfect-scrollbar";
 import { CommentListComponent } from './post-item/comment/comment-list/comment-list.component';
 import { CommentReactComponent } from './post-item/comment/comment-react/comment-react.component';
+import { RouterModule } from "@angular/router";
 
 @NgModule({
   declarations: [
@@ -19,7 +20,7 @@ import { CommentReactComponent } from './post-item/comment/comment-react/comment
     CommentListComponent,
     CommentReactComponent,
   ],
-  imports: [CommonModule, CoreCommonModule, NgbModule, PerfectScrollbarModule],
+  imports: [CommonModule, CoreCommonModule, NgbModule, PerfectScrollbarModule, RouterModule],
   exports: [PostListComponent],
 })
 export class PostListModule {}
