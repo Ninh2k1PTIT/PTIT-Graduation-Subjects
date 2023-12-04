@@ -21,14 +21,14 @@ public class UserController {
 
     @PutMapping("updateAvatar")
     @PreAuthorize("hasRole('USER')")
-    public UserDto updateAvatar(@RequestBody UserDto userDto) {
-        return userService.updateAvatar(userDto.getAvatar());
+    public ResponseEntity<UserDto> updateAvatar(@RequestBody UserDto userDto) {
+        return ResponseEntity.ok(userService.updateAvatar(userDto.getAvatar()));
     }
 
-    @PutMapping("updateBasicInfo")
+    @PutMapping("updateInfo")
     @PreAuthorize("hasRole('USER')")
-    public UserDto updateBasicInfo(@RequestBody UserDto userDto) {
-        return userService.updateBasicInfo(userDto);
+    public ResponseEntity<UserDto> updateBasicInfo(@RequestBody UserDto userDto) {
+        return ResponseEntity.ok(userService.updateBasicInfo(userDto));
     }
 
     @GetMapping("user/{id}")

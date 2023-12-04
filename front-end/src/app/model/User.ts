@@ -5,5 +5,8 @@ export class User {
   phoneNumber?: string;
   gender?: string;
   email?: string;
-  role?: string[]
+  role?: string[];
+  description?: string;
+  address?: string;
+  birthday?: Date
 }

@@ -21,6 +21,9 @@ public class UserConverter {
         userDto.setPhoneNumber(user.getPhoneNumber());
         userDto.setGender(user.getGender());
         userDto.setEmail(user.getEmail());
+        userDto.setAddress(user.getAddress());
+        userDto.setBirthday(user.getBirthday());
+        userDto.setDescription(user.getDescription());
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         UserDetailsImpl userDetails = (UserDetailsImpl) auth.getPrincipal();

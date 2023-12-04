@@ -116,7 +116,9 @@ export class HomeComponent implements OnInit {
   }
 
   newPost(post: Post) {
-    this.posts = [post, ...this.posts];
+    this._postService.getById(post.id).subscribe(res => {
+      this.posts = [res.data, ...this.posts];
+    })
   }
 
   refresh() {

@@ -68,9 +68,7 @@ export class PostsComponent implements OnInit {
     private _route: ActivatedRoute,
   ) {}
 
-  ngOnInit(): void {
-    console.log(this._route.snapshot.parent.params);
-    
+  ngOnInit(): void {    
     this.form = this._fb.group({
       sort: this.sortOption[0].value,
       content: "",

@@ -1,1 +1,65 @@
-<p>info works!</p>
+<div class="row">
+    <div class="col-8 offset-2">
+        <div class="card" id="information" aria-labelledby="information-tab" role="tabpanel">
+            <div class="card-body">
+                <form class="form-validate" [formGroup]="form">
+                    <div class="row mt-1">
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label>Tên người dùng</label>
+                                <input formControlName="username" type="text" class="form-control"
+                                    placeholder="Tên người dùng" />
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label>Số điện thoại</label>
+                                <input formControlName="phoneNumber" type="text" class="form-control"
+                                    placeholder="Số điện thoại" />
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label>Địa chỉ</label>
+                                <input formControlName="address" type="text" class="form-control"
+                                    placeholder="Địa chỉ" />
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label>Ngày sinh</label>
+                                <ng2-flatpickr [setDate]="user?.birthday" [config]="birthDateOptions"
+                                    placeholder="Ngày sinh"></ng2-flatpickr>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label>Giới tính</label>
+                                <select formControlName="gender" class="form-control">
+                                    <option value="MALE">Nam</option>
+                                    <option value="FEMALE">Nữ</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label>Mô tả</label>
+                                <textarea formControlName="description" class="form-control" rows="3"
+                                    placeholder="Mô tả"></textarea>
+                            </div>
+                        </div>
+
+                        <div *ngIf="isEdit()" class="col-12 d-flex flex-sm-row flex-column mt-2">
+                            <button (click)="onSubmit()" type="submit" class="btn btn-primary mb-1 mb-sm-0 mr-0 mr-sm-1"
+                                rippleEffect>
+                                Lưu
+                            </button>
+                            <button (click)="reset()" type="button" class="btn btn-outline-secondary" rippleEffect>Đặt
+                                lại</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

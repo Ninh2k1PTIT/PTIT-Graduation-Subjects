@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Date;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -16,5 +18,8 @@ public class UserDto {
     private EGender gender;
     private String email;
     private ERelationship relationship;
+    private String address;
+    private String description;
+    private Date birthday;
 }
 

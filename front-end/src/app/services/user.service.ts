@@ -9,7 +9,7 @@ import { environment } from "environments/environment";
   providedIn: "root",
 })
 export class UserService {
-  constructor(private _http: HttpClient) {}
+  constructor(private _http: HttpClient) { }
 
   search(params: { page: number; size: number; username: string }) {
     return this._http.get<BaseResponse<PaginationResponse<User>>>(

@@ -1,52 +1,37 @@
-<app-upload (onSuccess)="newPost($event)"></app-upload>
-<div class="card">
-  <div class="card-body">
-    <form [formGroup]="form">
-      <div class="row">
-        <div class="col-3">
-          <div class="form-group">
-            <input
-              type="text"
-              class="form-control"
-              placeholder="Nội dung"
-              formControlName="content"
-            />
+<div class="row">
+  <div class="offset-2 col-8">
+    <app-upload (onSuccess)="newPost($event)"></app-upload>
+    <div class="card">
+      <div class="card-body">
+        <form [formGroup]="form">
+          <div class="row">
+            <div class="col-3">
+              <div class="form-group">
+                <input type="text" class="form-control" placeholder="Nội dung" formControlName="content" />
+              </div>
+            </div>
+            <div class="col-3">
+              <div class="form-group">
+                <ng-select [items]="sortOption" bindValue="value" bindLabel="label" [clearable]="false"
+                  formControlName="sort"></ng-select>
+              </div>
+            </div>
+            <div class="col-4">
+              <div class="form-group">
+                <ng2-flatpickr [config]="DateRangeOptions" name="DateRange" placeholder="Ngày tạo"></ng2-flatpickr>
+              </div>
+            </div>
+            <div class="col-2">
+              <div class="d-flex justify-content-end">
+                <button type="button" class="btn btn-icon btn-outline-primary" rippleEffect (click)="refresh()">
+                  <span [data-feather]="'refresh-cw'"></span>
+                </button>
+              </div>
+            </div>
           </div>
-        </div>
-        <div class="col-3">
-          <div class="form-group">
-            <ng-select
-              [items]="sortOption"
-              bindValue="value"
-              bindLabel="label"
-              [clearable]="false"
-              formControlName="sort"
-            ></ng-select>
-          </div>
-        </div>
-        <div class="col-4">
-          <div class="form-group">
-            <ng2-flatpickr
-              [config]="DateRangeOptions"
-              name="DateRange"
-              placeholder="Ngày tạo"
-            ></ng2-flatpickr>
-          </div>
-        </div>
-        <div class="col-2">
-          <div class="d-flex justify-content-end">
-            <button
-              type="button"
-              class="btn btn-icon btn-outline-primary"
-              rippleEffect
-              (click)="refresh()"
-            >
-              <span [data-feather]="'refresh-cw'"></span>
-            </button>
-          </div>
-        </div>
+        </form>
       </div>
-    </form>
+    </div>
+    <app-post-list [posts]="posts"></app-post-list>
   </div>
 </div>
-<app-post-list [posts]="posts"></app-post-list>

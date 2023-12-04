@@ -151,6 +151,13 @@ export class AuthenticationService {
       `${environment.apiUrl}/user/self`
     );
   }
+
+  update(user: User) {
+    return this._http.put<User>(`${environment.apiUrl}/updateInfo`, user).pipe(tap(res => {
+      this.currentUserSubject.next(res);
+      localStorage.setItem("currentUser", JSON.stringify(res));
+    }));
+  }
   /**
    * User logout
    *

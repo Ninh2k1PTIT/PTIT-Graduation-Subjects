@@ -35,15 +35,17 @@ public class User {
     @Column(columnDefinition = "TEXT")
     private String avatar;
 
+    @Column(columnDefinition = "TEXT")
+    private String address;
+
     @Enumerated(EnumType.STRING)
     private EGender gender;
 
     @Enumerated(EnumType.STRING)
     private EProvider provider;
 
-    @CreatedDate
-    @Column(name = "created_at")
-    private Date createdAt;
+    @Column(name = "birthday")
+    private Date birthday;
 
     @ManyToMany
     @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
