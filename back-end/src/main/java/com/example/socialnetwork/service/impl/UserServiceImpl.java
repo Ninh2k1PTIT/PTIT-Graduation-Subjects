@@ -5,6 +5,7 @@ import com.example.socialnetwork.dto.UserDto;
 import com.example.socialnetwork.dto.response.PaginationResponse;
 import com.example.socialnetwork.model.User;
 import com.example.socialnetwork.repository.UserRepository;
+import com.example.socialnetwork.service.FirebaseImageService;
 import com.example.socialnetwork.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -12,7 +13,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -21,13 +24,16 @@ import java.util.stream.Collectors;
 public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
     private UserConverter userConverter;
+    private FirebaseImageService imageService;
 
     @Override
-    public UserDto updateAvatar(String avatar) {
+    public UserDto updateAvatar(MultipartFile file) throws IOException {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         UserDetailsImpl userDetails = (UserDetailsImpl) auth.getPrincipal();
+        String fileName = imageService.save(file);
+        String imageUrl = imageService.getImageUrl(fileName);
         User user = userRepository.findByEmail(userDetails.getEmail()).get();
-        user.setAvatar(avatar);
+        user.setAvatar(imageUrl);
         return userConverter.toDto(userRepository.save(user));
     }
 

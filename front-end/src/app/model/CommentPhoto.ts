@@ -1,4 +1,6 @@
 export class CommentPhoto {
-    id: number
+    id?: number
     content: string
+    name: string
+    type: string
 }

@@ -4,9 +4,13 @@ import com.example.socialnetwork.converter.CommentConverter;
 import com.example.socialnetwork.converter.CommentPhotoConverter;
 import com.example.socialnetwork.dto.CommentDto;
 import com.example.socialnetwork.dto.CommentPhotoDto;
+import com.example.socialnetwork.dto.PostPhotoDto;
+import com.example.socialnetwork.dto.TagDto;
 import com.example.socialnetwork.dto.response.PaginationResponse;
 import com.example.socialnetwork.model.Comment;
 import com.example.socialnetwork.model.CommentPhoto;
+import com.example.socialnetwork.model.PostPhoto;
+import com.example.socialnetwork.model.Tag;
 import com.example.socialnetwork.repository.CommentPhotoRepository;
 import com.example.socialnetwork.repository.CommentRepository;
 import com.example.socialnetwork.service.CommentService;
@@ -19,6 +23,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.xml.bind.DatatypeConverter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -63,29 +68,27 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public CommentDto create(CommentDto commentDto, MultipartFile[] files) {
+    public CommentDto create(CommentDto commentDto) {
         Comment comment = commentConverter.toEntity(commentDto);
         Comment newComment = commentRepository.save(comment);
-        CommentDto result = commentConverter.toDto(newComment);
+        CommentDto newCommentDto = commentConverter.toDto(newComment);
 
-        if (files != null) {
-            List<CommentPhotoDto> commentPhotoDtos = new ArrayList<>();
-            for (MultipartFile file : files) {
-                try {
-                    String fileName = imageService.save(file);
-                    String imageUrl = imageService.getImageUrl(fileName);
-                    CommentPhoto commentPhoto = new CommentPhoto();
-                    commentPhoto.setContent(imageUrl);
-                    commentPhoto.setComment(newComment);
-                    CommentPhoto newCommentPhoto = commentPhotoRepository.save(commentPhoto);
-                    commentPhotoDtos.add(commentPhotoConverter.toDto(newCommentPhoto));
-                } catch (Exception e) {
-                }
-            }
-            result.setPhotos(commentPhotoDtos);
+        List<CommentPhotoDto> commentPhotoDtos = new ArrayList<>();
+        for (CommentPhotoDto commentPhotoDto : commentDto.getPhotos()) {
+            String content = commentPhotoDto.getContent().split(",")[1];
+            byte[] bytes = DatatypeConverter.parseBase64Binary(content);
+            String fileName = imageService.save(bytes, commentPhotoDto.getName(), commentPhotoDto.getType());
+            String imageUrl = imageService.getImageUrl(fileName);
+
+            CommentPhoto commentPhoto = new CommentPhoto();
+            commentPhoto.setContent(imageUrl);
+            commentPhoto.setComment(newComment);
+            CommentPhoto newCommentPhoto = commentPhotoRepository.save(commentPhoto);
+            CommentPhotoDto newCommentPhotoDto = commentPhotoConverter.toDto(newCommentPhoto);
+            commentPhotoDtos.add(newCommentPhotoDto);
         }
-
-        return result;
+        newCommentDto.setPhotos(commentPhotoDtos);
+        return newCommentDto;
     }
 
     @Override

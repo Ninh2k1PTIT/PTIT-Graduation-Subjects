@@ -11,16 +11,20 @@ import { environment } from "environments/environment";
 export class CommentService {
   constructor(private _http: HttpClient) {}
 
-  create(comment: Comment, files: File[]) {
-    const formData = new FormData();
-    formData.append("comment", JSON.stringify(comment));
-    files.forEach((file) => {
-      formData.append("files", file);
-    });
-    return this._http.post<BaseResponse<Comment>>(
-      `${environment.apiUrl}/comment`,
-      formData
-    );
+  // create(comment: Comment, files: File[]) {
+  //   const formData = new FormData();
+  //   formData.append("comment", JSON.stringify(comment));
+  //   files.forEach((file) => {
+  //     formData.append("files", file);
+  //   });
+  //   return this._http.post<BaseResponse<Comment>>(
+  //     `${environment.apiUrl}/comment`,
+  //     formData
+  //   );
+  // }
+
+  create(comment: Comment) {
+    return this._http.post<Comment>(`${environment.apiUrl}/comment`, comment);
   }
 
   getByPostId(

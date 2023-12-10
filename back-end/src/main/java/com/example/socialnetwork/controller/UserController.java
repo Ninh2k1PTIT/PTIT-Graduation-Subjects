@@ -8,6 +8,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @RestController
 @CrossOrigin("*")
@@ -21,8 +24,8 @@ public class UserController {
 
     @PutMapping("updateAvatar")
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<UserDto> updateAvatar(@RequestBody UserDto userDto) {
-        return ResponseEntity.ok(userService.updateAvatar(userDto.getAvatar()));
+    public ResponseEntity<UserDto> updateAvatar(@RequestParam(name = "file") MultipartFile file) throws IOException {
+        return ResponseEntity.ok(userService.updateAvatar(file));
     }
 
     @PutMapping("updateInfo")

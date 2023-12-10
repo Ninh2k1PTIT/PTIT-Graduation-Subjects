@@ -112,7 +112,7 @@ export class AuthenticationService {
     return this._http.post<User>(`${environment.apiUrl}/auth/signup`, body);
   }
 
-  googleSignin(body: { credential: string; }) {
+  googleSignin(body: { credential: string }) {
     return this._http
       .post<BaseResponse<Jwt>>(`${environment.apiUrl}/auth/googleSignIn`, body)
       .pipe(
@@ -153,19 +153,29 @@ export class AuthenticationService {
   }
 
   update(user: User) {
-    return this._http.put<User>(`${environment.apiUrl}/updateInfo`, user).pipe(tap(res => {
-      this.currentUserSubject.next(res);
-      localStorage.setItem("currentUser", JSON.stringify(res));
-    }));
+    return this._http.put<User>(`${environment.apiUrl}/updateInfo`, user).pipe(
+      tap((res) => {
+        this.currentUserSubject.next(res);
+        localStorage.setItem("currentUser", JSON.stringify(res));
+      })
+    );
   }
-  /**
-   * User logout
-   *
-   */
+
+  updateAvatar(file: File) {
+    const formData = new FormData();
+    formData.append("file", file);
+    return this._http
+      .put<User>(`${environment.apiUrl}/updateAvatar`, formData)
+      .pipe(
+        tap((res) => {
+          this.currentUserSubject.next(res);
+          localStorage.setItem("currentUser", JSON.stringify(res));
+        })
+      );
+  }
+
   logout() {
-    // remove user from local storage to log user out
     localStorage.removeItem("currentUser");
-    // notify
     this.currentUserSubject.next(null);
   }
 }

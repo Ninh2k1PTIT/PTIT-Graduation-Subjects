@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 import { AuthenticationService } from "app/auth/service";
 import { Comment } from "app/model/Comment";
-import { Photo } from "app/model/Photo";
+import { CommentPhoto } from "app/model/CommentPhoto";
 import { Post } from "app/model/Post";
 import { CommentService } from "app/services/comment.service";
 
@@ -18,7 +18,7 @@ export class CommentListComponent implements OnInit {
   @ViewChild("scrollMe") public scrollMe: ElementRef<HTMLDivElement>;
   public scrollTop: number = null;
   public form: FormGroup;
-  public photos: Photo[] = [];
+  public photos: CommentPhoto[] = [];
   public comments: Comment[] = [];
   public stop = false;
 
@@ -53,22 +53,17 @@ export class CommentListComponent implements OnInit {
       comment.isReact = false;
       comment.totalReact = 0;
       comment.createdBy = this._authService.currentUserValue;
-      comment.photos = [];
+      comment.photos = this.photos;
       this.comments.push(comment);
       setTimeout(() => {
         this.scrollTop = this.scrollMe.nativeElement.scrollHeight;
       }, 0);
-      this._commentService
-        .create(
-          comment,
-          this.photos.map((item) => item.file)
-        )
-        .subscribe((res) => {
-          this.comments[this.comments.length - 1] = res.data;
-          setTimeout(() => {
-            this.scrollTop = this.scrollMe.nativeElement.scrollHeight;
-          }, 0);
-        });
+      this._commentService.create(comment).subscribe((res) => {
+        this.comments[this.comments.length - 1] = res;
+        setTimeout(() => {
+          this.scrollTop = this.scrollMe.nativeElement.scrollHeight;
+        }, 0);
+      });
       this.form.reset();
       this.photos = [];
     }
@@ -88,10 +83,9 @@ export class CommentListComponent implements OnInit {
     if (files.length > 0) {
       for (let i = 0; i < files.length; i++)
         this.photos.push({
-          file: files.item(i),
-          b64: await this.convertFileToUrl(files.item(i)),
+          content: await this.convertFileToUrl(files.item(i)),
           type: files.item(i).type,
-          name: ""
+          name: files.item(i).name,
         });
     }
   }

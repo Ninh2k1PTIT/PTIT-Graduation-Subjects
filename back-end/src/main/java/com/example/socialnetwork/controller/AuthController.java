@@ -1,5 +1,6 @@
 package com.example.socialnetwork.controller;
 
+import com.example.socialnetwork.converter.UserConverter;
 import com.example.socialnetwork.dto.JwtDto;
 import com.example.socialnetwork.dto.request.GoogleLoginRequest;
 import com.example.socialnetwork.dto.request.LoginRequest;
@@ -47,16 +48,18 @@ public class AuthController {
     private UserRepository userRepository;
     private RoleRepository roleRepository;
     private PasswordEncoder encoder;
+    private UserConverter userConverter;
     private JwtUtils jwtUtils;
     @Value("${google.clientId}")
     private String googleClientId;
 
-    public AuthController(AuthenticationManager authenticationManager, UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder encoder, JwtUtils jwtUtils) {
+    public AuthController(AuthenticationManager authenticationManager, UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder encoder, JwtUtils jwtUtils, UserConverter userConverter) {
         this.authenticationManager = authenticationManager;
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.encoder = encoder;
         this.jwtUtils = jwtUtils;
+        this.userConverter = userConverter;
     }
 
     @PostMapping("/login")

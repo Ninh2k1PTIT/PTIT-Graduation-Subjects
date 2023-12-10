@@ -111,7 +111,7 @@
       <ngb-carousel [interval]="3000">
         <ng-template *ngFor="let photo of photos" ngbSlide>
           <div class="img-fluid rounded mb-75 text-center">
-            <img [src]="photo.b64" class="img-fluid" style="height: 30vh" />
+            <img [src]="photo.content" class="img-fluid" style="height: 30vh" />
           </div>
           <div class="carousel-caption"></div>
         </ng-template>

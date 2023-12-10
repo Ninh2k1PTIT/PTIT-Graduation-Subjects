@@ -18,7 +18,7 @@ public class CommentPhotoConverter {
         commentPhoto.setId(commentPhotoDto.getId());
 
         Comment comment = new Comment();
-        comment.setId(commentPhotoDto.getComment().getId());
+        comment.setId(commentPhotoDto.getCommentId());
         commentPhoto.setComment(comment);
 
         return commentPhoto;
@@ -28,10 +28,7 @@ public class CommentPhotoConverter {
         CommentPhotoDto commentPhotoDto = new CommentPhotoDto();
         commentPhotoDto.setContent(commentPhoto.getContent());
         commentPhotoDto.setId(commentPhoto.getId());
-
-        CommentDto commentDto = new CommentDto();
-        commentDto.setId(commentPhoto.getComment().getId());
-        commentPhotoDto.setComment(commentDto);
+        commentPhotoDto.setCommentId(commentPhoto.getComment().getId());
 
         return commentPhotoDto;
     }

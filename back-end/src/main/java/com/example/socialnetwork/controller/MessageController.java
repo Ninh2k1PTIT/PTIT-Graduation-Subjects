@@ -19,7 +19,6 @@ public class MessageController {
     @PostMapping("/chat")
     @PreAuthorize("hasRole('USER')")
     public MessageDto send(@RequestBody MessageDto messageDto) {
-
         return messageService.create(messageDto);
     }
 

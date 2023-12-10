@@ -10,5 +10,7 @@ import lombok.Setter;
 public class CommentPhotoDto {
     private Integer id;
     private String content;
-    private CommentDto comment;
+    private String name;
+    private String type;
+    private Integer commentId;
 }

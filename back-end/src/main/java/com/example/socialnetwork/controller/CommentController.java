@@ -3,12 +3,9 @@ package com.example.socialnetwork.controller;
 import com.example.socialnetwork.dto.CommentDto;
 import com.example.socialnetwork.dto.response.BaseResponse;
 import com.example.socialnetwork.service.CommentService;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @CrossOrigin(origins = "*")
@@ -21,10 +18,8 @@ public class CommentController {
 
     @PostMapping("comment")
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<?> create(@RequestParam(required = false) String comment, @RequestParam(required = false) MultipartFile[] files) throws JsonProcessingException {
-        ObjectMapper mapper = new ObjectMapper();
-        CommentDto commentDto = mapper.readValue(comment, CommentDto.class);
-        return ResponseEntity.ok(new BaseResponse<>(commentService.create(commentDto, files), true, null, null));
+    public ResponseEntity<CommentDto> create(@RequestBody CommentDto commentDto)  {
+        return ResponseEntity.ok(commentService.create(commentDto));
     }
 
     @GetMapping("post/{id}/comments")

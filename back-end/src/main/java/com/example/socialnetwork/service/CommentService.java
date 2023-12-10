@@ -13,7 +13,7 @@ public interface CommentService {
 
     CommentDto getById(Integer id);
 
-    CommentDto create(CommentDto commentDto, MultipartFile[] files);
+    CommentDto create(CommentDto commentDto);
 
     Boolean delete(Integer id);
 }
