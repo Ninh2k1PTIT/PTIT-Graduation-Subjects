@@ -1,6 +1,6 @@
 <div class="row">
   <div class="offset-2 col-8">
-    <app-upload (onSuccess)="newPost($event)"></app-upload>
+    <app-upload *ngIf="isEdit()" (onSuccess)="newPost($event)"></app-upload>
     <div class="card">
       <div class="card-body">
         <form [formGroup]="form">

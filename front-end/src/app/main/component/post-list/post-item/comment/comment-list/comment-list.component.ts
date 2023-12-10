@@ -1,5 +1,6 @@
-import { Component, ElementRef, Input, OnInit, ViewChild } from "@angular/core";
+import { Component, ElementRef, EventEmitter, HostListener, Input, OnInit, Output, ViewChild } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+import { EmojiEvent } from "@ctrl/ngx-emoji-mart/ngx-emoji";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 import { AuthenticationService } from "app/auth/service";
 import { Comment } from "app/model/Comment";
@@ -15,22 +16,29 @@ import { CommentService } from "app/services/comment.service";
 export class CommentListComponent implements OnInit {
   @Input("post") public post: Post;
   @Input("modal") public modal: NgbActiveModal;
+  @Output() public onSuccess = new EventEmitter<void>();
   @ViewChild("scrollMe") public scrollMe: ElementRef<HTMLDivElement>;
   public scrollTop: number = null;
   public form: FormGroup;
   public photos: CommentPhoto[] = [];
   public comments: Comment[] = [];
   public stop = false;
+  public showEmojiPicker = false
 
   constructor(
     private _commentService: CommentService,
     private _authService: AuthenticationService,
     private _fb: FormBuilder
-  ) {}
+  ) { }
+
+  @HostListener("document:click", ["$event"])
+  onDocumentClick(event: Event) {
+    this.showEmojiPicker = false;
+  }
 
   ngOnInit(): void {
     this.form = this._fb.group({
-      content: [null, Validators.required],
+      content: ['', Validators.required],
     });
 
     this._commentService
@@ -60,9 +68,12 @@ export class CommentListComponent implements OnInit {
       }, 0);
       this._commentService.create(comment).subscribe((res) => {
         this.comments[this.comments.length - 1] = res;
+
         setTimeout(() => {
           this.scrollTop = this.scrollMe.nativeElement.scrollHeight;
         }, 0);
+
+        this.onSuccess.emit()
       });
       this.form.reset();
       this.photos = [];
@@ -119,5 +130,14 @@ export class CommentListComponent implements OnInit {
       };
       reader.readAsDataURL(file);
     });
+  }
+
+  emojiSelect(event: EmojiEvent) {
+    this.form.patchValue({ content: this.form.get('content').value + event.emoji.native })
+  }
+
+  openEmojiPicker(event: Event) {
+    event.stopPropagation();
+    this.showEmojiPicker = !this.showEmojiPicker;
   }
 }

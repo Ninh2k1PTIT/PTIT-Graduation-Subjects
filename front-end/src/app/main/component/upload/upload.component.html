@@ -82,15 +82,15 @@
           </div>
           <div class="col-10">
             <div id="img-wrapper" class="position-relative" [ngClass]="{ 'cursor-pointer': isAddTag }">
-              <img [src]="photos[photoEditIndex].content" id="photo-edit" class="img-fluid" />
-              <div *ngFor="let i of photos[photoEditIndex].tags"
-                [ngStyle]="convertCoordinates('photo-edit', i.offsetLeft, i.offsetTop)"
+              <img [src]="photos[photoEditIndex].content" id="photo-edit" class="img-fluid w-100" />
+              <div *ngFor="let tag of photos[photoEditIndex].tags; let i = index"
+                [ngStyle]="convertCoordinates('photo-edit', tag.offsetLeft, tag.offsetTop)"
                 class="badge badge-primary position-absolute">
                 <span (click)="deleteTag(i)">
                   <i data-feather="x" class="mr-25"></i>
                 </span>
 
-                <span>{{ i.user.username }}</span>
+                <span>{{ tag.user.username }}</span>
               </div>
               <div id="crop-wrapper" [ngStyle]="{ 'pointer-events': isAddTag ? 'none' : '' }">
                 <div class="d-none" [ngClass]="{ 'd-block': isCrop }">

@@ -120,7 +120,7 @@ export class AuthRegisterComponent implements OnInit, AfterViewInit {
       callback: (response: any) => this.handleGoogleSignIn(response),
     });
     google.accounts.id.renderButton(
-      document.getElementById("google-btn"),
+      document.getElementById("google-btn-2"),
       { size: "large", type: "icon", shape: "square" } // customization attributes
     );
   }

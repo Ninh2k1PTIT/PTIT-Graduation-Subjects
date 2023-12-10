@@ -7,7 +7,6 @@ import { CoreCommonModule } from "@core/common.module";
 import { PostListModule } from "../component/post-list/post-list.module";
 import { InfoComponent } from "./info/info.component";
 import { PostsComponent } from "./posts/posts.component";
-import { FriendsComponent } from "./friends/friends.component";
 import { ReactiveFormsModule } from "@angular/forms";
 import { NgSelectModule } from "@ng-select/ng-select";
 import { Ng2FlatpickrModule } from "ng2-flatpickr";
@@ -25,10 +24,6 @@ const routes: Routes = [
       {
         path: "info",
         component: InfoComponent,
-      },
-      {
-        path: "friends",
-        component: FriendsComponent,
       },
       {
         path: "",
@@ -50,10 +45,6 @@ const routes: Routes = [
         component: InfoComponent,
       },
       {
-        path: "friends",
-        component: FriendsComponent,
-      },
-      {
         path: "",
         redirectTo: "posts",
         pathMatch: "full",
@@ -67,7 +58,6 @@ const routes: Routes = [
     ProfileComponent,
     InfoComponent,
     PostsComponent,
-    FriendsComponent,
   ],
   imports: [
     CommonModule,
@@ -81,4 +71,4 @@ const routes: Routes = [
     Ng2FlatpickrModule,
   ],
 })
-export class ProfileModule {}
+export class ProfileModule { }

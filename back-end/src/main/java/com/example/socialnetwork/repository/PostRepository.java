@@ -19,11 +19,6 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
     Page<Post> findAllByUserIdAndAudience(Integer userId, EAudience audience, Pageable pageable);
 
     @Query("SELECT post FROM Post post " +
-            "WHERE (post.audience = :audience OR post.user.id = :userId) " +
-            "AND post.content LIKE %:content% ")
-    Page<Post> findAllByContentContainsAndAudienceOrUserId(@Param("content") String content, @Param("audience") EAudience audience, @Param("userId") Integer userId, Pageable pageable);
-
-    @Query("SELECT post FROM Post post " +
             "WHERE (post.audience IN (:audiences) OR post.user.id = :currentUserId) " +
             "AND (:userId IS NULL OR post.user.id = :userId) " +
             "AND (:content IS NULL OR :content = '' OR post.content LIKE %:content% ) " +
@@ -45,4 +40,11 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
             "AND (:fromDate IS NULL OR :toDate IS NULL OR post.createdAt BETWEEN :fromDate AND :toDate) " +
             "GROUP BY post.id ORDER BY COUNT(reacts) DESC")
     Page<Post> filterByTopReact(@Param("content") String content, @Param("fromDate") Date fromDate, @Param("toDate") Date toDate, @Param("audiences") EAudience[] audiences, @Param("userId") Integer userId, @Param("currentUserId") Integer currentUserId, Pageable pageable);
+
+    @Query("SELECT post FROM Post post JOIN post.postPhotos postPhotos JOIN postPhotos.tags tags JOIN tags.user user " +
+            "WHERE user.id = :userId " +
+            "AND (post.audience IN (:audiences) OR post.user.id = :userId) " +
+            "AND (:content IS NULL OR :content = '' OR post.content LIKE %:content% ) " +
+            "AND (:fromDate IS NULL OR :toDate IS NULL OR post.createdAt BETWEEN :fromDate AND :toDate) ")
+    Page<Post> filterByTag(@Param("content") String content, @Param("fromDate") Date fromDate, @Param("toDate") Date toDate, @Param("audiences") EAudience[] audiences, @Param("userId") Integer userId, Pageable pageable);
 }

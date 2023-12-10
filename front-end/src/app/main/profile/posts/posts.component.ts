@@ -66,9 +66,15 @@ export class PostsComponent implements OnInit {
     private _modalService: NgbModal,
     private _authService: AuthenticationService,
     private _route: ActivatedRoute,
-  ) {}
+  ) { }
 
-  ngOnInit(): void {    
+  ngOnInit(): void {
+    if (this.isEdit())
+      this.sortOption.push({
+        label: "Được gắn thẻ",
+        value: EPostSort.TAG,
+      })
+
     this.form = this._fb.group({
       sort: this.sortOption[0].value,
       content: "",
@@ -121,7 +127,9 @@ export class PostsComponent implements OnInit {
   }
 
   newPost(post: Post) {
-    this.posts = [post, ...this.posts];
+    this._postService.getById(post.id).subscribe(res => {
+      this.posts = [res.data, ...this.posts];
+    })
   }
 
   refresh() {
@@ -134,5 +142,12 @@ export class PostsComponent implements OnInit {
       size: "lg",
       scrollable: true,
     });
+  }
+
+  isEdit() {
+    if (this._route.snapshot.parent.params.id == undefined)
+      return true
+
+    return this._authService.currentUserValue.id == this._route.snapshot.parent.params.id
   }
 }

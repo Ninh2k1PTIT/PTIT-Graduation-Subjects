@@ -137,6 +137,8 @@ public class PostServiceImpl implements PostService {
             page = postRepository.filterByTopComment(content, fromDate, toDate, audiences, userId, userDetails.getId(), pageable);
         else if (sort == EPostSort.REACT)
             page = postRepository.filterByTopReact(content, fromDate, toDate, audiences, userId, userDetails.getId(), pageable);
+        else if (sort == EPostSort.TAG)
+            page = postRepository.filterByTag(content, fromDate, toDate, audiences, userDetails.getId(), pageable);
         else page = postRepository.filter(content, fromDate, toDate, audiences, userId, userDetails.getId(), pageable);
 
         PaginationResponse<PostDto> result = new PaginationResponse<>();

@@ -4,13 +4,9 @@ import com.example.socialnetwork.converter.CommentConverter;
 import com.example.socialnetwork.converter.CommentPhotoConverter;
 import com.example.socialnetwork.dto.CommentDto;
 import com.example.socialnetwork.dto.CommentPhotoDto;
-import com.example.socialnetwork.dto.PostPhotoDto;
-import com.example.socialnetwork.dto.TagDto;
 import com.example.socialnetwork.dto.response.PaginationResponse;
 import com.example.socialnetwork.model.Comment;
 import com.example.socialnetwork.model.CommentPhoto;
-import com.example.socialnetwork.model.PostPhoto;
-import com.example.socialnetwork.model.Tag;
 import com.example.socialnetwork.repository.CommentPhotoRepository;
 import com.example.socialnetwork.repository.CommentRepository;
 import com.example.socialnetwork.service.CommentService;
@@ -21,7 +17,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.xml.bind.DatatypeConverter;
 import java.util.ArrayList;
@@ -36,17 +31,6 @@ public class CommentServiceImpl implements CommentService {
     private CommentConverter commentConverter;
     private CommentPhotoConverter commentPhotoConverter;
     private FirebaseImageService imageService;
-
-    @Override
-    public PaginationResponse<CommentDto> getAllByPostId(Integer postId, Pageable pageable) {
-        Page<Comment> page = commentRepository.findAllByPostId(postId, pageable);
-        PaginationResponse<CommentDto> result = new PaginationResponse<>();
-        result.setData(page.getContent().stream().map(item -> commentConverter.toDto(item)).collect(Collectors.toList()));
-        result.setTotalItems((int) page.getTotalElements());
-        result.setTotalPages(page.getTotalPages());
-        result.setCurrentPage(page.getNumber());
-        return result;
-    }
 
     @Override
     public PaginationResponse<CommentDto> getByPostIdAndLastCommentId(Integer postId, Integer lastCommentId, Integer size) {

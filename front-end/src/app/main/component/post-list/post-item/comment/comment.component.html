@@ -4,5 +4,6 @@
 </a>
 
 <ng-template #modal let-modal>
-  <app-comment-list [modal]="modal" [post]="post"></app-comment-list>
+  <app-comment-list [modal]="modal" [post]="post"
+    (onSuccess)="post.totalComment = post.totalComment + 1"></app-comment-list>
 </ng-template>

@@ -10,6 +10,8 @@ import { PerfectScrollbarModule } from "ngx-perfect-scrollbar";
 import { CommentListComponent } from './post-item/comment/comment-list/comment-list.component';
 import { CommentReactComponent } from './post-item/comment/comment-react/comment-react.component';
 import { RouterModule } from "@angular/router";
+import { PickerModule } from "@ctrl/ngx-emoji-mart";
+import { EmojiModule } from "@ctrl/ngx-emoji-mart/ngx-emoji";
 
 @NgModule({
   declarations: [
@@ -20,7 +22,8 @@ import { RouterModule } from "@angular/router";
     CommentListComponent,
     CommentReactComponent,
   ],
-  imports: [CommonModule, CoreCommonModule, NgbModule, PerfectScrollbarModule, RouterModule],
+  imports: [CommonModule, CoreCommonModule, NgbModule, PerfectScrollbarModule, RouterModule, EmojiModule,
+    PickerModule,],
   exports: [PostListComponent],
 })
-export class PostListModule {}
+export class PostListModule { }

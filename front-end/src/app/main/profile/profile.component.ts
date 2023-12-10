@@ -20,7 +20,7 @@ export class ProfileComponent implements OnInit {
     private _route: ActivatedRoute,
     private _userService: UserService,
     private _toastrService: ToastrService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this._route.params
@@ -42,6 +42,7 @@ export class ProfileComponent implements OnInit {
 
     if (files.length > 0)
       this._authService.updateAvatar(files[0]).subscribe((res) => {
+        this.currentUser = res
         this._toastrService.success("Đã cập nhật ảnh đại diện", "Thành công", {
           toastClass: "toast ngx-toastr",
           closeButton: true,

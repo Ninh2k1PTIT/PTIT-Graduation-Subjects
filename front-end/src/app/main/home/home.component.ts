@@ -53,6 +53,10 @@ export class HomeComponent implements OnInit {
       label: "Nhiều lượt thích nhất",
       value: EPostSort.REACT,
     },
+    {
+      label: "Được gắn thẻ",
+      value: EPostSort.TAG,
+    },
   ];
   public form: FormGroup;
 
@@ -122,6 +126,7 @@ export class HomeComponent implements OnInit {
   }
 
   refresh() {
+    this.posts = [];
     this.form.patchValue({ page: 0 });
     this.totalPages = 0;
   }

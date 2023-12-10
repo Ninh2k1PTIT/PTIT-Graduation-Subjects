@@ -4,11 +4,7 @@
     <div class="col-12">
       <div class="card profile-header mb-2">
         <!-- profile cover photo -->
-        <img
-          class="card-img-top"
-          src="assets/images/profile/user-uploads/timeline.jpg"
-          alt="User Profile Image"
-        />
+        <img class="card-img-top" src="assets/images/profile/user-uploads/timeline.jpg" alt="User Profile Image" />
         <!--/ profile cover photo -->
 
         <div class="position-relative">
@@ -16,10 +12,10 @@
           <div class="profile-img-container d-flex align-items-center">
             <div class="profile-img position-relative">
               <img [src]="currentUser?.avatar" class="rounded w-100 h-100" />
-              <button (click)="fileInput.click()" type="button" class="profile-img-upload btn btn-icon btn-primary" rippleEffect>
-                <span [data-feather]="'camera'"></span></button
-              >
-              <input #fileInput hidden type="file">
+              <button (click)="fileInput.click()" type="button" class="profile-img-upload btn btn-icon btn-primary"
+                rippleEffect>
+                <span [data-feather]="'camera'"></span></button>
+              <input #fileInput hidden type="file" accept=".jpeg, .jpg, .png" (change)="onFileInput($event)">
             </div>
             <!-- profile title -->
             <div class="profile-title ml-3">
@@ -31,70 +27,30 @@
         <!-- tabs pill -->
         <div class="profile-header-nav">
           <!-- navbar -->
-          <nav
-            class="navbar navbar-expand-md navbar-light justify-content-end justify-content-md-between w-100"
-          >
-            <button
-              class="btn btn-icon navbar-toggler"
-              type="button"
-              data-target="#navbarSupportedContent"
-              aria-controls="navbarSupportedContent"
-              aria-expanded="false"
-              aria-label="Toggle navigation"
-              (click)="toggleMenu = !toggleMenu"
-              rippleEffect
-            >
+          <nav class="navbar navbar-expand-md navbar-light justify-content-end justify-content-md-between w-100">
+            <button class="btn btn-icon navbar-toggler" type="button" data-target="#navbarSupportedContent"
+              aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"
+              (click)="toggleMenu = !toggleMenu" rippleEffect>
               <i data-feather="align-justify" class="font-medium-5"></i>
             </button>
 
             <!-- collapse  -->
-            <div
-              class="collapse navbar-collapse"
-              id="navbarSupportedContent"
-              [ngbCollapse]="toggleMenu"
-            >
-              <div
-                class="profile-tabs d-flex justify-content-between flex-wrap mt-1 mt-md-0"
-              >
+            <div class="collapse navbar-collapse" id="navbarSupportedContent" [ngbCollapse]="toggleMenu">
+              <div class="profile-tabs d-flex justify-content-between flex-wrap mt-1 mt-md-0">
                 <ul class="nav nav-pills mb-0">
                   <li class="nav-item">
-                    <a
-                      class="nav-link font-weight-bold"
-                      [routerLink]="'./posts'"
-                      [routerLinkActive]="['active']"
-                    >
+                    <a class="nav-link font-weight-bold" [routerLink]="'./posts'" [routerLinkActive]="['active']">
                       <span class="d-none d-md-block">Bài viết</span>
                       <i data-feather="rss" class="d-block d-md-none"></i>
                     </a>
                   </li>
                   <li class="nav-item">
-                    <a
-                      class="nav-link font-weight-bold"
-                      [routerLink]="'./info'"
-                      [routerLinkActive]="['active']"
-                    >
+                    <a class="nav-link font-weight-bold" [routerLink]="'./info'" [routerLinkActive]="['active']">
                       <span class="d-none d-md-block">Thông tin</span>
                       <i data-feather="info" class="d-block d-md-none"></i>
                     </a>
                   </li>
-                  <!-- <li class="nav-item">
-                    <a
-                      class="nav-link font-weight-bold"
-                      [routerLink]="'./friends'"
-                      [routerLinkActive]="['active']"
-                    >
-                      <span class="d-none d-md-block">Bạn bè</span>
-                      <i data-feather="users" class="d-block d-md-none"></i>
-                    </a>
-                  </li> -->
                 </ul>
-                <!-- edit button -->
-                <!-- <button class="btn btn-primary" rippleEffect>
-                  <i data-feather="edit" class="d-block d-md-none"></i>
-                  <span class="font-weight-bold d-none d-md-block"
-                    >Chỉnh sửa</span
-                  >
-                </button> -->
               </div>
             </div>
             <!--/ collapse  -->

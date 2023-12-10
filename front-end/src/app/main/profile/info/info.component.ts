@@ -20,13 +20,14 @@ export class InfoComponent implements OnInit {
     mode: "single",
     locale: require("flatpickr/dist/l10n/vn").default.vn,
     onClose: (res: [Date]) => {
-      setTimeout(() => {
-        this.form.patchValue({
-          birthday: res[0].getTime(),
-        });
-      })
+      if (res.length > 0)
+        setTimeout(() => {
+          this.form.patchValue({
+            birthday: res[0].getTime(),
+          });
+        })
     },
-    clickOpens: false
+    clickOpens: this.isEdit()
   };
 
   public form: FormGroup

@@ -1,32 +1,14 @@
 <div class="modal-header">
   <h4 class="modal-title" id="myModalLabel1">Bình luận</h4>
-  <button
-    type="button"
-    class="close"
-    (click)="modal.dismiss('Cross click')"
-    aria-label="Close"
-  >
+  <button type="button" class="close" (click)="modal.dismiss('Cross click')" aria-label="Close">
     <span aria-hidden="true">&times;</span>
   </button>
 </div>
-<div
-  class="modal-body"
-  style="max-height: 40vh"
-  tabindex="0"
-  ngbAutofocus
-  #scrollMe
-  [perfectScrollbar]
-  [scrollTop]="scrollTop"
-  (scroll)="onScroll($event)"
->
+<div class="modal-body" style="max-height: 40vh" tabindex="0" ngbAutofocus #scrollMe [perfectScrollbar]
+  [scrollTop]="scrollTop" (scroll)="onScroll($event)">
   <div class="d-flex align-items-start mb-1" *ngFor="let comment of comments">
     <div class="avatar mt-25 mr-75">
-      <img
-        [src]="comment.createdBy.avatar"
-        alt="Avatar"
-        height="34"
-        width="34"
-      />
+      <img [src]="comment.createdBy.avatar" alt="Avatar" height="34" width="34" />
     </div>
     <div class="profile-user-info w-100">
       <div class="d-flex align-items-center justify-content-between">
@@ -39,11 +21,7 @@
         <ngb-carousel [interval]="3000">
           <ng-template *ngFor="let photo of comment.photos" ngbSlide>
             <div class="img-fluid rounded mb-75">
-              <img
-                [src]="photo.content"
-                class="img-fluid"
-                style="height: 30vh"
-              />
+              <img [src]="photo.content" class="img-fluid" style="height: 30vh" />
             </div>
             <div class="carousel-caption"></div>
           </ng-template>
@@ -52,57 +30,35 @@
       </div>
       <small class="text-muted">{{
         comment.createdAt
-          ? (comment.createdAt | date : "HH:mm dd/MM/yyyy")
-          : "Đang tải"
-      }}</small>
+        ? (comment.createdAt | date : "HH:mm dd/MM/yyyy")
+        : "Đang tải"
+        }}</small>
     </div>
   </div>
 </div>
 <div class="modal-footer">
   <form [formGroup]="form" class="w-100">
     <fieldset class="form-label-group mb-50 w-100">
-      <textarea
-        class="form-control"
-        formControlName="content"
-        rows="2"
-        placeholder="Thêm bình luận"
-        (keydown)="onKeydown($event)"
-      ></textarea>
+      <textarea class="form-control" formControlName="content" rows="2" placeholder="Thêm bình luận"
+        (keydown)="onKeydown($event)"></textarea>
     </fieldset>
-    <div class="d-flex justify-content-between w-100 mb-50">
-      <input
-        #fileInput
-        type="file"
-        hidden
-        (change)="onFileInput($event)"
-        onclick="this.value=null"
-        accept=".jpeg, .jpg, .png"
-        multiple
-      />
+    <div class="d-flex justify-content-between w-100 mb-50 position-relative">
+      <input #fileInput type="file" hidden (change)="onFileInput($event)" onclick="this.value=null"
+        accept=".jpeg, .jpg, .png" multiple />
+      <div class="emoji-picker" *ngIf="showEmojiPicker" (click)="$event.stopPropagation()">
+        <emoji-mart [showPreview]="false" [enableSearch]="false" [emojiTooltip]="false"
+          (emojiSelect)="emojiSelect($event)" set="google"></emoji-mart>
+      </div>
       <div>
-        <button
-          type="button"
-          class="btn btn-icon btn-flat-primary"
-          rippleEffect
-        >
+        <button type="button" class="btn btn-icon btn-flat-primary" rippleEffect (click)="openEmojiPicker($event)">
           <span [data-feather]="'smile'"></span>
         </button>
-        <button
-          type="button"
-          class="btn btn-icon btn-flat-primary"
-          rippleEffect
-          (click)="fileInput.click()"
-        >
+        <button type="button" class="btn btn-icon btn-flat-primary" rippleEffect (click)="fileInput.click()">
           <span [data-feather]="'image'"></span>
         </button>
       </div>
-      <button
-        type="button"
-        class="btn btn-icon btn-flat-primary"
-        rippleEffect
-        (click)="onSubmit()"
-        [disabled]="!(form.valid || photos.length > 0)"
-      >
+      <button type="button" class="btn btn-icon btn-flat-primary" rippleEffect (click)="onSubmit()"
+        [disabled]="!(form.valid || photos.length > 0)">
         <span [data-feather]="'send'"></span>
       </button>
     </div>

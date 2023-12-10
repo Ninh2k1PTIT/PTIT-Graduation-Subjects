@@ -1,1 +1,7 @@
+@import "~@ctrl/ngx-emoji-mart/picker";
 
+.emoji-picker {
+    position: absolute;
+    bottom: 100px;
+    left: 0;
+}
